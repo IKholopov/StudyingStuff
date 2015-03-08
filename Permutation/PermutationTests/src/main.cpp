@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
+#include <algorithm>
 #include "PermutationTreap.h"
 
 void TestAdd()
@@ -32,7 +33,7 @@ void TestRemove()
     PermutationTreapTree t;
     for(int i = 0; i < amount; ++i)
     {
-        int k = rand()/1000;
+        int k = rand() % 1000;
         v.push_back(k);
         t.Add(t.Size(), k);
     }
@@ -60,7 +61,7 @@ void TestSum()
     long sum20_40 = 0;
     for(int i = 0; i < amount; ++i)
     {
-        int k = rand()/1000000;
+        int k = rand() % 10000;
         v.push_back(k);
         t.Add(t.Size(), k);
         sum += k;
@@ -82,32 +83,46 @@ void TestSum()
     else
         std::cout << "Test Sum failed!" << std::endl;
 }
+void TestPermutation()
+{
+    const int amount = 10;
+    const int tests = 10;
+    int v[amount];
+    PermutationTreapTree t;
+    bool clear = true;
+    for(int i = 0; i < amount; ++i)
+    {
+        v[i] = rand() % 1000;
+        t.Add(i, v[i]);
+    }
+    for(int i = 0; i < tests; ++i)
+    {
+        int a = rand() % amount;
+        int b = rand() % (amount - a) + a;
+        std::next_permutation(v + a, v + b + 1);
+        t.NextPermutation(a, b);
+        for(int j = 0; j < amount; ++j)
+        {
+            if(t.GetPosition(j)->GetData() != v[j])
+                clear = false;
+        }
+    }
+    if(clear)
+        std::cout << "Test Permutation passed." << std::endl;
+    else
+        std::cout << "Test Permutation failed!" << std::endl;
+}
 
 void Test()
 {
     TestAdd();
     TestRemove();
     TestSum();
+    TestPermutation();
 }
 
 int main()
 {
     Test();
-
-    PermutationTreapTree* t = new PermutationTreapTree(100, 10);
-    t->Remove(0);
-    int values[] = {90, 24, 10, 83, 83, 83, 83, 14, 15, 13, 12, 10, 8, 7, 6, 4, 2, 1};
-    for(int i = 0; i < 18; ++i)
-    {
-        t->Add(i, values[i]);
-    }
-
-    t->NextPermutation(0, 17);
-    for(int i = 0; i < 18; ++i)
-    {
-        std::cout << t->GetPosition(i)->GetData() << " ";
-    }
-    t->GetPosition(2)->SetData(1000000);
-    delete t;
     return 0;
 }

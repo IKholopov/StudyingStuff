@@ -213,7 +213,9 @@ void ImplicitTreapNode<T>::Push(ImplicitTreapNode<T> *t)
     t->right = swap;
     t->shouldReverse = false;
     if(t->left != NULL)
+    {
         t->left->shouldReverse ^= true;
+    }
     if(t->right != NULL)
         t->right->shouldReverse ^= true;
 }
@@ -235,7 +237,7 @@ T ImplicitTreapNode<T>::GetData()
     if(this->Count != 0)
         return this->Data;
     throw "Tree is empty";
-    return NULL;
+    return 0;
 }
 template <class T>
 int ImplicitTreapNode<T>::SetData(T data)
