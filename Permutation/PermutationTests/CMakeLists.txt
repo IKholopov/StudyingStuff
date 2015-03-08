@@ -1,0 +1,7 @@
+project(PermutationTests)
+set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(PermutationTests_SRCS ${PROJECT_SOURCE_DIR}/main.cpp)
+include_directories(${CMAKE_SOURCE_DIR}/Permutation/PermutationTreap/include)
+include_directories(${CMAKE_SOURCE_DIR}/ImplicitTreap/ImplicitTreap/include)
+add_executable(PermutationTests ${PermutationTests_SRCS})
+target_link_libraries(PermutationTests PermutationTreap)

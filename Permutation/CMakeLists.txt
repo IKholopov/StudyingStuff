@@ -1,0 +1,4 @@
+add_subdirectory(Permutation)
+add_subdirectory(PermutationTests)
+add_subdirectory(PermutationTreap)
+
