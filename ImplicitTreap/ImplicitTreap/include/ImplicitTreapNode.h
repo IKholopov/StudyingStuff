@@ -206,6 +206,7 @@ void ImplicitTreapNode<T>::Push(ImplicitTreapNode<T> *t)
 {
     if(t == NULL)
         return;
+    t->UpdateCount();
     if(!t->shouldReverse)
         return;
     ImplicitTreapNode* swap = t->left;

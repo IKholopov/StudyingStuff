@@ -6,7 +6,7 @@
 
 void TestAdd()
 {
-    const size_t amount = 100;
+    const size_t amount = 1000;
     std::vector<int> v;
     PermutationTreapTree t;
     for(int i = 0; i < amount; ++i)
@@ -28,7 +28,7 @@ void TestAdd()
 }
 void TestRemove()
 {
-    const size_t amount = 101;
+    const size_t amount = 1010;
     std::vector<int> v;
     PermutationTreapTree t;
     for(int i = 0; i < amount; ++i)
@@ -54,7 +54,7 @@ void TestRemove()
 }
 void TestSum()
 {
-    const size_t amount = 101;
+    const size_t amount = 1010;
     std::vector<int> v;
     PermutationTreapTree t;
     long sum = 0;
@@ -85,8 +85,8 @@ void TestSum()
 }
 void TestPermutation()
 {
-    const int amount = 10;
-    const int tests = 10;
+    const int amount = 1010;
+    const int tests = 50;
     int v[amount];
     PermutationTreapTree t;
     bool clear = true;
@@ -101,10 +101,18 @@ void TestPermutation()
         int b = rand() % (amount - a) + a;
         std::next_permutation(v + a, v + b + 1);
         t.NextPermutation(a, b);
+#ifdef DEBUG
+        for(int j = 0; j < amount; ++j)
+            std::cout << t.GetPosition(j)->GetData() << " ";
+        std::cout << std::endl;
+#endif
         for(int j = 0; j < amount; ++j)
         {
             if(t.GetPosition(j)->GetData() != v[j])
+            {
+                throw "Test Failed!";
                 clear = false;
+            }
         }
     }
     if(clear)

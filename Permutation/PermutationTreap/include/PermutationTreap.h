@@ -16,7 +16,6 @@ class PermutationTreapNode: public ImplicitTreapNode<int>
         void Split(int x, ImplicitTreapNode*& l, ImplicitTreapNode*& r);
         bool NextPermutation(size_t i, size_t j);
 
-        //move to private after tests
     private:
         long sum;
         PermutationTreapNode* subLeft;
@@ -24,6 +23,7 @@ class PermutationTreapNode: public ImplicitTreapNode<int>
         size_t GetFirstOfLastDecrease();
         bool isUnstrictDecrease;               //>= for subtree
 };
+
 class PermutationTreapTree: public ImplicitTreapTree<int>
 {
     public:
@@ -97,8 +97,11 @@ bool PermutationTreapNode::NextPermutation(size_t i, size_t j)
     bool result = true;
     if(a != 0)
     {
-        ImplicitTreapNode* t = set->Reverse(a, j - i + 1);
+        set->Reverse(a, j - i + 1);
         int toChange = set->GetPosition(a - 1)->GetData();
+        ImplicitTreapNode *t, *setL, *setR;
+        set->Split(a, setL, setR);
+        t = setR;
         while(t->left != NULL || t->right != NULL)
         {
             Push(t);
@@ -109,9 +112,9 @@ bool PermutationTreapNode::NextPermutation(size_t i, size_t j)
                 else break;
             }
             else
-                if(t )
-                t = t->right;
+                    t = t->right;
         }
+        Merge(setL, setR);
         int oldT = t->GetData();
         t->SetData(toChange);
         set->GetPosition(a - 1)->SetData(oldT);
@@ -143,12 +146,12 @@ size_t PermutationTreapNode::GetFirstOfLastDecrease()
         if(t->left != NULL)
             count += t->GetCountOf(t->left);
         count += 1;
-        return count;//(PermutationTreapNode*)t->right)->subLeft;
+        return count;
     }
     if(t->left != NULL &&
             ((PermutationTreapNode*)t->left)->subRight->GetData() >= t->GetData())
-        return ((PermutationTreapNode*)t->left)->GetFirstOfLastDecrease();
-    if(left != NULL)
+        return count + ((PermutationTreapNode*)t->left)->GetFirstOfLastDecrease();
+    if(t->left != NULL)
         count += t->GetCountOf(t->left);
     return count;
 }
