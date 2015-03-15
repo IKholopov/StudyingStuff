@@ -1,16 +1,20 @@
 #ifndef __Palindrome_H__
 #define __Palindrome_H__
 
+#include "PalindromeTreap.h"
+
 class Palindrome
 {
     private:
-        int p;
-        string s;
+        PalindromeTreapTree* t;
+        std::string s;
         int n;
     public:
-        Palindrome(string s);
-        void Set(int i);
-        bool IsPalindrome(int i, int j);
+        Palindrome(std::string s);
+        ~Palindrome();
+
+        void Set(unsigned int i, char c);
+        bool IsPalindrome(unsigned int i, unsigned int j);
 };
 
 #endif

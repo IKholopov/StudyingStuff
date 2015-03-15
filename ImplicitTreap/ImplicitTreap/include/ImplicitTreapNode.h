@@ -2,6 +2,7 @@
 #define __IMPLICIT_TREAP_H__
 
 #include <stdlib.h>
+#include <iostream>
 
 template <class T>
 class ImplicitTreapNode{
@@ -25,6 +26,9 @@ class ImplicitTreapNode{
         ImplicitTreapNode<T>* Remove(int position);
         T GetData();
         int SetData(T data);
+
+        //DEBUG
+        void PrintTree();
 
     protected:
         int y;
@@ -91,7 +95,6 @@ ImplicitTreapNode<T>* ImplicitTreapNode<T>::GetPosition(size_t i)
             return NULL;
         return this->left->GetPosition(i);
     }
-
 }
 template <class T>
 ImplicitTreapNode<T>* ImplicitTreapNode<T>::Add(int position, T data)
@@ -206,9 +209,9 @@ void ImplicitTreapNode<T>::Push(ImplicitTreapNode<T> *t)
 {
     if(t == NULL)
         return;
-    t->UpdateCount();
     if(!t->shouldReverse)
         return;
+    t->UpdateCount();
     ImplicitTreapNode* swap = t->left;
     t->left = t->right;
     t->right = swap;
@@ -249,5 +252,12 @@ int ImplicitTreapNode<T>::SetData(T data)
         return 0;
     }
     return 1;
+}
+template <class T>
+void ImplicitTreapNode<T>::PrintTree()
+{
+    for(int i = 0; i < this->Count; ++i)
+        std::cout << this->GetPosition(i)->GetData() << " ";
+    std::cout << std::endl;
 }
 #endif

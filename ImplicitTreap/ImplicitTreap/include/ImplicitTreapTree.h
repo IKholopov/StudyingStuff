@@ -26,6 +26,7 @@ class ImplicitTreapTree
 template <class T>
 ImplicitTreapTree<T>::ImplicitTreapTree()
 {
+    this->head = NULL;
     size = 0;
 }
 template <class T>
@@ -63,7 +64,6 @@ size_t ImplicitTreapTree<T>::Size()
 template <class T>
 void ImplicitTreapTree<T>::Add(int position, T data)
 {
-
     head = head->Add(position, data);
     ++size;
 }
