@@ -18,10 +18,6 @@ class PalindromeTreapTree:public ImplicitTreapTree<char>
 
         void SetAt(unsigned int i, char c);
         bool CheckPalindrome(unsigned int i, unsigned int j);
-
-        //Tests
-        //unsigned long long GetLeftHash(unsigned int position);
-        //unsigned long long GetRightHash(unsigned int position);
     private:
         static std::vector<unsigned long long> pows;
 };
@@ -34,15 +30,11 @@ class PalindromeTreapNode:public ImplicitTreapNode<char>
         void SetAt(unsigned int i, char c);
         void UpdateCount();
         PalindromeTreapNode* Add(int position, char data);
-        //Move to private ASAP
         unsigned long long GetLeftHash()
             { return hashLeft; }
         unsigned long long GetRightHash()
             { return hashRight; }
-        //unsigned long long GetLeftHash(unsigned int position);
-        //unsigned long long GetRightHash(unsigned int position);
     private:
-
         unsigned long long hashLeft;
         unsigned long long hashRight;
 };

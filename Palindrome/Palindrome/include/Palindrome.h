@@ -13,6 +13,7 @@ class Palindrome
         Palindrome(std::string s);
         ~Palindrome();
 
+        char Get(unsigned int i);
         void Set(unsigned int i, char c);
         bool IsPalindrome(unsigned int i, unsigned int j);
 };

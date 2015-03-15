@@ -45,8 +45,8 @@ bool PalindromeTreapTree::CheckPalindrome(unsigned int i, unsigned int j)
         lz->PrintTree();
         rz->PrintTree();
 #endif
-        if(((PalindromeTreapNode*)lz)->GetLeftHash() == //GetLeftHash((j - i) / 2) ==
-                ((PalindromeTreapNode*)rz)->GetRightHash())//GetRightHash(0))
+        if(((PalindromeTreapNode*)lz)->GetLeftHash() ==
+                ((PalindromeTreapNode*)rz)->GetRightHash())
             result = true;
         lz = ImplicitTreapNode<char>::Merge(lz, rz);
     }
@@ -58,23 +58,14 @@ bool PalindromeTreapTree::CheckPalindrome(unsigned int i, unsigned int j)
         lz->PrintTree();
         rz->PrintTree();
 #endif
-        if(((PalindromeTreapNode*)lz)->GetLeftHash() == //GetLeftHash((j - i) / 2 - 1) ==
-                ((PalindromeTreapNode*)rz)->GetRightHash())//GetRightHash(0))
+        if(((PalindromeTreapNode*)lz)->GetLeftHash() ==
+                ((PalindromeTreapNode*)rz)->GetRightHash())
             result = true;
         lz = ImplicitTreapNode<char>::Merge(lz, ImplicitTreapNode<char>::Merge(mz, rz));
     }
     this->head = ImplicitTreapNode<char>::Merge(l, ImplicitTreapNode<char>::Merge(lz, r));
     return result;
 }
-//unsigned long long PalindromeTreapTree::GetLeftHash(unsigned int position)
-//{
-//    return ((PalindromeTreapNode*)this->head)->GetLeftHash(position);
-//}
-
-//unsigned long long PalindromeTreapTree::GetRightHash(unsigned int position)
-//{
-//    return ((PalindromeTreapNode*)this->head)->GetRightHash(position);
-//}
 
 
 void PalindromeTreapNode::SetAt(unsigned int i, char c)
@@ -109,10 +100,8 @@ void PalindromeTreapNode::UpdateCount()
     unsigned int cr = 0;
     hashLeft = 0;
     hashRight = 0;
-    //if(this->left != NULL)
-        cl += GetCountOf(this->left);
-    //if(this->right != NULL)
-        cr += GetCountOf(this->right);
+    cl += GetCountOf(this->left);
+    cr += GetCountOf(this->right);
     if(this->left != NULL)
     {
         hashLeft += ((PalindromeTreapNode*)this->left)->hashLeft;
@@ -151,78 +140,3 @@ PalindromeTreapNode *PalindromeTreapNode::Add(int position, char data)
     }
     return (PalindromeTreapNode*)result;
 }
-//unsigned long long PalindromeTreapNode::GetLeftHash(unsigned int position)
-//{
-//       Push(this);
-//       unsigned int index = this->GetCountOf(this->left);
-//       unsigned long long hash = this->GetData() * PalindromeTreapTree::Pow(index);
-//       if(index == position)
-//       {
-//           if(this->left != NULL)
-//           {
-//               hash += ((PalindromeTreapNode*)this->left)->hashLeft;
-//           }
-//           return hash;
-//       }
-//       if(index < position)
-//       {
-//           if(this->right == NULL)
-//           {
-//               throw std::exception();
-//               return 0;
-//           }
-//           if(this->left != NULL)
-//           {
-//               hash += ((PalindromeTreapNode*)this->left)->hashLeft;
-//           }
-//           return hash +
-//                   ((PalindromeTreapNode*)this->right)->GetLeftHash(position - index - 1)
-//                   * PalindromeTreapTree::Pow(index + 1);
-//       }
-//       else
-//       {
-//           if(this->left == NULL)
-//           {
-//               throw std::exception();
-//               return 0;
-//           }
-//           return ((PalindromeTreapNode*)this->left)->GetLeftHash(position);
-//       }
-//}
-//unsigned long long PalindromeTreapNode::GetRightHash(unsigned int position)
-//{
-//    Push(this);
-//    unsigned int index = this->GetCountOf(this->left);
-//    unsigned long long hash = this->GetData() * PalindromeTreapTree::Pow(this->GetCountOf(this->right));
-//    if(index == position)
-//    {
-//        if(this->right != NULL)
-//        {
-//            hash += ((PalindromeTreapNode*)this->right)->hashRight;
-//        }
-//        return hash;
-//    }
-//    if(index < position)
-//    {
-//        if(this->right == NULL)
-//        {
-//            throw std::exception();
-//            return 0;
-//        }
-//        return ((PalindromeTreapNode*)this->right)->GetRightHash(position - index - 1);
-//    }
-//    else
-//    {
-//        if(this->left == NULL)
-//        {
-//            throw std::exception();
-//            return 0;
-//        }
-//        if(this->right != NULL)
-//        {
-//            hash += ((PalindromeTreapNode*)this->right)->hashRight;
-//        }
-//        return hash + PalindromeTreapTree::Pow(GetCountOf(this->right) + 1) *
-//                ((PalindromeTreapNode*)this->left)->GetRightHash(position);
-//    }
-//}

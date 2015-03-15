@@ -11,6 +11,12 @@ Palindrome::~Palindrome()
     delete t;
 }
 
+char Palindrome::Get(unsigned int i)
+{
+    if(i >= n)
+        throw "Out of range";
+    return t->GetPosition(i)->GetData();
+}
 void Palindrome::Set(unsigned int i, char c)
 {
     if(i >= n)
