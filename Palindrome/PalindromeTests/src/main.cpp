@@ -6,7 +6,7 @@
 void TestPalindrome()
 {
     int amount = 100000;
-    int tests = 1000;
+    int tests = 500;
     bool clear = true;
     std::string s = " ";
     std::vector<char> v;
@@ -57,25 +57,33 @@ void TestPalindrome()
         std::cout << "Test failed!\n" << std::endl;
         throw std::exception();
     }
-
+    std::cout << "Palindrome test passed" << std::endl;
 }
 void TestLimits()
 {
-    int amount = 100000;
-    std::string s = " ";
-    for(int i = 1; i < amount; ++i)
-        s += " ";
-    Palindrome t(s);
-    for(int i = 0; i < 100000; ++i)
-        if(rand() % 2 == 0)
-        {
-            t.Set(rand() % amount, rand() % 82 + 40);
-        }
-        else
-        {
-            unsigned int a = rand() % amount;
-            t.IsPalindrome(a, rand() % (amount - a) + a);
-        }
+    int repeats = 100;
+    for(int j = 0; j < repeats; ++j)
+    {
+        int amount = 100000;
+        std::string s = " ";
+        for(int i = 1; i < amount; ++i)
+            s += " ";
+        clock_t start_t, end_t;
+        start_t = clock();
+        Palindrome t(s);
+        for(int i = 0; i < 100000; ++i)
+            if(rand() % 2 == 0)
+            {
+                t.Set(rand() % amount, rand() % 82 + 40);
+            }
+            else
+            {
+                unsigned int a = rand() % amount;
+                t.IsPalindrome(a, rand() % (amount - a) + a);
+            }
+        end_t = clock();
+        std::cout << (float)(end_t - start_t)/CLOCKS_PER_SEC << std::endl;
+    }
 }
 
 int main()

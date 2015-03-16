@@ -22,6 +22,7 @@ class ImplicitTreapNode{
         void Split(int x, ImplicitTreapNode*& l, ImplicitTreapNode*& r);
         ImplicitTreapNode<T>* Reverse(size_t i, size_t j);
         ImplicitTreapNode<T>* GetPosition(size_t i);
+        ImplicitTreapNode<T>* SetAt(size_t i, T data);
         virtual ImplicitTreapNode<T>* Add(int position, T data);
         ImplicitTreapNode<T>* Remove(int position);
         T GetData();
@@ -94,6 +95,36 @@ ImplicitTreapNode<T>* ImplicitTreapNode<T>::GetPosition(size_t i)
         if(this->left == NULL)
             return NULL;
         return this->left->GetPosition(i);
+    }
+}
+template <class T>
+ImplicitTreapNode<T>* ImplicitTreapNode<T>::SetAt(size_t i, T data)
+{
+    Push(this);
+    if(this->Count == 0)
+        return NULL;
+    int index = GetCountOf(this->left);
+    if(index == i)
+    {
+        if(this != NULL)
+            this->SetData(data);
+        return this;
+    }
+    if(index < i)
+    {
+        if(this->right == NULL)
+            return NULL;
+        ImplicitTreapNode<T>* result = this->right->SetAt(i - index - 1, data);
+        this->UpdateCount();
+        return result;
+    }
+    else
+    {
+        if(this->left == NULL)
+            return NULL;
+        ImplicitTreapNode<T>* result = this->left->SetAt(i, data);
+        this->UpdateCount();
+        return result;
     }
 }
 template <class T>
@@ -249,8 +280,10 @@ int ImplicitTreapNode<T>::SetData(T data)
     if(this->Count != 0)
     {
         this->Data = data;
+        this->UpdateCount();
         return 0;
     }
+    this->UpdateCount();
     return 1;
 }
 template <class T>

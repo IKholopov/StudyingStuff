@@ -13,6 +13,7 @@ class ImplicitTreapTree
         ~ImplicitTreapTree();
 
         ImplicitTreapNode<T>* GetPosition(unsigned int i);
+        ImplicitTreapNode<T>* SetAt(size_t i, T data);
         ImplicitTreapNode<T>* GetHead();
         size_t Size();
         void Add(int position, T data);
@@ -50,6 +51,11 @@ template <class T>
 ImplicitTreapNode<T>* ImplicitTreapTree<T>::GetPosition(unsigned int i)
 {
     return head->GetPosition(i);
+}
+template <class T>
+ImplicitTreapNode<T>* ImplicitTreapTree<T>::SetAt(size_t i, T data)
+{
+    return this->head->SetAt(i, data);
 }
 template <class T>
 ImplicitTreapNode<T>* ImplicitTreapTree<T>::GetHead()

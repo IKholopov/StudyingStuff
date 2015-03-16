@@ -12,8 +12,9 @@ void TestAdd()
     for(int i = 0; i < amount; ++i)
     {
         int k = rand()/1000;
-        v.push_back(k);
-        t.Add(t.Size(), k);
+        int pos = i == 0 ? 0 : rand() % i;
+        v.insert(v.begin() + pos, k);
+        t.Add(pos, k);
     }
     bool clear = true;
     for(int i = 0; i < amount; ++i)
@@ -120,6 +121,102 @@ void TestPermutation()
     else
         std::cout << "Test Permutation failed!" << std::endl;
 }
+void TestAll()
+{
+    const size_t tests = 40;
+    const size_t testSums = 100;
+    const size_t amount = 5;
+    std::vector<int> v;
+    PermutationTreapTree t;
+    for(int i = 0; i < amount; ++i)
+    {
+        int k = (rand() % 1000) * (rand() % 2 == 0 ? 1 : -1);
+        int pos = i == 0 ? 0 : rand() % i;
+        v.insert(v.begin() + pos, k);
+        t.Add(pos, k);
+    }
+    clock_t start_t, end_t;
+    for(int i = 0; i < tests; ++i)
+    {
+        start_t = clock();
+        for(int k = 0; k < tests; ++k)
+        {
+            int ops = 3; //rand() % 4;
+            switch (ops) {
+            case 0: //ADD
+            {
+                int pos = rand() % t.Size();
+                int k = (rand() % 1000) * (rand() % 2 == 0 ? 1 : -1);
+                v.insert(v.begin() + pos, k);
+                t.Add(pos, k);
+                break;
+            }
+            case 1: //REPLACE
+            {
+                int pos = rand() % t.Size();
+                int k = (rand() % 1000) * (rand() % 2 == 0 ? 1 : -1);
+                v[pos] = k;
+                t.SetAt(pos, k);
+                break;
+            }
+            case 2: //REMOVE
+            {
+                if(t.Size() != 1)
+                {
+                    int pos = rand() % t.Size();
+                    v.erase(v.begin() + pos);
+                    t.Remove(pos);
+                }
+                break;
+            }
+            case 3: //PERMUTATION
+            {
+                int a = rand() % t.Size();
+                int b = rand() % (t.Size() - a) + a;
+                std::next_permutation(v.begin() + a, v.begin() + b + 1);
+                t.NextPermutation(a, b);
+#ifdef DEBUG
+           for(int l = 0; l < t.Size(); ++l)
+            {
+                if(v[l] != t.GetPosition(l)->GetData())
+                    throw "Tree corrupted!";
+            }
+            if(!((PermutationTreapNode*)t.GetHead())->VerifySum())
+                throw "Sum corrupted!";
+
+#endif
+                break;
+            }
+            default:
+                throw "WTF?";
+                break;
+            }
+#ifdef DEBUG
+           for(int l = 0; l < t.Size(); ++l)
+            {
+                if(v[l] != t.GetPosition(l)->GetData())
+                    throw "Tree corrupted!";
+            }
+            if(!((PermutationTreapNode*)t.GetHead())->VerifySum())
+                throw "Sum corrupted!";
+
+#endif
+        }
+        end_t = clock();
+        std::cout << (float)(end_t - start_t)/CLOCKS_PER_SEC << std::endl;
+        for(int j = 0; j < testSums; ++j)
+        {
+            long long sum = 0;
+            int a = rand() % t.Size();
+            int b = rand() % (t.Size() - a) + a;
+            for(int k = a; k <= b; ++k)
+                sum += v[k];
+            long long sumTree = t.GetSum(a, b);
+            if(sum != sumTree)
+                throw "Too bad!";
+        }
+    }
+}
 
 void Test()
 {
@@ -127,6 +224,7 @@ void Test()
     TestRemove();
     TestSum();
     TestPermutation();
+    TestAll();
 }
 
 int main()

@@ -9,15 +9,33 @@ class PermutationTreapNode: public ImplicitTreapNode<int>
         PermutationTreapNode():ImplicitTreapNode<int>(){}
         PermutationTreapNode(int y, int data):ImplicitTreapNode<int>(y, data) {};
 
-        long GetSum();
-        long GetSum(int i, int j);                  //Section [i;j]
+        long long GetSum();
+        long long GetSum(int i, int j);                  //Section [i;j]
         PermutationTreapNode* Add(int position, int data);
         virtual void UpdateCount();
         void Split(int x, ImplicitTreapNode*& l, ImplicitTreapNode*& r);
         bool NextPermutation(size_t i, size_t j);
 
+        //DEBUG
+        bool VerifySum()
+        {
+            long long sum = this->GetData();
+            if(this->left != NULL)
+                sum += ((PermutationTreapNode*)this->left)->GetSum();
+            if(this->right != NULL)
+                sum += ((PermutationTreapNode*)this->right)->GetSum();
+            bool clear = true;
+            if(this->sum != sum)
+                clear = false;
+            if(this->left != NULL && !((PermutationTreapNode*)this->left)->VerifySum())
+                clear = false;
+            if(this->right != NULL && !((PermutationTreapNode*)this->right)->VerifySum())
+                clear = false;
+            return clear;
+        }
+
     private:
-        long sum;
+        long long sum;
         PermutationTreapNode* subLeft;
         PermutationTreapNode* subRight;
         size_t GetFirstOfLastDecrease();
@@ -30,8 +48,8 @@ class PermutationTreapTree: public ImplicitTreapTree<int>
         PermutationTreapTree();
         PermutationTreapTree(int y, int data);
 
-        long GetSum(){ return ((PermutationTreapNode*)head)->GetSum(); }
-        long GetSum(int i, int j){ return ((PermutationTreapNode*)head)->GetSum(i, j);}
+        long long GetSum(){ return ((PermutationTreapNode*)head)->GetSum(); }
+        long long GetSum(int i, int j){ return ((PermutationTreapNode*)head)->GetSum(i, j);}
         bool NextPermutation(size_t i, size_t j);
 };
 
@@ -102,22 +120,33 @@ bool PermutationTreapNode::NextPermutation(size_t i, size_t j)
         ImplicitTreapNode *t, *setL, *setR;
         set->Split(a, setL, setR);
         t = setR;
+        int count = 0;
         while(t->left != NULL || t->right != NULL)
         {
             Push(t);
             if(t->GetData() >= toChange)
             {
                 if(t->left != NULL && ((PermutationTreapNode*)t->left)->subRight->GetData() > toChange)
+                {
                     t = t->left;
-                else break;
+                }
+                else
+                {
+                    count += GetCountOf(t->left);
+                    break;
+                }
             }
             else
+            {
+                    count += GetCountOf(t->left) + 1;
                     t = t->right;
+            }
         }
-        Merge(setL, setR);
+
         int oldT = t->GetData();
-        t->SetData(toChange);
-        set->GetPosition(a - 1)->SetData(oldT);
+        setR->SetAt(count, toChange);
+        set = Merge(setL, setR);
+        set->SetAt(a - 1, oldT);
     }
     else
     {
@@ -155,16 +184,16 @@ size_t PermutationTreapNode::GetFirstOfLastDecrease()
         count += t->GetCountOf(t->left);
     return count;
 }
-long PermutationTreapNode::GetSum()
+long long PermutationTreapNode::GetSum()
 {
     return sum;
 }
-long PermutationTreapNode::GetSum(int i, int j)
+long long PermutationTreapNode::GetSum(int i, int j)
 {
     ImplicitTreapNode<int> *l, *z, *r;
     ImplicitTreapNode<int>::Split(i, l, r);
     r->Split(j + 1 - i, z, r);
-    long sum = ((PermutationTreapNode*)z)->GetSum();
+    long long sum = ((PermutationTreapNode*)z)->GetSum();
     Merge(Merge(l, z), r);
     return sum;
 }
