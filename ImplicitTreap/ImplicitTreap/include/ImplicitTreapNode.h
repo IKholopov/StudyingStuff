@@ -3,30 +3,32 @@
 
 #include <stdlib.h>
 #include <iostream>
+#include <queue>
 
 template <class T>
 class ImplicitTreapNode{
     public:
-        ImplicitTreapNode<T>* right;
-        ImplicitTreapNode<T>* left;
-
         ImplicitTreapNode(int y, T data);
         ImplicitTreapNode();
         ~ImplicitTreapNode();
 
         static ImplicitTreapNode<T>* Merge(ImplicitTreapNode<T>* l, ImplicitTreapNode<T>* r);
         static int GetCountOf(ImplicitTreapNode<T>* t);
-        static void Push(ImplicitTreapNode<T>* t);
 
+        virtual void Push();
         virtual void UpdateCount();
         void Split(int x, ImplicitTreapNode*& l, ImplicitTreapNode*& r);
         ImplicitTreapNode<T>* Reverse(size_t i, size_t j);
         ImplicitTreapNode<T>* GetPosition(size_t i);
         ImplicitTreapNode<T>* SetAt(size_t i, T data);
+        ImplicitTreapNode<T>* GetLeft();
+        ImplicitTreapNode<T>* GetRight();
         virtual ImplicitTreapNode<T>* Add(int position, T data);
         ImplicitTreapNode<T>* Remove(int position);
         T GetData();
         int SetData(T data);
+        bool IsShouldReverse()
+        { return this->shouldReverse; }
 
         //DEBUG
         void PrintTree();
@@ -36,6 +38,8 @@ class ImplicitTreapNode{
         T Data;
         int Count;
         bool shouldReverse;
+        ImplicitTreapNode<T>* right;
+        ImplicitTreapNode<T>* left;
     private:
         ImplicitTreapNode(int y, T data, ImplicitTreapNode<T>* l, ImplicitTreapNode<T>* r);
 };
@@ -78,7 +82,7 @@ ImplicitTreapNode<T>::~ImplicitTreapNode()
 template <class T>
 ImplicitTreapNode<T>* ImplicitTreapNode<T>::GetPosition(size_t i)
 {
-    Push(this);
+    this->Push();
     if(this->Count == 0)
         return NULL;
     int index = GetCountOf(this->left);
@@ -100,7 +104,7 @@ ImplicitTreapNode<T>* ImplicitTreapNode<T>::GetPosition(size_t i)
 template <class T>
 ImplicitTreapNode<T>* ImplicitTreapNode<T>::SetAt(size_t i, T data)
 {
-    Push(this);
+    this->Push();
     if(this->Count == 0)
         return NULL;
     int index = GetCountOf(this->left);
@@ -126,6 +130,20 @@ ImplicitTreapNode<T>* ImplicitTreapNode<T>::SetAt(size_t i, T data)
         this->UpdateCount();
         return result;
     }
+}
+template <class T>
+ImplicitTreapNode<T>* ImplicitTreapNode<T>::GetLeft()
+{
+    if(left != NULL)
+        left->Push();
+    return left;
+}
+template <class T>
+ImplicitTreapNode<T>* ImplicitTreapNode<T>::GetRight()
+{
+    if(right != NULL)
+        right->Push();
+    return right;
 }
 template <class T>
 ImplicitTreapNode<T>* ImplicitTreapNode<T>::Add(int position, T data)
@@ -168,7 +186,7 @@ ImplicitTreapNode<T>* ImplicitTreapNode<T>::Remove(int position)
 template <class T>
 void ImplicitTreapNode<T>::Split(int x, ImplicitTreapNode*& l, ImplicitTreapNode*& r)
 {
-    Push(this);
+    this->Push();
     ImplicitTreapNode* tree = NULL;
     int index = GetCountOf(this->left) + 1;
     if(index <= x)
@@ -200,14 +218,17 @@ ImplicitTreapNode<T> *ImplicitTreapNode<T>::Reverse(size_t i, size_t j)
     r->Split(j - i + 1, rev, r);
     rev->shouldReverse = true;
     Merge(Merge(l, rev), r);
+    rev->Push();
     return rev;
 }
 
 template <class T>
 ImplicitTreapNode<T>* ImplicitTreapNode<T>::Merge(ImplicitTreapNode<T>* l, ImplicitTreapNode<T>* r)
 {
-    Push(l);
-    Push(r);
+    if(l != NULL)
+        l->Push();
+    if(r != NULL)
+        r->Push();
     if(l == NULL)
     {
         if(r != NULL)
@@ -236,23 +257,21 @@ ImplicitTreapNode<T>* ImplicitTreapNode<T>::Merge(ImplicitTreapNode<T>* l, Impli
     }
 }
 template<class T>
-void ImplicitTreapNode<T>::Push(ImplicitTreapNode<T> *t)
+void ImplicitTreapNode<T>::Push()
 {
-    if(t == NULL)
+    if(!this->shouldReverse)
         return;
-    if(!t->shouldReverse)
-        return;
-    t->UpdateCount();
-    ImplicitTreapNode* swap = t->left;
-    t->left = t->right;
-    t->right = swap;
-    t->shouldReverse = false;
-    if(t->left != NULL)
+    this->UpdateCount();
+    ImplicitTreapNode* swap = this->left;
+    this->left = this->right;
+    this->right = swap;
+    this->shouldReverse = false;
+    if(this->left != NULL)
     {
-        t->left->shouldReverse ^= true;
+        this->left->shouldReverse ^= true;
     }
-    if(t->right != NULL)
-        t->right->shouldReverse ^= true;
+    if(this->right != NULL)
+        this->right->shouldReverse ^= true;
 }
 template <class T>
 int ImplicitTreapNode<T>::GetCountOf(ImplicitTreapNode<T>* t)
@@ -289,8 +308,28 @@ int ImplicitTreapNode<T>::SetData(T data)
 template <class T>
 void ImplicitTreapNode<T>::PrintTree()
 {
+    std::queue<ImplicitTreapNode*> q;
+    if(this == NULL)
+        return;
+    /*q.push(this);
+    while(q.size() != 0)
+    {
+        std::queue<ImplicitTreapNode*> qn;
+        while(q.size() != 0)
+        {
+            ImplicitTreapNode* n = q.front();
+            q.pop();
+            std::cout << n->GetData() << " ";
+            if(n->left != NULL)
+                qn.push(n->left);
+            if(n->right != NULL)
+                qn.push(n->right);
+        }
+        std::cout << std::endl;
+        q = qn;
+    }*/
     for(int i = 0; i < this->Count; ++i)
         std::cout << this->GetPosition(i)->GetData() << " ";
-    std::cout << std::endl;
+    std::cout << std::endl << std::endl;
 }
 #endif
