@@ -8,12 +8,13 @@ class DSUElement
     public:
         DSUElement(int value);
         DSUElement* GetParent(int version);
-        void SetParent(DSUElement* parent);
-        int versions;
-        DSUElement* GetLastParent() { return parent.back(); }
+        void SetParent(DSUElement* parent, int version);
+        int length;
     private:
+        int LocateParentIdAt(int version);
         int value;
         std::vector<DSUElement*> parent;
+        std::vector<int> versions;
 };
 
 class DSU
@@ -24,9 +25,7 @@ class DSU
         void Merge(int version, int a, int b);
     private:
         int versions;
-        std::vector< std::vector<DSUElement*> > units;
         std::vector<DSUElement*> elements;
-        void InitNewVersion();
 };
 
 #endif

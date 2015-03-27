@@ -5,19 +5,26 @@ DSUElement::DSUElement(int value)
 {
     this->value = value;
     this->parent.push_back(this);
-    versions = 0;
+    this->versions.push_back(0);
 }
 
 DSUElement* DSUElement::GetParent(int version)
 {
-    if(parent[version] == this)
-        return parent[version];
-    return parent[version]->GetParent(version);
+    int v = LocateParentIdAt(version);
+    if(parent[v] == this)
+        return parent[v];
+    return parent[v]->GetParent(version);
 }
-void DSUElement::SetParent(DSUElement* parent)
+void DSUElement::SetParent(DSUElement* parent, int version)
 {
     this->parent.push_back(parent);
-    versions++;
+    versions.push_back(version);
+}
+int DSUElement::LocateParentIdAt(int version)
+{
+    for(int i = versions.size() - 1; i >= 0; --i)
+        if(this->versions[i] <= version)
+            return i;
 }
 
 DSU::DSU(std::vector<int> values)
@@ -27,46 +34,23 @@ DSU::DSU(std::vector<int> values)
         DSUElement* element = new DSUElement(values[i]);
         elements.push_back(element);
     }
-    units.push_back(elements);
     versions = 0;
 }
 
 bool DSU::Find(int version, int a, int b)
 {
+    ++versions;
     if(elements[a - 1]->GetParent(version) ==
             elements[b - 1]->GetParent(version))
-    {
-        InitNewVersion();
-        units.push_back(units.back());
         return true;
-    }
-    InitNewVersion();
     return false;
-}
-void DSU::InitNewVersion()
-{
-    ++versions;
-    for(int i = 0; i < elements.size(); ++i)
-        if(elements[i]->versions != versions)
-        {
-            elements[i]->SetParent(elements[i]->GetLastParent());
-        }
 }
 void DSU::Merge(int version, int a, int b)
 {
+    ++versions;
     if(!(elements[a - 1]->GetParent(version) ==
           elements[b - 1]->GetParent(version)))
     {
-        std::vector<DSUElement*> unit = units.back();
-        DSUElement* oldParent = elements[a - 1]->GetParent(version);
-        for(int i = 0; i < unit.size(); ++i)
-            if(oldParent == unit[i])
-            {
-                unit.erase(unit.begin() + i);
-                break;
-            }
-        elements[a - 1]->SetParent(elements[b - 1]->GetParent(version));
-        units.push_back(unit);
+        elements[a - 1]->SetParent(elements[b - 1]->GetParent(version), versions);
     }
-    InitNewVersion();
 }
