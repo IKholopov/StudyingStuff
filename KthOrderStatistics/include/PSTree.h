@@ -11,13 +11,27 @@ class PSTreeNode
         int GetSum(int version, int l, int r);
         void Add(int version, size_t position, int value);
         int GetKthStatistic(size_t l, size_t r, size_t k);
+
+        //DEBUG
+        static void TestVSum();
+
     private:
+        class VersionSum
+        {
+            public:
+                void Add(int version, int sum);
+                int back();
+                int operator [](int i) const;
+            private:
+                std::vector<int> versions;
+                std::vector<int> sums;
+        };
+
         PSTreeNode* left;
         PSTreeNode* right;
         size_t leftLim;
         size_t rightLim;
-        void ProcessNoChanges();
-        std::vector<int> sums;
+        VersionSum sums;
 };
 
 class PSTree
