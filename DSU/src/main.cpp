@@ -9,10 +9,7 @@ int main()
     int n, m;
     std::cin >> n;
     std::cin >> m;
-    std::vector<int> v;
-    for(int i = 0; i < n; ++i)
-        v.push_back(i + 1);
-    DSU d(v);
+    DSU d(n);
     for(int i = 0; i < m; ++i)
     {
         char c;

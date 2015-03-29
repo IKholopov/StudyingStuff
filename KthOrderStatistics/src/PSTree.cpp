@@ -88,7 +88,7 @@ int PSTree::GetKthStatistics(size_t l, size_t r, size_t k)
     return sorted[root->GetKthStatistic(l, r, k + 1)];
 }
 
-void PSTreeNode::VersionSum::Add(int version, int sum)
+/*void PSTreeNode::VersionSum::Add(int version, int sum)
 {
     if(versions.size() != 0 && version < versions.back())
         throw std::exception();
@@ -119,3 +119,4 @@ void PSTreeNode::TestVSum()
         std::cout << v[i] << " ";
     std::cout << std::endl;
 }
+*/

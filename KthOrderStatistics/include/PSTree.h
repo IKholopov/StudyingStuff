@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <vector>
+#include "PersistentData.hpp"
 
 class PSTreeNode
 {
@@ -16,22 +17,12 @@ class PSTreeNode
         static void TestVSum();
 
     private:
-        class VersionSum
-        {
-            public:
-                void Add(int version, int sum);
-                int back();
-                int operator [](int i) const;
-            private:
-                std::vector<int> versions;
-                std::vector<int> sums;
-        };
 
         PSTreeNode* left;
         PSTreeNode* right;
         size_t leftLim;
         size_t rightLim;
-        VersionSum sums;
+        PersistentData<int> sums;
 };
 
 class PSTree

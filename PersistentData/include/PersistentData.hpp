@@ -13,7 +13,7 @@ class PersistentData
         T operator [](int i) const;
     private:
         std::vector<int> versions;
-        std::vector<int> elements;
+        std::vector<T> elements;
 };
 
 #endif
