@@ -1,11 +1,27 @@
 #include <iostream>
-#include <stdio.h>
 #include <vector>
+#include <stdlib.h>
 
 #include "DSU.h"
 
+void TestAll()
+{
+    int amount = 100;
+    int tests = 100;
+    DSU d(amount);
+    for(int i = 0; i < tests; ++i)
+    {
+        if(rand() % 2 == 0)
+            d.Merge(rand() % (i + 1), rand() % amount + 1, rand() % amount + 1);
+        else
+            d.Find(rand() % (i + 1), rand() % amount + 1, rand() % amount + 1);
+    }
+    return;
+}
+
 int main()
 {
+    TestAll();
     int n, m;
     std::cin >> n;
     std::cin >> m;

@@ -17,7 +17,6 @@ class PSTreeNode
         static void TestVSum();
 
     private:
-
         PSTreeNode* left;
         PSTreeNode* right;
         size_t leftLim;

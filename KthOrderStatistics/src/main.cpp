@@ -54,9 +54,9 @@ void TestTime()
 {
     int k = 1;
     int amount = 1000;
-    for(int i = 0; i < 6; ++i)
+    for(int i = 0; i < 5; ++i)
     {
-        k *= 10;
+        k *= 11;
         std::cout << k << " elements" << std::endl;
         int data[k];
         for(int j = 0; j < k; ++j)

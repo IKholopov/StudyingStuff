@@ -123,7 +123,7 @@ void TestPermutation()
 }
 void TestAll()
 {
-    const size_t tests = 100000;
+    const size_t tests = 1000;
     const size_t testSums = 100;
     const size_t amount = 100000;
     std::vector<int> v;
