@@ -6,8 +6,8 @@
 
 void TestAll()
 {
-    int amount = 100;
-    int tests = 100;
+    int amount = 100000;
+    int tests = 100000  ;
     DSU d(amount);
     for(int i = 0; i < tests; ++i)
     {
@@ -22,7 +22,7 @@ void TestAll()
 int main()
 {
     TestAll();
-    int n, m;
+    /*int n, m;
     std::cin >> n;
     std::cin >> m;
     DSU d(n);
@@ -50,5 +50,5 @@ int main()
             throw "Invalid input";
             break;
         }
-    }
+    }*/
 }

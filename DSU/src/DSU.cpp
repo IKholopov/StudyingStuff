@@ -40,9 +40,18 @@ void DSU::Merge(int version, int a, int b)
     DataNode parentB = GetParent(newVer, b);
     if(!(parentA.value == parentB.value))
     {
-        if(parentA.size )
-        newVer->changeset.first = a;
-        newVer->changeset.second->value = b;
+        if(parentA.size > parentB.size)
+        {
+            newVer->changeset.first = b;
+            newVer->changeset.second->value = a;
+            newVer->changeset.second->size = parentA.size + 1;
+        }
+        else
+        {
+            newVer->changeset.first = a;
+            newVer->changeset.second->value = b;
+            newVer->changeset.second->size = parentB.size + 1;
+        }
         //newVer->changeset.second->size =
     }
 }

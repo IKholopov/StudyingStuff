@@ -16,6 +16,7 @@ class DSUVersion
 {
     public:
         ~DSUVersion();
+
         std::pair<int, DataNode*> changeset;
         DSUVersion(DSUVersion* ancestor);
         DataNode GetParent(std::vector<DataNode>* set, int element);

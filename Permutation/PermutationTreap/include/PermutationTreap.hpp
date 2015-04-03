@@ -22,41 +22,6 @@ class PermutationTreapNode: public ImplicitTreapNode<int>
         PermutationTreapNode*  GetSubLeft();
         PermutationTreapNode*  GetSubRight();
 
-        //DEBUG
-        bool VerifySum()
-        {
-            long long sum = this->GetData();
-            if(this->left != NULL)
-                sum += ((PermutationTreapNode*)this->left)->GetSum();
-            if(this->right != NULL)
-                sum += ((PermutationTreapNode*)this->right)->GetSum();
-            bool clear = true;
-            if(this->sum != sum)
-                clear = false;
-            if(this->left != NULL && !((PermutationTreapNode*)this->left)->VerifySum())
-                clear = false;
-            if(this->right != NULL && !((PermutationTreapNode*)this->right)->VerifySum())
-                clear = false;
-            return clear;
-        }
-        void VerifySubs()
-        {
-            PermutationTreapNode* t = this;
-            while(t->left != NULL)
-                t = ((PermutationTreapNode*)t->left);
-            if(t != this->GetSubLeft())
-                throw "Subs Corrupted";
-            t = this;
-            while(t->right != NULL)
-                t = ((PermutationTreapNode*)t->right);
-            if(t != this->GetSubRight())
-                throw "Subs Corrupted";
-            if(this->left != NULL)
-                ((PermutationTreapNode*)this->left)->VerifySubs();
-            if(this->right!= NULL)
-                ((PermutationTreapNode*)this->right)->VerifySubs();
-        }
-
     private:
         long long sum;
         bool isUnstrictDecrease;               //>= for subtree
