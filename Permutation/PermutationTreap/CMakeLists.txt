@@ -1,5 +1,6 @@
-set(PermutationTreap_Sources include/PermutationTreap.hpp)
+set(PermutationTreap_Sources include/PermutationTreap.hpp src/PermutationTreap.cpp)
 include_directories(${CMAKE_SOURCE_DIR}/ImplicitTreap/ImplicitTreap/include)
 add_library(PermutationTreap ${PermutationTreap_Sources})
 target_link_libraries(PermutationTreap ImplicitTreap)
 set_target_properties(PermutationTreap PROPERTIES LINKER_LANGUAGE CXX)
+INCLUDE_DIRECTORIES(include)

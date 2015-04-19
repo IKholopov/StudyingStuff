@@ -3,13 +3,19 @@
 #include <iostream>
 #include <algorithm>
 
+NodeData::NodeData(int added, int data)
+{
+    this->added = added;
+    this->data = data;
+}
+
 PSTreeNode::PSTreeNode(size_t leftLim, size_t rightLim)
 {
     this->leftLim = leftLim;
     this->rightLim = rightLim;
     if(leftLim == rightLim)
     {
-        sums.Add(0, 0);
+        sums.Add(0, NodeData(0,0));
         left = NULL;
         right = NULL;
     }
@@ -17,45 +23,53 @@ PSTreeNode::PSTreeNode(size_t leftLim, size_t rightLim)
     {
         left = new PSTreeNode(leftLim, (leftLim + rightLim) /  2);
         right = new PSTreeNode((leftLim + rightLim) /  2 + 1, rightLim);
-        sums.Add(0, left->sums[0] + right->sums[0]);
+        sums.Add(0, NodeData(left->sums[0].added + right->sums[0].added, 0));
     }
 }
-
-int PSTreeNode::GetSum(int version, int l, int r)
+int PSTreeNode::GetSum(int l, int r)
 {
     if(l > rightLim || r < leftLim)
         return 0;
     if(leftLim >= l && rightLim <= r)
-        return this->sums[version];
-    return this->left->GetSum(version, l, r) + this->right->GetSum(version, l, r);
+        return this->sums.back().data;
+    return this->left->GetSum(l, r) + this->right->GetSum(l, r);
 }
-void PSTreeNode::Add(int version, size_t position, int value)
+int PSTreeNode::GetSumAdded(int version, int l, int r)
+{
+    if(l > rightLim || r < leftLim)
+        return 0;
+    if(leftLim >= l && rightLim <= r)
+        return this->sums[version].added;
+    return this->left->GetSumAdded(version, l, r) + this->right->GetSumAdded(version, l, r);
+}
+void PSTreeNode::Add(int version, size_t position, int value, int data)
 {
     if(this->leftLim == this->rightLim)
-        this->sums.Add(version + 1, value);
+        this->sums.Add(version + 1, NodeData(value, data));
     else
     {
         if(position <= (this->leftLim + this->rightLim) / 2)
         {
-            this->left->Add(version, position, value);
+            this->left->Add(version, position, value, data);
         }
         else
         {
-            this->right->Add(version, position, value);
+            this->right->Add(version, position, value, data);
         }
-        this->sums.Add(version + 1, this->left->sums.back() + this->right->sums.back());
+        this->sums.Add(version + 1, NodeData(this->left->sums.back().added + this->right->sums.back().added,
+                                             this->left->sums.back().data + this->right->sums.back().data));
     }
 }
 int PSTreeNode::GetKthStatistic(size_t l, size_t r, size_t k)
 {
     if(this->leftLim == this->rightLim)
         return leftLim;
-    if(this->left->sums[r] - this->left->sums[l] >= k)
+    if(this->left->sums[r].added - this->left->sums[l].added >= k)
     {
         return this->left->GetKthStatistic(l, r, k);
     }
     return this->right->GetKthStatistic(l, r,
-                     k - (this->left->sums[r] - this->left->sums[l]));
+                     k - (this->left->sums[r].added - this->left->sums[l].added));
 }
 
 
@@ -70,18 +84,26 @@ PSTree::PSTree(int *data, size_t size)
     this->root = new PSTreeNode(0, size - 1);
     for(int i = 0; i < size; ++i)
     {
-        int value = this->GetSum(i, indexes[i], indexes[i]);
-        this->Add(i, indexes[i], value + 1);
+        int value = this->GetSumAdded(i, indexes[i], indexes[i]);
+        this->Add(i, indexes[i], value + 1, sorted[i]);
     }
 }
 
-int PSTree::GetSum(int version, int l, int r)
+int PSTree::GetSum(int l, int r)
 {
-    return root->GetSum(version, l, r);
+    return this->root->GetSum(l, r);
 }
-void PSTree::Add(int version, size_t position, int value)
+int PSTree::GetSumAdded(int version, int l, int r)
 {
-    root->Add(version, position, value);
+    return root->GetSumAdded(version, l, r);
+}
+size_t PSTree::GetSize()
+{
+    return this->size;
+}
+void PSTree::Add(int version, size_t position, int value, int data)
+{
+    root->Add(version, position, value, data);
 }
 int PSTree::GetKthStatistics(size_t l, size_t r, size_t k)
 {

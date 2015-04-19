@@ -6,8 +6,9 @@
 
 void TestAll()
 {
+    std::cout << "Test started" << std::endl;
     int amount = 100000;
-    int tests = 100000  ;
+    int tests = 100000;
     DSU d(amount);
     for(int i = 0; i < tests; ++i)
     {
@@ -16,13 +17,12 @@ void TestAll()
         else
             d.Find(rand() % (i + 1), rand() % amount + 1, rand() % amount + 1);
     }
+    std::cout << "Test finished" << std::endl;
     return;
 }
-
-int main()
+void Run()
 {
-    TestAll();
-    /*int n, m;
+    int n, m;
     std::cin >> n;
     std::cin >> m;
     DSU d(n);
@@ -50,5 +50,12 @@ int main()
             throw "Invalid input";
             break;
         }
-    }*/
+    }
+}
+
+int main()
+{
+    TestAll();
+    Run();
+    return 0;
 }

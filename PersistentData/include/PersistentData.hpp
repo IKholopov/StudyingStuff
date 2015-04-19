@@ -9,7 +9,7 @@ class PersistentData
 {
     public:
         void Add(size_t version, T element);
-        int back();
+        T back();
         T operator [](int i) const;
     private:
         std::vector<int> versions;
@@ -27,7 +27,7 @@ void PersistentData<T>::Add(size_t version, T element)
     elements.push_back(element);
 }
 template <class T>
-int PersistentData<T>::back()
+T PersistentData<T>::back()
 {
     return elements.back();
 }

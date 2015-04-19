@@ -4,22 +4,14 @@
 #include <vector>
 #include <utility>
 
-class DataNode
-{
-    public:
-        DataNode(int value, int size);
-        int value;
-        int size;
-};
-
 class DSUVersion
 {
     public:
-        ~DSUVersion();
+        std::pair<int, int> Changeset;
 
-        std::pair<int, DataNode*> changeset;
         DSUVersion(DSUVersion* ancestor);
-        DataNode GetParent(std::vector<DataNode>* set, int element);
+
+        int GetLinkAt(int element, std::vector<int>* base);
     private:
         DSUVersion* ancestor;
 };
@@ -29,13 +21,14 @@ class DSU
     public:
         DSU(int size);
         ~DSU();
+
         bool Find(int version, int a, int b);
         void Merge(int version, int a, int b);
     private:
+        int GetParent(DSUVersion* version, int element);
         int versionCounter;
-        std::vector<DataNode> base;
+        std::vector<int> base;
         DSUVersion* InitNewVersion(int version);
-        DataNode GetParent(DSUVersion* version, int element);
         std::vector<DSUVersion*> versions;
 };
 

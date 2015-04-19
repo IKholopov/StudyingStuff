@@ -1,24 +1,14 @@
 #define uint unsigned int
 
 #include <iostream>
-#include <list>
+#include <vector>
+#include "Graph.h"
 
-class DSU
-{
-    public:
-        std::list<uint> Roots;
-};
-class DSUTree
-{
-    public:
-        int index;
-        DSU value;
-        DSUTree* l;
-        DSUTree* r;
-        void Append( );//
-};
 
 int main()
 {
+    std::vector<Edge> e;
+    e.push_back(Edge(1, 5));
+    Graph g(9, e);
     return 0;
 }

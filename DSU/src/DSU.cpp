@@ -6,8 +6,7 @@ DSU::DSU(int size)
 {
     for(int i = 0; i < size; ++i)
     {
-        DataNode d(i + 1, 1);
-        base.push_back(d);
+        base.push_back(i + 1);
     }
     versionCounter= 0;
     DSUVersion* v = new DSUVersion(NULL);
@@ -29,67 +28,43 @@ DSUVersion* DSU::InitNewVersion(int version)
 bool DSU::Find(int version, int a, int b)
 {
     DSUVersion* newVer = InitNewVersion(version);
-    if(GetParent(newVer, a).value == GetParent(newVer, b).value)
+    if(GetParent(newVer, a) == GetParent(newVer, b))
         return true;
     return false;
 }
 void DSU::Merge(int version, int a, int b)
 {
     DSUVersion* newVer = InitNewVersion(version);
-    DataNode parentA = GetParent(newVer, a);
-    DataNode parentB = GetParent(newVer, b);
-    if(!(parentA.value == parentB.value))
+    int parentA = GetParent(newVer, a);
+    int parentB = GetParent(newVer, b);
+    if(!(parentA == parentB))
     {
-        if(parentA.size > parentB.size)
-        {
-            newVer->changeset.first = b;
-            newVer->changeset.second->value = a;
-            newVer->changeset.second->size = parentA.size + 1;
-        }
-        else
-        {
-            newVer->changeset.first = a;
-            newVer->changeset.second->value = b;
-            newVer->changeset.second->size = parentB.size + 1;
-        }
-        //newVer->changeset.second->size =
+            newVer->Changeset.first = b;
+            newVer->Changeset.second = a;
     }
 }
-DataNode DSU::GetParent(DSUVersion* version, int element)
+int DSU::GetParent(DSUVersion* version, int element)
 {
-     std::vector<DataNode> set = this->base;
-     return version->GetParent(&set, element);
+     int ancestor = version->GetLinkAt(element, &base);
+     while(ancestor != element)
+     {
+         element = ancestor;
+         ancestor = version->GetLinkAt(element, &base);
+     }
+     return element;
 }
 
 DSUVersion::DSUVersion(DSUVersion* ancestor)
 {
     this->ancestor = ancestor;
-    this->changeset = std::make_pair(0, new DataNode(0, 1));
+    this->Changeset = std::make_pair(0, 0);
 }
-DSUVersion::~DSUVersion()
-{
-    delete changeset.second;
-}
-DataNode DSUVersion::GetParent(std::vector<DataNode>* set, int element)
+
+int DSUVersion::GetLinkAt(int element, std::vector<int>* base)
 {
     if(this->ancestor == NULL)
-    {
-        for(;;)
-        {
-            int i = set->at(element - 1).value;
-            if(i == element)
-                return set->at(element - 1);
-            element = i;
-        }
-    }
-    if(this->changeset.first != 0)
-        set->at(this->changeset.first - 1).value = this->changeset.second->value;
-    return this->ancestor->GetParent(set, element);
-}
-
-
-DataNode::DataNode(int value, int size)
-{
-    this->value = value;
-    this->size = size;
+        return base->at(element - 1);
+    if(this->Changeset.first == element)
+        return this->Changeset.second;
+    return this->ancestor->GetLinkAt(element, base);
 }
