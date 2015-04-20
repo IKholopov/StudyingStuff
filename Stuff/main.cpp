@@ -1,14 +1,13 @@
-#define uint unsigned int
+
 
 #include <iostream>
 #include <vector>
 #include "Graph.h"
+#include "GraphManager.hpp"
 
 
 int main()
 {
-    std::vector<Edge> e;
-    e.push_back(Edge(1, 5));
-    Graph g(9, e);
+    Graph* g = GraphManager<int>::ReadFromFile("graph.gr");
     return 0;
 }
