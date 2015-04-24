@@ -33,7 +33,6 @@ class Graph
 {
     public:
         Graph(unsigned int size, std::vector<Edge> edges);
-        Graph(unsigned int size, std::string matrix);
         Graph(unsigned int size);
         virtual ~Graph();
 
@@ -41,7 +40,6 @@ class Graph
         std::vector<unsigned int> GetChilds(unsigned int vertex);
         std::vector<unsigned int> GetParents(unsigned int vertex);
         bool AddUnorientedEdge(int from, int to); //return false if already exists
-        bool AddEdge(const Edge& edge);
         bool AddEdge(int from, int to);
         bool CheckEdge(int from, int to);
         void DeleteAllEdges();
@@ -49,6 +47,9 @@ class Graph
     protected:
         unsigned int size;
         std::vector<Edge> edges;
+        std::vector< std::vector<int> >* adjacencyMatrix;           //index in 'edges', -1 == doesn't exist
+    private:
+        bool AddEdge(const Edge& edge);
 };
 
 #endif

@@ -4,14 +4,13 @@ Graph::Graph(unsigned int size, std::vector<Edge> edges)
 {
     this->size = size;
     this->edges = edges;
-}
-Graph::Graph(unsigned int size, std::string matrix)
-{
-    this->size = size;
+    adjacencyMatrix = new std::vector< std::vector<int> >(size);
     for(int i = 0; i < size; ++i)
+    {
+        adjacencyMatrix[i].resize(size);
         for(int j = 0; j < size; ++j)
-            if(matrix[i+j] == '1')
-                this->edges.push_back(Edge(i, j));
+            adjacencyMatrix->at(i).at(j)= -1;
+    }
 }
 Graph::Graph(unsigned int size)
 {
@@ -28,6 +27,9 @@ unsigned int Graph::Size()
 std::vector<unsigned int> Graph::GetChilds(unsigned int vertex)
 {
     std::vector<unsigned int> childs;
+    /*for(int i = 0; i < size; ++i)
+        if(adjacencyMatrix->at(vertex).at(i) != -1)
+            childs.push_back(edges[adjacencyMatrix->at(vertex).at(i)].To);*/
     for(int i = 0; i < edges.size(); ++i)
         if(edges[i].From == vertex)
             childs.push_back(edges[i].To);

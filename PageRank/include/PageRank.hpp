@@ -17,7 +17,7 @@ class PageRank: public Graph
         ~PageRank();
 
         bool AddPage(T page);
-        int GetIndexOfPage(T page);         //-1 - not found
+        int GetIndexOfPage(const T& page);         //-1 - not found
         void PageRankForSteps(int steps);
         std::vector<double> GetRank()
         { return *rank; }
@@ -53,7 +53,7 @@ bool PageRank<T>::AddPage(T page)
         return true;
 }
 template <class T>
-int PageRank<T>::GetIndexOfPage(T page)
+int PageRank<T>::GetIndexOfPage(const T& page)
 {
     for(int i = 0; i < size; ++i)
     {

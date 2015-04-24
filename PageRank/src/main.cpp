@@ -39,10 +39,18 @@ int main()
     {
         file >> test[i % RANGE];
         pr->AddPage(test[i % RANGE]);
-        for(int j = i - RANGE + 1; j < RANGE; ++j)
+        for(int j = i - RANGE + 1; j < i; ++j)
         {
-            pr->AddEdge(pr->GetIndexOfPage(test))
+            pr->AddUnorientedEdge(pr->GetIndexOfPage(test[j]), pr->GetIndexOfPage(test[i]));
         }
+    }
+    for(int j = 0; j < steps; ++j)
+    {
+        pr->PageRankForSteps(1);
+        std::vector<double> rank = pr->GetRank();
+        for(int k = 0; k < rank.size(); ++k)
+            std::cout << rank[k] << " ";
+        std::cout << std::endl;
     }
     return 0;
 }
