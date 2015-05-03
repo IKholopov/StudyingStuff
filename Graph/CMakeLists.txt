@@ -3,8 +3,9 @@ project(Graph)
 set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-set(Graph_SRCS ${PROJECT_INCLUDE_DIR}/Graph.h ${PROJECT_INCLUDE_DIR}/GraphManager.hpp
-${PROJECT_SOURCE_DIR}/Graph.cpp ${PROJECT_SOURCE_DIR}/GraphManager.cpp)
+set(Graph_SRCS ${PROJECT_INCLUDE_DIR}/Graph.h ${PROJECT_INCLUDE_DIR}/GraphManager.h ${PROJECT_INCLUDE_DIR}/GraphFileFormat.h
+${PROJECT_INCLUDE_DIR}/GraphValuedEdge.h
+${PROJECT_SOURCE_DIR}/Graph.cpp ${PROJECT_SOURCE_DIR}/GraphManager.cpp ${PROJECT_SOURCE_DIR}/GraphValuedEdge.cpp)
 include_directories("${PROJECT_BINARY_DIR}")
 add_library(Graph ${Graph_SRCS})
 include_directories("${PROJECT_INCLUDE_DIR}")

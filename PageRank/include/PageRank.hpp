@@ -3,32 +3,36 @@
 
 #include <utility>
 #include <vector>
+#include <map>
+#include <cmath>
 #include "Graph.h"
 
 template <class T>
 class PageRank: public Graph
 {
-    static const double d = 0.85;
-
     public:
-        std::vector<T> Data;
+        std::map<T, unsigned int> Data;
 
-        PageRank(unsigned int size);
+        PageRank(unsigned int size, double d);
         ~PageRank();
 
         bool AddPage(T page);
+        void InitRank();
         int GetIndexOfPage(const T& page);         //-1 - not found
         void PageRankForSteps(int steps);
+        void PageRankToConverge();
         std::vector<double> GetRank()
         { return *rank; }
     private:
+        double d;
         std::vector<double>* oldRank;
         std::vector<double>* rank;
 };
 
 template <class T>
-PageRank<T>::PageRank(unsigned int size):Graph(size)
+PageRank<T>::PageRank(unsigned int size, double d):Graph(size)
 {
+    this->d = d;
     this->size = size;
     oldRank = new std::vector<double>();
     rank = new std::vector<double>();
@@ -48,21 +52,26 @@ bool PageRank<T>::AddPage(T page)
 {
         if(GetIndexOfPage(page) != -1)
             return false;
-        ++size;
-        Data.push_back(page);
+        this->AddNodes(1);
+        Data[page] = this->size - 1;
         return true;
+}
+template <class T>
+void PageRank<T>::InitRank()
+{
+    oldRank->clear();
+    rank->clear();
+    for(int i = 0; i < size; ++i)
+    {
+        rank->push_back(1.0 / size);
+    }
 }
 template <class T>
 int PageRank<T>::GetIndexOfPage(const T& page)
 {
-    for(int i = 0; i < size; ++i)
-    {
-        if(Data[i] == page)
-        {
-            return i;
-        }
-    }
-    return -1;
+    if(Data.find(page) == Data.end())
+        return -1;
+    return Data[page];
 }
 template <class T>
 void PageRank<T>::PageRankForSteps(int steps)
@@ -77,7 +86,7 @@ void PageRank<T>::PageRankForSteps(int steps)
         {
             double sum = 0;
             std::vector<unsigned int> parents = GetParents(j);
-            for(int k = 0; k < parents.size(); ++k)
+                for(int k = 0; k < parents.size(); ++k)
             {
                 if(j == k)
                     continue;
@@ -86,6 +95,23 @@ void PageRank<T>::PageRankForSteps(int steps)
             }
             rank->push_back((1.0 - d) / size + d * sum);
         }
+    }
+}
+template <class T>
+void PageRank<T>::PageRankToConverge()
+{
+    double error = 0.001;
+    bool converge = false;
+    while(!converge)
+    {
+            PageRankForSteps(1);
+            converge = true;
+            for(int i = 0; i < this->size; ++i)
+                if(std::abs(oldRank->at(i) - rank->at(i)) > error)
+                {
+                    converge = false;
+                    break;
+                }
     }
 }
 

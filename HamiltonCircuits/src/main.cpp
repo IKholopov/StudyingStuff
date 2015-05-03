@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "Graph.h"
-#include "GraphManager.hpp"
+#include "GraphManager.h"
 #include "Hamilton.h"
 
 int main()
@@ -13,7 +13,7 @@ int main()
             int counter = 0;
             for(int j = 0; j < amount; ++j)
             {
-                Graph* g = GraphManager<int>::GetRandomUnorientedGraph(i);
+                Graph* g = GraphManager::GetRandomUnorientedGraph(i);
                 if(HamiltonVerify::CheckIfHamilton(g))
                 {
                     ++counter;

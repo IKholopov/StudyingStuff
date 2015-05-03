@@ -12,7 +12,7 @@ bool HamiltonVerify::CheckIfHamilton(Graph *g)
     static int table[1 << MAX_GRAPH_SIZE][MAX_GRAPH_SIZE];
     if(g->Size() == 1)
         return true;
-    for(int i = 0; i < g->Size() + 1; ++i)
+    for(int i = 0; i < g->Size(); ++i)
     {
         table[(1 << i) | 1][i] = g->CheckEdge(0, i);
     }
