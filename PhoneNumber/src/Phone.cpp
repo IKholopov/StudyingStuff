@@ -136,13 +136,13 @@ void Phone::Solve(int M, int N, int L)
         d0 = d1;
         d1  = temp;
     }
-    for(int i = 0; i < N * M; ++i)
+    /*for(int i = 0; i < N * M; ++i)
     {
         if(d0[i][0].prev != NULL)
             std::cout << i << " " << d0[i][0].freeFinger << " " << d0[i][0].price << std::endl;
         if(d0[i][1].prev != NULL)
             std::cout << i << " " << d0[i][1].freeFinger << " " << d0[i][1].price << std::endl;
-    }
+    }*/
     double cost = -1;
     Position* id;
     for(int i = 0; i < N * M; ++i)
@@ -154,7 +154,7 @@ void Phone::Solve(int M, int N, int L)
                 cost = d0[i][0].price;
                 id =  &(d0[i][0]);
             }
-            else if(d0[i][0].price < cost)
+            else if(d0[i][0].price <= cost)
             {
                 cost = d0[i][0].price;
                 id = &(d0[i][0]);
@@ -167,7 +167,7 @@ void Phone::Solve(int M, int N, int L)
                 cost = d0[i][1].price;
                 id = &(d0[i][1]);
             }
-            else if(d0[i][0].price < cost)
+            else if(d0[i][0].price <= cost)
             {
                 cost = d0[i][1].price;
                 id = &(d0[i][1]);
@@ -182,6 +182,7 @@ void Phone::Solve(int M, int N, int L)
             std::cout << "R";
         id = id->prev;
     }*/
+    //std::cout << cost << std::endl;
     std::cout << id->sequence << std::endl;
     return;
 }

@@ -4,8 +4,11 @@
 
 int main()
 {
-    //Phone::Solve(4, 3, 5);
-    Phone::Solve(59, 60, 1799);
+    int N, M, L;
+    std::cin >> N;
+    std::cin >> M;
+    std::cin >> L;
+    Phone::Solve(M, N, L);
 
     return 0;
 }
