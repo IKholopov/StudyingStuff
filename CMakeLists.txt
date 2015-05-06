@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(global)
 add_definitions(-DDEBUG)
+add_definitions(-std=c++11)
 #add_subdirectory(Legacy)
 #set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -Os)
 add_subdirectory(ImplicitTreap)

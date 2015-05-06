@@ -1,9 +1,16 @@
 #include "GraphValuedEdge.h"
 
 #include <stdlib.h>
-#include "PriorityQueue.h"
+#include <queue>
 #include "GraphFileFormat.h"
 
+struct EdgeComparator: public std::binary_function<std::pair<int, int>, std::pair<int, int>, bool>
+  {
+    bool operator()(const std::pair<int, int>& __x, const std::pair<int, int>& __y) const
+    {
+        return __x.first > __y.first;
+    }
+  };
 
 GraphValuedEdge::~GraphValuedEdge()
 {
@@ -93,22 +100,23 @@ int ValuedEdgeComparator(const void* a, const void* b)
 }
 int GraphValuedEdge::BFS(unsigned int source, unsigned int destination)
 {
-    /*PriorityQueue* q = NewQueue(&ValuedEdgeComparator);
+    std::priority_queue< std::pair<int, int>, std::vector< std::pair<int, int> >,   //first - prioriry
+            EdgeComparator> q;                                                     //second - vertex
     int d[this->size];
     bool visited[this->size];
-    int nodes[this->size];
     for(int i = 0; i < this->size; ++i)
     {
         visited[i] = false;
         d[i] = -1;
-        nodes[i] = i;
     }
     d[source] = 0;
-    int* paste = new int(0);
-    AddItem(q, nodes + source, 0);
-    while(GetQueueSize(q) > 0)
+    q.push(std::pair<int, int>(0, source));
+    while(q.size() > 0)
     {
-        int u = *(int*)PopNextItem(q);
+        std::pair<int, int> next = q.top();
+        q.pop();
+        int pr = next.first;
+        int u = next.second;
         if(visited[u])
             continue;
         visited[u] = true;
@@ -121,12 +129,10 @@ int GraphValuedEdge::BFS(unsigned int source, unsigned int destination)
 
             if(!(visited[vs[i]]))
             {
-                *paste = ((ValuedEdge*)this->GetEdge(u, vs[i]))->GetValue() + d[u];
-                AddItem(q, nodes + vs[i], paste);
+                q.push(std::pair<int, int> (((ValuedEdge*)this->GetEdge(u, vs[i]))->GetValue() + d[u],
+                                            vs[i]));
             }
         }
     }
-    delete paste;
-    //DeleteQueue(q);*/
-    return 0;//d[destination];
+    return d[destination];
 }

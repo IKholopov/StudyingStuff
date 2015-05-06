@@ -1,13 +1,20 @@
 #ifndef __PhoneNumber_H__
 #define __PhoneNumber_H__
 
+#include <string>
+
+
+enum Finger
+{
+    Right = 1, Left = 0
+};
+
 struct Position
 {
-    int XL;
-    int YL;
-    int XR;
-    int YR;
+    Finger freeFinger;
+    Position* prev;
     double price;
+    std::string sequence;
 };
 
 class Phone

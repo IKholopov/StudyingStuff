@@ -160,6 +160,7 @@ void Graph::InitializeNewGraph(unsigned int size)
 {
     this->DeleteAllEdges();
     this->size = size;
+    adjacencyMatrix->resize(size);
     for(int i = 0; i < size; ++i)
     {
         adjacencyMatrix->at(i).resize(size);
