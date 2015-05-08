@@ -101,6 +101,7 @@ void Phone::Solve(int M, int N, int L)
                 {
                     d1[coord][finger].prev = prev;
                     d1[coord][finger].price = prev->price + dist ;
+                    d1[coord][finger].freeFinger = finger;
                     sequence.push_back(std::pair<char, unsigned long>('L', prev->seqLink));
                     d1[coord][finger].seqLink = sequence.size() - 1;
                 }
@@ -140,13 +141,13 @@ void Phone::Solve(int M, int N, int L)
         d0 = d1;
         d1  = temp;
     }
-    /*for(int i = 0; i < N * M; ++i)
+    for(int i = 0; i < N * M; ++i)
     {
         if(d0[i][0].prev != NULL)
             std::cout << i << " " << d0[i][0].freeFinger << " " << d0[i][0].price << std::endl;
         if(d0[i][1].prev != NULL)
             std::cout << i << " " << d0[i][1].freeFinger << " " << d0[i][1].price << std::endl;
-    }*/
+    }
     double cost = -1;
     Position* id;
     for(int i = 0; i < N * M; ++i)
@@ -158,7 +159,7 @@ void Phone::Solve(int M, int N, int L)
                 cost = d0[i][0].price;
                 id =  &(d0[i][0]);
             }
-            else if(d0[i][0].price <= cost)
+            else if(d0[i][0].price - cost < 0.0)
             {
                 cost = d0[i][0].price;
                 id = &(d0[i][0]);
@@ -171,7 +172,7 @@ void Phone::Solve(int M, int N, int L)
                 cost = d0[i][1].price;
                 id = &(d0[i][1]);
             }
-            else if(d0[i][0].price <= cost)
+            else if(d0[i][0].price - cost < 0.0)
             {
                 cost = d0[i][1].price;
                 id = &(d0[i][1]);
