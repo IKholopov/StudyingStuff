@@ -38,15 +38,16 @@ void Phone::Solve(int M, int N, int L)
         d1[j][0].prev = NULL;
         d1[j][1].prev = NULL;
     }
-    //d[0][0][0] = 0;
     d0[N - 1][1].price = 0;
     std::vector<int>* prevIds = new std::vector<int>();
+    std::vector<std::pair<char, unsigned long> > sequence;
     prevIds->push_back(N - 1);
     Position EndP;
     EndP.prev = NULL;
     d0[N - 1][1].prev = &EndP;
     d0[N - 1][1].freeFinger = Finger::Right;
-    d0[N - 1][1].sequence = "";
+    d0[N - 1][1].seqLink = 0;
+    sequence.push_back(std::pair<char, unsigned long>(0, 0));
     std::vector<Point> number;
     Point p(0, 0);
     number.push_back(p);
@@ -88,7 +89,8 @@ void Phone::Solve(int M, int N, int L)
                     d1[coord][finger].prev = prev;
                     d1[coord][finger].price = prev->price + dist ;
                     d1[coord][finger].freeFinger = finger;
-                    d1[coord][finger].sequence = prev->sequence + "R";
+                    sequence.push_back(std::pair<char, unsigned long>('R', prev->seqLink));
+                    d1[coord][finger].seqLink = sequence.size() - 1;
                 }
                 coord = number[i].first + N * number[i].second;
                 finger = Finger::Right;
@@ -99,8 +101,8 @@ void Phone::Solve(int M, int N, int L)
                 {
                     d1[coord][finger].prev = prev;
                     d1[coord][finger].price = prev->price + dist ;
-                    d1[coord][finger].freeFinger = finger;
-                    d1[coord][finger].sequence = prev->sequence + "L";
+                    sequence.push_back(std::pair<char, unsigned long>('L', prev->seqLink));
+                    d1[coord][finger].seqLink = sequence.size() - 1;
                 }
             }
             if(d0[prevIds->at(j)][1].prev != NULL)
@@ -116,7 +118,8 @@ void Phone::Solve(int M, int N, int L)
                     d1[coord][finger].prev = prev;
                     d1[coord][finger].price = prev->price + dist ;
                     d1[coord][finger].freeFinger = finger;
-                    d1[coord][finger].sequence = prev->sequence + "L";
+                    sequence.push_back(std::pair<char, unsigned long>('L', prev->seqLink));
+                    d1[coord][finger].seqLink = sequence.size() - 1;
                 }
                 coord = number[i].first + N * number[i].second;
                 finger = Finger::Left;
@@ -128,7 +131,8 @@ void Phone::Solve(int M, int N, int L)
                     d1[coord][finger].prev = prev;
                     d1[coord][finger].price = prev->price + dist ;
                     d1[coord][finger].freeFinger = finger;
-                    d1[coord][finger].sequence = prev->sequence + "R";
+                    sequence.push_back(std::pair<char, unsigned long>('R', prev->seqLink));
+                    d1[coord][finger].seqLink = sequence.size() - 1;
                 }
             }
         }
@@ -174,15 +178,15 @@ void Phone::Solve(int M, int N, int L)
             }
         }
     }
-    /*while(id->prev != NULL)
+    char c = sequence[id->seqLink].first;
+    unsigned long link = id->seqLink;
+    while(link != 0)
     {
-        if(id->freeFinger == 1)
-            std::cout << "L";
-        else
-            std::cout << "R";
-        id = id->prev;
-    }*/
-    //std::cout << cost << std::endl;
-    std::cout << id->sequence << std::endl;
+        std::cout << c;
+        c = sequence[link].first;
+        link = sequence[link].second;
+    }
+    std::cout << std::endl;
+    //std::cout << id->sequence << std::endl;
     return;
 }

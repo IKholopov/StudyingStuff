@@ -1,8 +1,6 @@
 #ifndef __PhoneNumber_H__
 #define __PhoneNumber_H__
 
-#include <string>
-
 
 enum Finger
 {
@@ -14,7 +12,7 @@ struct Position
     Finger freeFinger;
     Position* prev;
     double price;
-    std::string sequence;
+    short seqLink;
 };
 
 class Phone
