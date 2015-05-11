@@ -21,6 +21,7 @@ Graph::Graph(unsigned int size)
 Graph::~Graph()
 {
     this->DeleteAllEdges();
+    delete adjacencyMatrix;
 }
 unsigned int Graph::Size()
 {

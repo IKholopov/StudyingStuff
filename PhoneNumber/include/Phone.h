@@ -12,7 +12,7 @@ struct Position
     Finger freeFinger;
     Position* prev;
     double price;
-    short seqLink;
+    unsigned long seqLink;
 };
 
 class Phone

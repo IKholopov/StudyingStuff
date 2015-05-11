@@ -4,6 +4,8 @@
 #include <vector>
 #include <iostream>
 #include <utility>
+#include <string.h>
+#include <algorithm>
 
 typedef std::pair<int, int> Point;
 
@@ -12,15 +14,6 @@ double Phone::GetPathToFrom(int xdest, int ydest,
                          int xsrc, int ysrc)
 {
     return sqrt(pow(xdest - xsrc, 2) + pow(ydest - ysrc, 2));
-}
-void UpdateCell(Position*** d, int step, int coord, Finger finger, double dist, Position* prev)
-{
-    if(d[step][coord][finger].prev == NULL || prev->price + dist < d[step][coord][finger].price)
-    {
-        d[step][coord][finger].prev = prev;
-        d[step][coord][finger].price = prev->price + dist ;
-        d[step][coord][finger].freeFinger = finger;
-    }
 }
 
 void Phone::Solve(int M, int N, int L)
@@ -141,13 +134,13 @@ void Phone::Solve(int M, int N, int L)
         d0 = d1;
         d1  = temp;
     }
-    for(int i = 0; i < N * M; ++i)
+    /*for(int i = 0; i < N * M; ++i)
     {
         if(d0[i][0].prev != NULL)
             std::cout << i << " " << d0[i][0].freeFinger << " " << d0[i][0].price << std::endl;
         if(d0[i][1].prev != NULL)
             std::cout << i << " " << d0[i][1].freeFinger << " " << d0[i][1].price << std::endl;
-    }
+    }*/
     double cost = -1;
     Position* id;
     for(int i = 0; i < N * M; ++i)
@@ -172,7 +165,7 @@ void Phone::Solve(int M, int N, int L)
                 cost = d0[i][1].price;
                 id = &(d0[i][1]);
             }
-            else if(d0[i][0].price - cost < 0.0)
+            else if(d0[i][1].price - cost < 0.0)
             {
                 cost = d0[i][1].price;
                 id = &(d0[i][1]);
@@ -181,13 +174,17 @@ void Phone::Solve(int M, int N, int L)
     }
     char c = sequence[id->seqLink].first;
     unsigned long link = id->seqLink;
+    std::string s;
     while(link != 0)
     {
-        std::cout << c;
-        c = sequence[link].first;
+        s += c;
         link = sequence[link].second;
+        c = sequence[link].first;
     }
-    std::cout << std::endl;
+    std::reverse(s.begin(), s.end());
+    std::cout << s << std::endl;
+    delete d0;
+    delete d1;
     //std::cout << id->sequence << std::endl;
     return;
 }

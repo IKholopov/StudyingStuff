@@ -1,6 +1,6 @@
 #include "GraphManager.h"
 #include "GraphFileFormat.h"
-#include "GraphValuedEdge.h"
+#include "GraphIntValuedEdge.h"
 
 Graph* GraphManager::GetRandomUnorientedGraph(unsigned int size)
 {
@@ -50,7 +50,7 @@ Graph* GraphManager::ReadFromFileGraphRegular(std::ifstream& file)
     return g;
 }Graph* GraphManager::ReadFromFileGraphValuedEdge(std::ifstream& file)
 {
-    Graph* g = new GraphValuedEdge(1);
+    Graph* g = new GraphIntValuedEdge(1);
     g->ReadFromFile(file);
     return g;
 }
