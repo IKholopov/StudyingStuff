@@ -118,7 +118,6 @@ int GraphIntValuedEdge::BFS(unsigned int source, unsigned int destination)
     {
         std::pair<int, int> next = q.top();
         q.pop();
-        int pr = next.first;
         int u = next.second;
         if(visited[u])
             continue;
@@ -126,14 +125,14 @@ int GraphIntValuedEdge::BFS(unsigned int source, unsigned int destination)
         std::vector<unsigned int> vs = this->GetChilds(u);
         for(int i = 0; i < vs.size(); ++i)
         {
-            if(d[vs[i]] == -1 || ((ValuedEdge<int>*)this->GetEdge(u, vs[i]))->GetValue() + d[u] < d[vs[i]])
-                d[vs[i]] = ((ValuedEdge<int>*)this->GetEdge(u, vs[i]))->GetValue() + d[u];
-
-
+            if(visited[vs[i]])
+                continue;
+            int value = ((ValuedEdge<int>*)this->GetEdge(u, vs[i]))->GetValue();
+            if(d[vs[i]] == -1 || value + d[u] < d[vs[i]])
+                d[vs[i]] = value + d[u];
             if(!(visited[vs[i]]))
             {
-                q.push(std::pair<unsigned int, int> (((ValuedEdge<int>*)this->GetEdge(u, vs[i]))->GetValue() + d[u],
-                                            vs[i]));
+                q.push(std::pair<unsigned int, int> (value + d[u], vs[i]));
             }
         }
     }

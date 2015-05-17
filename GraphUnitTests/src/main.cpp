@@ -18,7 +18,7 @@ typedef typename BoostGraph ::edge_property_type Weight;
 
 void GrandTest(double probability)
 {
-    GraphIntValuedEdge* g = new GraphIntValuedEdge(100);
+    GraphIntValuedEdge* g = new GraphIntValuedEdge(10000);
     g->RandomizeUnorientedGraph(probability);
     clock_t start_t, end_t;
     std::cout << "Probability: " << probability << std::endl;
@@ -28,8 +28,8 @@ void GrandTest(double probability)
     std::vector<int> requests;
     for(int i = 0; i < 20; ++i)
     {
-        int u = rand() % 100;
-        int v = rand() % 100;
+        int u = rand() % 10000;
+        int v = rand() % 10000;
         requests.push_back(u);
         start_t = clock();
         g->BFS(u, v);
@@ -132,10 +132,10 @@ void TestBoostDijkstra()
 
 int main()
 {
-    //GrandTest(0.01);
-    //GrandTest(0.05);
+    GrandTest(0.01);
+    GrandTest(0.05);
     //GrandTest(0.1);
-    GrandTest(0.5);
+    //GrandTest(0.5);
     return 0;
 }
 
