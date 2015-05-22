@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 #include "Graph.h"
+#include "GraphValuedEdge.hpp"
 
 class GraphManager
 {
@@ -22,7 +23,7 @@ class GraphManager
         static Graph* ReadFromFile(std::string path);
     private:
         static Graph* ReadFromFileGraphRegular(std::ifstream& file);
-        static Graph* ReadFromFileGraphValuedEdge(std::ifstream& file);
+        static GraphValuedEdge<int>* ReadFromFileGraphIntValuedEdge(std::ifstream& file);
 };
 
 /*      File format:

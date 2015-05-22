@@ -15,6 +15,7 @@ class GraphIntValuedEdge: public Graph
         GraphIntValuedEdge(unsigned int size): Graph(size) {}
         virtual ~GraphIntValuedEdge();
 
+        using Graph::WriteToFile;
         virtual void ReadFromFile(std::ifstream& file);
         virtual void WriteToFile(std::ofstream& file);
         virtual void RandomizeGraph(double probability);

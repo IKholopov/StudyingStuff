@@ -25,13 +25,15 @@ class Edge
 class Graph
 {
     public:
-        Graph(unsigned int size, const std::vector<Edge*>& edges);
-        Graph(unsigned int size);
+        Graph(unsigned int size, const std::vector<Edge*>& edges, bool oriented);
+        Graph(unsigned int size, bool oriented);
         virtual ~Graph();
 
         unsigned int Size();
         std::vector<unsigned int> GetChilds(unsigned int vertex);
         std::vector<unsigned int> GetParents(unsigned int vertex);
+        std::vector<Edge*> GetAllEdges();
+        std::vector<Edge*> GetSortedUnorientedEdges();
         virtual void ReadFromFile(std::ifstream& file);
         void WriteToFile(std::string filename);
         virtual void WriteToFile(std::ofstream& file);
@@ -41,6 +43,7 @@ class Graph
         bool AddUnorientedEdge(int from, int to);                   //return false if already exists
         bool AddEdge(int from, int to);
         bool CheckEdge(int from, int to);
+        unsigned int EdgesCount();
         Edge* GetEdge(int from, int to);
         void DeleteAllEdges();
         size_t NumberOfEdges();
@@ -49,9 +52,13 @@ class Graph
         std::vector<Edge*> edges;
         std::vector< std::vector<int> >* adjacencyMatrix;           //index in 'edges', -1 == doesn't exist
 
+        bool IsOriented();
         bool AddEdge(Edge *edge);
         bool AddUnorientedEdge(Edge *edge);
         void InitializeNewGraph(unsigned int size);
+
+    private:
+        bool oriented;
 };
 
 #endif

@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include "GraphFileFormat.h"
 
-Graph::Graph(unsigned int size, const std::vector<Edge *> &edges)
+Graph::Graph(unsigned int size, const std::vector<Edge *> &edges, bool oriented)
 {
+    this->oriented = oriented;
     adjacencyMatrix = new std::vector< std::vector<int> >(size);
     InitializeNewGraph(size);
     this->edges = edges;
@@ -13,8 +14,9 @@ Graph::Graph(unsigned int size, const std::vector<Edge *> &edges)
         adjacencyMatrix->at(edges[i]->From).at(edges[i]->To) = 1;
     }
 }
-Graph::Graph(unsigned int size)
+Graph::Graph(unsigned int size, bool oriented)
 {
+    this->oriented = oriented;
     adjacencyMatrix = new std::vector< std::vector<int> >(size);
     InitializeNewGraph(size);
 }
@@ -84,6 +86,8 @@ void Graph::WriteToFile(std::string filename)
 }
 void Graph::RandomizeGraph(double probability)
 {
+    if(!oriented)
+        throw std::exception();
     this->InitializeNewGraph(this->size);
     for(int i = 0; i < this->Size(); ++i)
         for(int j = 0; j < this->Size(); ++j)
@@ -130,6 +134,8 @@ bool Graph::AddUnorientedEdge(int from, int to)
 }
 bool Graph::AddEdge(int from, int to)
 {
+    if(!oriented)
+        throw std::exception();
     return AddEdge(new Edge(from, to));
 }
 bool Graph::CheckEdge(int from, int to)
@@ -156,7 +162,10 @@ size_t Graph::NumberOfEdges()
 {
     return edges.size();
 }
-
+bool Graph::IsOriented()
+{
+    return oriented;
+}
 void Graph::InitializeNewGraph(unsigned int size)
 {
     this->DeleteAllEdges();
@@ -171,6 +180,8 @@ void Graph::InitializeNewGraph(unsigned int size)
 }
 bool Graph::AddEdge(Edge* edge)
 {
+    if(!oriented)
+        throw std::exception();
     bool exists = adjacencyMatrix->at(edge->From).at(edge->To) != -1;
     if(exists)
         return false;
@@ -195,4 +206,20 @@ bool Graph::AddUnorientedEdge(Edge* edge)
     if(straight && reverse)
         return false;
     return true;
+}
+unsigned int Graph::EdgesCount()
+{
+    return edges.size();
+}
+std::vector<Edge *> Graph::GetAllEdges()
+{
+    return edges;
+}
+std::vector<Edge *> Graph::GetSortedUnorientedEdges()
+{
+    if(oriented)
+        throw std::exception();
+    for(int i = 0; i < size; ++i)
+        for(int j = i + 1; j < size; ++j)
+            if(adjacencyMatrix)
 }
