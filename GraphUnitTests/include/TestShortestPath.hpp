@@ -27,8 +27,8 @@ int randInt()
 void TestShortestPaths(double probability)
 {
     const int SIZE = 10000;
-    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(SIZE, false);
-    g->RandomizeUnorientedGraph(probability, &randInt);
+    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(SIZE);
+    g->RandomizeGraph(probability, &randInt);
     clock_t start_t, end_t;
     std::cout << "Probability: " << probability << std::endl;
     double sumBFS = 0;
@@ -83,8 +83,8 @@ void TestMy1KBFS(int u, int v)
     /*GraphValuedEdge* g = new GraphValuedEdge(10000);
     g->RandomizeUnorientedGraph(0.02);
     g->Graph::WriteToFile("graph.gr");*/
-    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(1000, false);
-    g->RandomizeUnorientedGraph(0.05, &randInt);
+    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(1000);
+    g->RandomizeGraph(0.05, &randInt);
     std::cout << g->BFS(u, v) << std::endl;
     delete g;
 }
@@ -97,8 +97,8 @@ void TestMy1KBFS()
 }
 void TestMyDijkstra(int u, int v)
 {
-    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(10000, false);
-    g->RandomizeUnorientedGraph(0.05, &randInt);
+    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(10000);
+    g->RandomizeGraph(0.05, &randInt);
     std::cout << g->Dijkstra(u,v) << std::endl;
     delete g;
 }
@@ -111,8 +111,8 @@ void TestMyDijkstra()
 }
 void TestBoostDijkstra(int u, int v)
 {
-    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(10000, false);
-    g->RandomizeUnorientedGraph(0.05, &randInt);
+    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(10000);
+    g->RandomizeGraph(0.05, &randInt);
     BoostGraph gb(g->Size());
     for(int i = 0; i < g->Size(); ++i)
         for(int j = i + 1; j < g->Size(); ++j)

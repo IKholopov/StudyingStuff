@@ -30,7 +30,7 @@ void MinPQ<PriorityType>::push(const std::pair<PriorityType, int> &item)
 template <class PriorityType>
 std::pair<PriorityType, int> MinPQ<PriorityType>::pop()
 {
-    std::pair<int, int> min = heap[0];
+    std::pair<PriorityType, int> min = heap[0];
     heap[0] = heap[heap.size() - 1];
     heap.pop_back();
     SiftDown(0);
@@ -74,7 +74,7 @@ void MinPQ<PriorityType>::SiftUp(unsigned int i)
 {
     while(i != 0 && heap[i].first < heap[(i-1)/2].first)
     {
-        std::pair<int, int> temp = heap[(i-1)/2];
+        std::pair<PriorityType, int> temp = heap[(i-1)/2];
         heap[(i-1)/2] = heap[i];
         heap[i] = temp;
         i = (i-1)/2;
@@ -92,7 +92,7 @@ void MinPQ<PriorityType>::SiftDown(unsigned int i)
                j = right;
            if (heap[i].first <= heap[j].first)
                break;
-           std::pair<int, int> temp = heap[j];
+           std::pair<PriorityType, int> temp = heap[j];
            heap[j] = heap[i];
            heap[i] = temp;
            i = j;

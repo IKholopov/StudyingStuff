@@ -2,5 +2,6 @@
 #define _TESTMST_H__
 
 void TestMST();
+void TimeTest();
 
 #endif

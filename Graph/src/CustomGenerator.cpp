@@ -18,7 +18,7 @@ GraphValuedEdge<double>* GenerateGraphFrom(std::istream& str)
 }
 GraphValuedEdge<double>* GenerateGraph(unsigned int size, int percentage)
 {
-    GraphValuedEdge<double>* g = new GraphValuedEdge<double>(size, false);
+    GraphValuedEdge<double>* g = new GraphValuedEdge<double>(size);
     g->GenerateAccurateUnorientedGraph(percentage, &randVal);
     return g;
 }

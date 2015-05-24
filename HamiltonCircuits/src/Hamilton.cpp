@@ -7,7 +7,7 @@
 
 #define MAX_GRAPH_SIZE 20
 
-bool HamiltonVerify::CheckIfHamilton(Graph *g)
+bool HamiltonVerify::CheckIfHamilton(IGraph *g)
 {
     static int table[1 << MAX_GRAPH_SIZE][MAX_GRAPH_SIZE];
     if(g->Size() == 1)

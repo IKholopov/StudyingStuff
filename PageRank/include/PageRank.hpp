@@ -30,7 +30,7 @@ class PageRank: public Graph
 };
 
 template <class T>
-PageRank<T>::PageRank(unsigned int size, double d):Graph(size, true)
+PageRank<T>::PageRank(unsigned int size, double d):Graph(size)
 {
     this->d = d;
     this->size = size;

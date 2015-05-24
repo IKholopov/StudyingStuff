@@ -6,15 +6,12 @@
 
 GraphValuedEdge<double>* Kruskal(GraphValuedEdge<double>* original)
 {
-    GraphValuedEdge<double>* T = new GraphValuedEdge<double>(original->Size(), false);
-    std::vector<Edge*> allEdges = original->GetAllEdges();
-    std::vector<ValuedEdge<double>*> edges(allEdges.size() / 2);
-    for(int i = 0; i < allEdges.size(); ++i)
-        edges[i] = (ValuedEdge<double>*)allEdges[2 * i];
+    GraphValuedEdge<double>* T = new GraphValuedEdge<double>(original->Size());    
+    std::vector<Edge*> edges = original->GetAllEdges();
     std::sort(edges.begin(), edges.end(),
-              [](ValuedEdge<double>* a, ValuedEdge<double>* b)
+              [](Edge* a, Edge* b)
               {
-                  return a->GetValue() < b->GetValue();
+                  return ((ValuedEdge<double>*)a)->GetValue() - ((ValuedEdge<double>*)b)->GetValue() < 0;
               }
     );
     MinDSU dsu (original->Size());
@@ -23,11 +20,12 @@ GraphValuedEdge<double>* Kruskal(GraphValuedEdge<double>* original)
         if(!dsu.Find(edges[i]->From, edges[i]->To))
         {
             dsu.Merge(edges[i]->From, edges[i]->To);
-            T->AddUnorientedEdge(edges[i]->From, edges[i]->To, edges[i]->GetValue());
+            T->AddEdge(edges[i]->From, edges[i]->To, ((ValuedEdge<double>*)edges[i])->GetValue());
         }
         if(dsu.SetCount() == 1)
             break;
     }
+    T->NormalizeEdges();
     return T;
 }
 void Kruskal()
@@ -35,11 +33,17 @@ void Kruskal()
     unsigned int n, m;
     std::cin >> n;
     std::cin >> m;
-    GraphValuedEdge<double> graph(n, false);
+    GraphValuedEdge<double> graph(n);
     for(int i = 0; i < m; ++i)
     {
         unsigned int u, v;
         double val;
-        std::cin >> u;
+        std::cin >> u >> v >> val;
+        graph.AddEdge(u, v, val);
     }
+    GraphValuedEdge<double>* mst = Kruskal(&graph);
+    std::vector<Edge*> edges = mst->GetAllEdgesSorted();
+    for(int i = 0; i < edges.size(); ++i)
+        std::cout << edges[i]->From << " " << edges[i]->To << " " << ((ValuedEdge<double>*)edges[i])->GetValue() << std::endl;
+    delete mst;
 }

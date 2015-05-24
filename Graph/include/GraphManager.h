@@ -14,13 +14,13 @@
 class GraphManager
 {
     public:
-        static Graph* GetRandomUnorientedGraph(unsigned int size);
-        static Graph* GetRandomUnorientedGraph(unsigned int size, double probability);
+        static UnorientedGraph* GetRandomUnorientedGraph(unsigned int size);
+        static UnorientedGraph* GetRandomUnorientedGraph(unsigned int size, double probability);
         static Graph* GetRandomGraph(unsigned int size);
         static Graph* GetRandomGraph(unsigned int size, double probability);
         static void RandomizeGraph(Graph* g, double probability);
-        static void RandomizeUnorientedGraph(Graph *g, double probability);
-        static Graph* ReadFromFile(std::string path);
+        //static void RandomizeUnorientedGraph(Graph *g, double probability);
+        static IGraph* ReadFromFile(std::string path);
     private:
         static Graph* ReadFromFileGraphRegular(std::ifstream& file);
         static GraphValuedEdge<int>* ReadFromFileGraphIntValuedEdge(std::ifstream& file);

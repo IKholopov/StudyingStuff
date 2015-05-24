@@ -6,18 +6,26 @@ MinDSU::MinDSU(unsigned int amount)
 {
     for(int i = 0; i < amount; ++i)
     {
-        DSUElement* e = new DSUElement();
+        DSUElement* e = new DSUElement(i);
         elements.push_back(e);
-        sets.push_back(e);
     }
+    setsCounter = amount;
+}
+MinDSU::~MinDSU()
+{
+    for(int i = 0; i < elements.size(); ++i)
+        delete elements[i];
 }
 
 DSUElement *MinDSU::GetParent(DSUElement* e)
 {
+    DSUElement* origin = e;
     while(e->prev != NULL)
     {
         e = e->prev;
     }
+    if(origin->prev != NULL)
+        origin->prev = e;
     return e;
 }
 bool MinDSU::Find(unsigned int id1, unsigned int id2)
@@ -32,22 +40,15 @@ void MinDSU::Merge(unsigned int id1, unsigned int id2)
     DSUElement* e2 = GetParent(elements[id2]);
     if(e1 == e2)
         return;
-    if(e1->size - 1 >= e2->size)
-    {
-        e2->prev = e1;
-        if(e1->size - 1 < e2->size)
-            e1->size = e2->size + 1;
-        sets.erase(sets.begin() + id2);
-    }
-    else
-    {
-        e1->prev = e2;
-        if(e2->size - 1 < e1->size)
-            e2->size = e1->size + 1;
-        sets.erase(sets.begin() + id1);
-    }
+     e2->prev = e1;
+     --setsCounter;
+}
+unsigned int MinDSU::GetParentId(unsigned int id)
+{
+    DSUElement* e = GetParent(elements[id]);
+    return e->id;
 }
 unsigned int MinDSU::SetCount()
 {
-    return sets.size();
+    return setsCounter;
 }

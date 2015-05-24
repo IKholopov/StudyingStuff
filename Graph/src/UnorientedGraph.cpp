@@ -1,29 +1,28 @@
-#include "Graph.h"
+#include "UnorientedGraph.h"
+#include <algorithm>
 
-#include <stdlib.h>
-#include "GraphFileFormat.h"
-
-Graph::Graph(unsigned int size, const std::vector<Edge*> &edges)
+UnorientedGraph::UnorientedGraph(unsigned int size)
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(size);
     InitializeNewGraph(size);
     this->edges = edges;
 }
-Graph::Graph(unsigned int size)
-{
-    adjacencyMatrix = new std::vector< std::vector<Edge*> >(size);
-    InitializeNewGraph(size);
-}
-Graph::~Graph()
+
+UnorientedGraph::~UnorientedGraph()
 {
     this->DeleteAllEdges();
     delete adjacencyMatrix;
 }
-unsigned int Graph::Size()
+
+unsigned int UnorientedGraph::Size()
 {
-    return size;
+    return this->size;
 }
-std::vector<unsigned int> Graph::GetChilds(unsigned int vertex)
+unsigned int UnorientedGraph::NumberOfEdges()
+{
+    return edges.size();
+}
+std::vector<unsigned int> UnorientedGraph::GetChilds(unsigned int vertex)
 {
     std::vector<unsigned int> childs;
     for(int i = 0; i < size; ++i)
@@ -31,7 +30,7 @@ std::vector<unsigned int> Graph::GetChilds(unsigned int vertex)
             childs.push_back(adjacencyMatrix->at(vertex).at(i)->To);
     return childs;
 }
-std::vector<unsigned int> Graph::GetParents(unsigned int vertex)
+std::vector<unsigned int> UnorientedGraph::GetParents(unsigned int vertex)
 {
     std::vector<unsigned int> parents;
     for(int i = 0; i < size; ++i)
@@ -39,7 +38,20 @@ std::vector<unsigned int> Graph::GetParents(unsigned int vertex)
             parents.push_back(adjacencyMatrix->at(i).at(vertex)->From);
     return parents;
 }
-void Graph::ReadFromFile(std::ifstream& file)
+std::vector<Edge *> UnorientedGraph::GetAllEdges()
+{
+    return edges;
+}
+std::vector<Edge *> UnorientedGraph::GetAllEdgesSorted()
+{
+    std::sort(edges.begin(), edges.end(), [](Edge* a, Edge* b) {
+            if(a->From == b->From)
+                return a->To < b->To;
+            return a->From < b->From;
+    });
+    return edges;
+}
+void UnorientedGraph::ReadFromFile(std::ifstream &file)
 {
     unsigned int size, edgeSz;
     file >> size;
@@ -53,34 +65,20 @@ void Graph::ReadFromFile(std::ifstream& file)
         this->AddEdge(from, to);
     }
 }
-void Graph::WriteToFile(std::ofstream &file)
+void UnorientedGraph::WriteToFile(std::string filename)
+{
+    std::ofstream file(filename.c_str());
+    this->WriteToFile(file);
+    file.close();
+}
+void UnorientedGraph::WriteToFile(std::ofstream &file)
 {
     file << this->size << std::endl;
     file << edges.size() << std::endl;
     for(int i = 0; i < edges.size(); ++i)
         file << edges[i]->From << " " << edges[i]->To << std::endl;
 }
-void Graph::WriteToFile(std::string filename)
-{
-    std::ofstream file(filename.c_str());
-    this->WriteToFile(file);
-    file.close();
-}
-void Graph::RandomizeGraph(double probability)
-{
-    this->InitializeNewGraph(this->size);
-    for(int i = 0; i < this->Size(); ++i)
-        for(int j = 0; j < this->Size(); ++j)
-        {
-            if(j == i)
-                continue;
-            if(!(rand() % (int)(1.0 / probability)))
-            {
-                this->AddEdge(i, j);
-            }
-        }
-}
-/*void Graph::RandomizeUnorientedGraph(double probability)
+void UnorientedGraph::RandomizeGraph(double probability)
 {
     this->InitializeNewGraph(this->size);
     for(int i = 0; i < this->Size() - 1; ++i)
@@ -90,11 +88,11 @@ void Graph::RandomizeGraph(double probability)
                 continue;
             if(!(rand() % (int)(1.0 / probability)))
             {
-                this->AddUnorientedEdge(i, j);
+                this->AddEdge(i, j);
             }
         }
-}*/
-void Graph::AddNodes(size_t amount)
+}
+void UnorientedGraph::AddNodes(size_t amount)
 {
     size_t oldSize = this->size;
     this->size += amount;
@@ -108,25 +106,31 @@ void Graph::AddNodes(size_t amount)
         for(int j = 0; j < size; ++j)
             adjacencyMatrix->at(i).at(j) = NULL;
 }
-/*bool Graph::AddUnorientedEdge(int from, int to)
-{
-    return AddUnorientedEdge(new Edge(from, to));
-}*/
-bool Graph::AddEdge(int from, int to)
+bool UnorientedGraph::AddEdge(int from, int to)
 {
     return AddEdge(new Edge(from, to));
 }
-bool Graph::CheckEdge(int from, int to)
+bool UnorientedGraph::CheckEdge(int from, int to)
 {
     if(from == to)
         return true;
     return adjacencyMatrix->at(from).at(to) != NULL;
 }
-Edge *Graph::GetEdge(int from, int to)
+void UnorientedGraph::NormalizeEdges()
+{
+    for(int i = 0; i < edges.size(); ++i)
+        if(edges[i]->From > edges[i]->To)
+        {
+            unsigned int temp = edges[i]->From;
+            edges[i]->From = edges[i]->To;
+            edges[i]->To = temp;
+        }
+}
+Edge *UnorientedGraph::GetEdge(int from, int to)
 {
     return adjacencyMatrix->at(from).at(to);
 }
-void Graph::DeleteAllEdges()
+void UnorientedGraph::DeleteAllEdges()
 {
     for(int i = 0; i < edges.size(); ++i)
     {
@@ -135,11 +139,18 @@ void Graph::DeleteAllEdges()
     edges.clear();
     adjacencyMatrix->clear();
 }
-unsigned int Graph::NumberOfEdges()
+
+bool UnorientedGraph::AddEdge(Edge* edge)
 {
-    return edges.size();
+    bool exists = adjacencyMatrix->at(edge->From).at(edge->To) != NULL;
+    if(exists)
+        return false;
+    edges.push_back(edge);
+    adjacencyMatrix->at(edge->From).at(edge->To) = edge;
+    adjacencyMatrix->at(edge->To).at(edge->From) = edge;
+    return true;
 }
-void Graph::InitializeNewGraph(unsigned int size)
+void UnorientedGraph::InitializeNewGraph(unsigned int size)
 {
     this->DeleteAllEdges();
     this->size = size;
@@ -151,17 +162,3 @@ void Graph::InitializeNewGraph(unsigned int size)
             adjacencyMatrix->at(i).at(j)= NULL;
     }
 }
-bool Graph::AddEdge(Edge* edge)
-{
-    bool exists = adjacencyMatrix->at(edge->From).at(edge->To) != NULL;
-    if(exists)
-        return false;
-    edges.push_back(edge);
-    adjacencyMatrix->at(edge->From).at(edge->To) = edge;
-    return true;
-}
-std::vector<Edge *> Graph::GetAllEdges()
-{
-    return edges;
-}
-
