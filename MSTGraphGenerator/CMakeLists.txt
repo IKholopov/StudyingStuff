@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 2.8)
+project(MSTGraphGenerator)
+set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+set(MSTGraphGenerator_SRCS ${PROJECT_SOURCE_DIR}/main.cpp)
+include_directories("${PROJECT_BINARY_DIR}")
+include_directories(${CMAKE_SOURCE_DIR}/Graph/include)
+add_executable(MSTGraphGenerator ${MSTGraphGenerator_SRCS})
+target_link_libraries(MSTGraphGenerator Graph)
+include_directories("${PROJECT_INCLUDE_DIR}")

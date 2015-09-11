@@ -1,16 +1,12 @@
 #include <iostream>
 #include "TestShortestPath.hpp"
 #include "TestMST.h"
+#include "CustomGenerator.h"
 
 int main()
 {
-    //TestMy1KBFS(1, 10);
-    /*TestShortestPaths(0.01);
-    TestShortestPaths(0.05);
-    TestShortestPaths(0.1);
-    TestShortestPaths(0.5);*/
-    //TestMST();
-    TimeTest();
-    //GrandTest(0.5);
+    //GenerateToStream();
+    //TestShortestPaths(0.3);
+    TestMST();
     return 0;
 }

@@ -22,3 +22,16 @@ GraphValuedEdge<double>* GenerateGraph(unsigned int size, int percentage)
     g->GenerateAccurateUnorientedGraph(percentage, &randVal);
     return g;
 }
+void GenerateToStream(std::ostream &outstr, std::istream &instr)
+{
+    int n, t;
+    instr >> n;
+    instr >> t;
+    GraphValuedEdge<double>* g = GenerateGraph(n, t);
+    g->NormalizeEdges();
+    g->WriteToFile(outstr);
+}
+void GenerateToStream()
+{
+    GenerateToStream(std::cout, std::cin);
+}

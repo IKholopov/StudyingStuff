@@ -9,42 +9,67 @@
 
 void TestMST()
 {
-    GraphValuedEdge<double>* graph = GenerateGraph(1000, 100);
-    /*GraphValuedEdge<double>* graph = new GraphValuedEdge<double>(10);
-    std::ifstream file("mst");
-    graph->ReadFromFile(file);
-    file.close();*/
-    graph->WriteToFile("~/mst");
+    int n, p;
+    std::cin >> n >> p;
+    GraphValuedEdge<double>* graph = GenerateGraph(n, p);
     GraphValuedEdge<double>* mstK = Kruskal(graph);
     std::vector<Edge*> edgesK = mstK->GetAllEdgesSorted();
     GraphValuedEdge<double>* mstP = Prim(graph);
     std::vector<Edge*> edgesP = mstP->GetAllEdgesSorted();
     GraphValuedEdge<double>* mstB = Boruvka(graph);
     std::vector<Edge*> edgesB = mstB->GetAllEdgesSorted();
+#ifdef DEBUG
     std::cout << "Boruvka" << std::endl;
     for(int i = 0; i < edgesB.size(); ++i)
         std::cout << edgesB[i]->From << " " << edgesB[i]->To << std::endl;
     std::cout << "Kruskal" << std::endl;
     for(int i = 0; i < edgesK.size(); ++i)
         std::cout << edgesK[i]->From << " " << edgesK[i]->To << std::endl;
-    std::cout << "Prime" << std::endl;
+    std::cout << "Prim" << std::endl;
     for(int i = 0; i < edgesP.size(); ++i)
         std::cout << edgesP[i]->From << " " << edgesP[i]->To << std::endl;
+#endif
     if(edgesB.size() != edgesK.size() || edgesK.size() != edgesP.size())
     {
         std::cout << "Test Failed: " << "Diff sizes" << std::endl;
+        delete mstP;
+        delete mstK;
+        delete mstB;
+        delete graph;
         return;
     }
     for(int i = 0; i < edgesB.size(); ++i)
     {
         if(edgesB[i]->From != edgesP[i]->From || edgesB[i]->From != edgesK[i]->From)
+        {
             std::cout << "Test Failed: " << "Diff Froms at " << i << std::endl;
+            delete mstP;
+            delete mstK;
+            delete mstB;
+            delete graph;
+            return;
+        }
         if(edgesB[i]->To != edgesP[i]->To || edgesB[i]->To != edgesK[i]->To)
+        {
             std::cout << "Test Failed: " << "Diff Tos at " << i << std::endl;
+            delete mstP;
+            delete mstK;
+            delete mstB;
+            delete graph;
+            return;
+        }
         if(((ValuedEdge<double>*)edgesB[i])->GetValue() != ((ValuedEdge<double>*)edgesP[i])->GetValue() ||
                 ((ValuedEdge<double>*)edgesB[i])->GetValue() != ((ValuedEdge<double>*)edgesK[i])->GetValue() )
+        {
             std::cout << "Test Failed: " << "Diff Vals at " << i << std::endl;
+            delete mstP;
+            delete mstK;
+            delete mstB;
+            delete graph;
+            return;
+        }
     }
+    std::cout << "Test passed" << std::endl;
     delete mstP;
     delete mstK;
     delete mstB;
@@ -53,6 +78,8 @@ void TestMST()
 
 void TimeTest()
 {
+    int n;
+    std::cin >> n;
     GraphValuedEdge<double> *mstk, *mstb, *mstp;
     const int testsPerPercentage = 10;
     for(int i = 10; i <= 100; i += 10)
@@ -63,7 +90,7 @@ void TimeTest()
         double sumB = 0;
         for(int j = 0; j < testsPerPercentage; ++j)
         {
-            GraphValuedEdge<double>* graph = GenerateGraph(1000, i);
+            GraphValuedEdge<double>* graph = GenerateGraph(n, i);
             start_t = clock();
             mstk = Kruskal(graph);
             end_t = clock();

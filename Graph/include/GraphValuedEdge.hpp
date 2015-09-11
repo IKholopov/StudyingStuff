@@ -20,7 +20,7 @@ class GraphValuedEdge: public UnorientedGraph
 
         using UnorientedGraph::WriteToFile;
         virtual void ReadFromFile(std::ifstream& file);
-        virtual void WriteToFile(std::ofstream& file);
+        virtual void WriteToFile(std::ostream &file);
         virtual void RandomizeGraph(double probability, EdgeValueTupe (*randFunc)());
         void GenerateAccurateUnorientedGraph(int percentage, EdgeValueTupe (*randFunc)());
         bool AddEdge(int from, int to, EdgeValueTupe value);
@@ -54,13 +54,14 @@ void GraphValuedEdge<T>::ReadFromFile(std::ifstream &file)
     }
 }
 template <class T>
-void GraphValuedEdge<T>::WriteToFile(std::ofstream &file)
+void GraphValuedEdge<T>::WriteToFile(std::ostream &file)
 {
+    std::vector<Edge*> sorted = this->GetAllEdgesSorted();
     file << this->size << std::endl;
-    file << edges.size() << std::endl;
-    for(int i = 0; i < edges.size(); ++i)
-        file << edges[i]->From << " " << edges[i]->To << " " <<
-                ((ValuedEdge<T>*)edges[i])->GetValue() << std::endl;
+    file << sorted.size() << std::endl;
+    for(int i = 0; i < sorted.size(); ++i)
+        file << sorted[i]->From << " " << sorted[i]->To << " " <<
+                ((ValuedEdge<T>*)sorted[i])->GetValue() << std::endl;
 }
 template <class T>
 bool GraphValuedEdge<T>::CheckConnection()

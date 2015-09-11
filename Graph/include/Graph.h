@@ -14,10 +14,10 @@ class Graph: public IGraph
         Graph(unsigned int size);
         virtual ~Graph();
 
-        unsigned int Size();
-        unsigned int NumberOfEdges();
-        std::vector<unsigned int> GetChilds(unsigned int vertex);
-        std::vector<unsigned int> GetParents(unsigned int vertex);
+        unsigned int Size() const;
+        unsigned int NumberOfEdges() const;
+        std::vector<unsigned int> GetChilds(unsigned int vertex) const;
+        std::vector<unsigned int> GetParents(unsigned int vertex) const;
         std::vector<Edge*> GetAllEdges();
         //std::vector<Edge*> GetSortedUnorientedEdges();
         virtual void ReadFromFile(std::ifstream& file);

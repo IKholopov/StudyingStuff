@@ -21,10 +21,10 @@ class IGraph
 {
     public:
         virtual ~IGraph() {};
-        virtual unsigned int Size() = 0;
-        virtual unsigned int NumberOfEdges() = 0;
-        virtual std::vector<unsigned int> GetChilds(unsigned int vertex) = 0;
-        virtual std::vector<unsigned int> GetParents(unsigned int vertex) = 0;
+        virtual unsigned int Size() const = 0;
+        virtual unsigned int NumberOfEdges() const = 0;
+        virtual std::vector<unsigned int> GetChilds(unsigned int vertex) const = 0;
+        virtual std::vector<unsigned int> GetParents(unsigned int vertex) const = 0;
         virtual void ReadFromFile(std::ifstream& file) = 0;
         virtual void WriteToFile(std::ofstream& file) = 0;
         virtual void RandomizeGraph(double probability) = 0;

@@ -5,7 +5,7 @@
 #include "MinPQ.hpp"
 
 
-GraphValuedEdge<double>* Prim(GraphValuedEdge<double> *original)
+GraphValuedEdge<double>* Prim(GraphValuedEdge<double>* original)
 {
     MinPQ<double> q;
     std::vector<double> dist;

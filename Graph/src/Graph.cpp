@@ -19,11 +19,11 @@ Graph::~Graph()
     this->DeleteAllEdges();
     delete adjacencyMatrix;
 }
-unsigned int Graph::Size()
+unsigned int Graph::Size() const
 {
     return size;
 }
-std::vector<unsigned int> Graph::GetChilds(unsigned int vertex)
+std::vector<unsigned int> Graph::GetChilds(unsigned int vertex) const
 {
     std::vector<unsigned int> childs;
     for(int i = 0; i < size; ++i)
@@ -31,7 +31,7 @@ std::vector<unsigned int> Graph::GetChilds(unsigned int vertex)
             childs.push_back(adjacencyMatrix->at(vertex).at(i)->To);
     return childs;
 }
-std::vector<unsigned int> Graph::GetParents(unsigned int vertex)
+std::vector<unsigned int> Graph::GetParents(unsigned int vertex) const
 {
     std::vector<unsigned int> parents;
     for(int i = 0; i < size; ++i)
@@ -135,7 +135,7 @@ void Graph::DeleteAllEdges()
     edges.clear();
     adjacencyMatrix->clear();
 }
-unsigned int Graph::NumberOfEdges()
+unsigned int Graph::NumberOfEdges() const
 {
     return edges.size();
 }

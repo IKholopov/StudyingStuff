@@ -3,6 +3,9 @@
 
 UnorientedGraph::UnorientedGraph(unsigned int size)
 {
+#ifndef DEBUG
+    srand(time(NULL));
+#endif
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(size);
     InitializeNewGraph(size);
     this->edges = edges;
@@ -14,15 +17,15 @@ UnorientedGraph::~UnorientedGraph()
     delete adjacencyMatrix;
 }
 
-unsigned int UnorientedGraph::Size()
+unsigned int UnorientedGraph::Size() const
 {
     return this->size;
 }
-unsigned int UnorientedGraph::NumberOfEdges()
+unsigned int UnorientedGraph::NumberOfEdges() const
 {
     return edges.size();
 }
-std::vector<unsigned int> UnorientedGraph::GetChilds(unsigned int vertex)
+std::vector<unsigned int> UnorientedGraph::GetChilds(unsigned int vertex) const
 {
     std::vector<unsigned int> childs;
     for(int i = 0; i < size; ++i)
@@ -30,7 +33,7 @@ std::vector<unsigned int> UnorientedGraph::GetChilds(unsigned int vertex)
             childs.push_back(adjacencyMatrix->at(vertex).at(i)->To);
     return childs;
 }
-std::vector<unsigned int> UnorientedGraph::GetParents(unsigned int vertex)
+std::vector<unsigned int> UnorientedGraph::GetParents(unsigned int vertex) const
 {
     std::vector<unsigned int> parents;
     for(int i = 0; i < size; ++i)

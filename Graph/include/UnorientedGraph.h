@@ -11,10 +11,10 @@ class UnorientedGraph:public IGraph
         UnorientedGraph(unsigned int size);
         virtual ~UnorientedGraph();
 
-        unsigned int Size();
-        unsigned int NumberOfEdges();
-        virtual std::vector<unsigned int> GetChilds(unsigned int vertex);
-        std::vector<unsigned int> GetParents(unsigned int vertex);
+        unsigned int Size() const;
+        unsigned int NumberOfEdges() const;
+        virtual std::vector<unsigned int> GetChilds(unsigned int vertex) const;
+        std::vector<unsigned int> GetParents(unsigned int vertex) const;
         std::vector<Edge*> GetAllEdges();
         std::vector<Edge*> GetAllEdgesSorted();
         virtual void ReadFromFile(std::ifstream& file);

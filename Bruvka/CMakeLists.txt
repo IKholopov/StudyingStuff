@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 2.8)
+project(Boruvka)
+set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+set(Boruvka_SRCS ${PROJECT_SOURCE_DIR}/main.cpp)
+include_directories("${PROJECT_BINARY_DIR}")
+include_directories(${CMAKE_SOURCE_DIR}/Graph/include)
+add_executable(Boruvka ${Boruvka_SRCS})
+target_link_libraries(Boruvka Graph)
+include_directories("${PROJECT_INCLUDE_DIR}")
