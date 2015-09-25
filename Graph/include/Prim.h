@@ -1,9 +1,9 @@
 #ifndef _PRIM_H__
 #define _PRIM_H__
 
-#include "GraphValuedEdge.hpp"
+#include "UnorientedGraphValuedEdge.hpp"
 
 void Prim();
-GraphValuedEdge<double>* Prim(GraphValuedEdge<double>* original);
+UnorientedGraphValuedEdge<double>* Prim(UnorientedGraphValuedEdge<double>* original);
 
 #endif

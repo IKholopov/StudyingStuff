@@ -12,11 +12,11 @@
 #include "GraphFileFormat.h"
 
 template <class EdgeValueTupe>
-class GraphValuedEdge: public UnorientedGraph
+class UnorientedGraphValuedEdge: public UnorientedGraph
 {
     public:
-        GraphValuedEdge(unsigned int size): UnorientedGraph(size) {}
-        virtual ~GraphValuedEdge();
+        UnorientedGraphValuedEdge(unsigned int size): UnorientedGraph(size) {}
+        virtual ~UnorientedGraphValuedEdge();
 
         using UnorientedGraph::WriteToFile;
         virtual void ReadFromFile(std::ifstream& file);
@@ -32,12 +32,12 @@ class GraphValuedEdge: public UnorientedGraph
 };
 
 template <class T>
-GraphValuedEdge<T>::~GraphValuedEdge()
+UnorientedGraphValuedEdge<T>::~UnorientedGraphValuedEdge()
 {
 }
 
 template <class T>
-void GraphValuedEdge<T>::ReadFromFile(std::ifstream &file)
+void UnorientedGraphValuedEdge<T>::ReadFromFile(std::ifstream &file)
 {
     unsigned int size, edgeSz;
     file >> size;
@@ -54,7 +54,7 @@ void GraphValuedEdge<T>::ReadFromFile(std::ifstream &file)
     }
 }
 template <class T>
-void GraphValuedEdge<T>::WriteToFile(std::ostream &file)
+void UnorientedGraphValuedEdge<T>::WriteToFile(std::ostream &file)
 {
     std::vector<Edge*> sorted = this->GetAllEdgesSorted();
     file << this->size << std::endl;
@@ -64,7 +64,7 @@ void GraphValuedEdge<T>::WriteToFile(std::ostream &file)
                 ((ValuedEdge<T>*)sorted[i])->GetValue() << std::endl;
 }
 template <class T>
-bool GraphValuedEdge<T>::CheckConnection()
+bool UnorientedGraphValuedEdge<T>::CheckConnection()
 {
     std::vector<bool> visited;
     visited.resize(this->size);
@@ -76,7 +76,7 @@ bool GraphValuedEdge<T>::CheckConnection()
     return true;
 }
 template <class T>
-void GraphValuedEdge<T>::DFS(unsigned int vertex, std::vector<bool>* visited)
+void UnorientedGraphValuedEdge<T>::DFS(unsigned int vertex, std::vector<bool>* visited)
 {
     std::vector<unsigned int> vs = this->GetChilds(vertex);
     for(int i = 0; i < vs.size(); ++i)
@@ -87,7 +87,7 @@ void GraphValuedEdge<T>::DFS(unsigned int vertex, std::vector<bool>* visited)
         }
 }
 template <class T>
-void GraphValuedEdge<T>::GenerateAccurateUnorientedGraph(int percentage, T (*randFunc)())
+void UnorientedGraphValuedEdge<T>::GenerateAccurateUnorientedGraph(int percentage, T (*randFunc)())
 {
     this->InitializeNewGraph(this->size);
     int required = percentage * (size * (size - 1) / 2) / 100;
@@ -171,7 +171,7 @@ void GraphValuedEdge<T>::GenerateAccurateUnorientedGraph(int percentage, T (*ran
     }
 }
 template <class T>
-void GraphValuedEdge<T>::RandomizeGraph(double probability, T (*randFunc)())
+void UnorientedGraphValuedEdge<T>::RandomizeGraph(double probability, T (*randFunc)())
 {
     this->InitializeNewGraph(this->size);
     for(int i = 0; i < this->Size() - 1; ++i)
@@ -186,12 +186,12 @@ void GraphValuedEdge<T>::RandomizeGraph(double probability, T (*randFunc)())
         }
 }
 template <class T>
-bool GraphValuedEdge<T>::AddEdge(int from, int to, T value)
+bool UnorientedGraphValuedEdge<T>::AddEdge(int from, int to, T value)
 {
     return this->UnorientedGraph::AddEdge(new ValuedEdge<T>(from, to, value));
 }
 template <class T>
-T GraphValuedEdge<T>::GetEdgeValue(int from, int to)
+T UnorientedGraphValuedEdge<T>::GetEdgeValue(int from, int to)
 {
     Edge* e = this->GetEdge(from, to);
     if(e == NULL)
@@ -199,7 +199,7 @@ T GraphValuedEdge<T>::GetEdgeValue(int from, int to)
     return ((ValuedEdge<T>*)e)->GetValue();
 }
 template <class T>
-int GraphValuedEdge<T>::BFS(unsigned int source, unsigned int destination)
+int UnorientedGraphValuedEdge<T>::BFS(unsigned int source, unsigned int destination)
 {
     //std::priority_queue< std::pair<int, int>, std::vector< std::pair<int, int> >,   //first - prioriry
       //      EdgeComparator> q;                                                     //second - vertex
@@ -241,7 +241,7 @@ int GraphValuedEdge<T>::BFS(unsigned int source, unsigned int destination)
     return d[destination];
 }
 template <class T>
-int GraphValuedEdge<T>::Dijkstra(unsigned int source, unsigned int destination)
+int UnorientedGraphValuedEdge<T>::Dijkstra(unsigned int source, unsigned int destination)
 {
     MinPQ<T> q;
     unsigned int d[this->size];

@@ -13,6 +13,11 @@ class Edge
         {
             return new Edge(To, From);
         }
+        virtual Edge* Clone()
+        {
+            return new Edge(*this);
+        }
+
         unsigned int From;
         unsigned int To;
 };
@@ -32,6 +37,8 @@ class IGraph
         virtual bool AddEdge(int from, int to) = 0;
         virtual bool CheckEdge(int from, int to) = 0;
         virtual Edge* GetEdge(int from, int to) = 0;
+        virtual std::vector<Edge*> GetAllEdges() const = 0;
+        virtual std::vector<Edge*> GetAllEdgesSorted() = 0;
         virtual void DeleteAllEdges() = 0;
     protected:
         virtual bool AddEdge(Edge *edge) = 0;

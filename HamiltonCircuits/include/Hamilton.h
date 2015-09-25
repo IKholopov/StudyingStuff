@@ -3,7 +3,7 @@
 
 #include <utility>
 #include <vector>
-#include "Graph.h"
+#include "OrientedGraph.h"
 
 class HamiltonVerify
 {

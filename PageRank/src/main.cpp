@@ -4,7 +4,7 @@
 #include <map>
 #include <algorithm>
 #include <fstream>
-#include "Graph.h"
+#include "OrientedGraph.h"
 #include "GraphManager.h"
 #include "PageRank.hpp"
 

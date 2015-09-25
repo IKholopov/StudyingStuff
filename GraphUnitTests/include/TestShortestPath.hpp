@@ -9,8 +9,8 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <time.h>
 #include <stdlib.h>
-#include "Graph.h"
-#include "GraphValuedEdge.hpp"
+#include "OrientedGraph.h"
+#include "UnorientedGraphValuedEdge.hpp"
 #include "GraphManager.h"
 
 
@@ -27,7 +27,7 @@ int randInt()
 void TestShortestPaths(double probability)
 {
     const int SIZE = 10000;
-    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(SIZE);
+    UnorientedGraphValuedEdge<int>* g = new UnorientedGraphValuedEdge<int>(SIZE);
     g->RandomizeGraph(probability, &randInt);
     clock_t start_t, end_t;
     std::cout << "Probability: " << probability << std::endl;
@@ -83,7 +83,7 @@ void TestMy1KBFS(int u, int v)
     /*GraphValuedEdge* g = new GraphValuedEdge(10000);
     g->RandomizeUnorientedGraph(0.02);
     g->Graph::WriteToFile("graph.gr");*/
-    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(1000);
+    UnorientedGraphValuedEdge<int>* g = new UnorientedGraphValuedEdge<int>(1000);
     g->RandomizeGraph(0.05, &randInt);
     std::cout << g->BFS(u, v) << std::endl;
     delete g;
@@ -97,7 +97,7 @@ void TestMy1KBFS()
 }
 void TestMyDijkstra(int u, int v)
 {
-    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(10000);
+    UnorientedGraphValuedEdge<int>* g = new UnorientedGraphValuedEdge<int>(10000);
     g->RandomizeGraph(0.05, &randInt);
     std::cout << g->Dijkstra(u,v) << std::endl;
     delete g;
@@ -111,7 +111,7 @@ void TestMyDijkstra()
 }
 void TestBoostDijkstra(int u, int v)
 {
-    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(10000);
+    UnorientedGraphValuedEdge<int>* g = new UnorientedGraphValuedEdge<int>(10000);
     g->RandomizeGraph(0.05, &randInt);
     BoostGraph gb(g->Size());
     for(int i = 0; i < g->Size(); ++i)

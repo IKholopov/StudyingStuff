@@ -1,9 +1,9 @@
 #ifndef _KRUSKAL_H__
 #define _KRUSKAL_H__
 
-#include "GraphValuedEdge.hpp"
+#include "UnorientedGraphValuedEdge.hpp"
 
 void Kruskal();
-GraphValuedEdge<double>* Kruskal(GraphValuedEdge<double>* original);
+UnorientedGraphValuedEdge<double>* Kruskal(UnorientedGraphValuedEdge<double>* original);
 
 #endif

@@ -9,13 +9,15 @@ class UnorientedGraph:public IGraph
 {
     public:
         UnorientedGraph(unsigned int size);
+        UnorientedGraph(const UnorientedGraph& graph);
+        UnorientedGraph& operator=(const UnorientedGraph& graph);
         virtual ~UnorientedGraph();
 
         unsigned int Size() const;
         unsigned int NumberOfEdges() const;
         virtual std::vector<unsigned int> GetChilds(unsigned int vertex) const;
         std::vector<unsigned int> GetParents(unsigned int vertex) const;
-        std::vector<Edge*> GetAllEdges();
+        std::vector<Edge*> GetAllEdges() const;
         std::vector<Edge*> GetAllEdgesSorted();
         virtual void ReadFromFile(std::ifstream& file);
         void WriteToFile(std::string filename);

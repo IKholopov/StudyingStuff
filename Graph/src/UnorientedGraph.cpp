@@ -10,7 +10,30 @@ UnorientedGraph::UnorientedGraph(unsigned int size)
     InitializeNewGraph(size);
     this->edges = edges;
 }
-
+UnorientedGraph::UnorientedGraph(const UnorientedGraph &graph)
+{
+#ifndef DEBUG
+    srand(time(NULL));
+#endif
+    adjacencyMatrix = new std::vector< std::vector<Edge*> >(graph.size);
+    InitializeNewGraph(graph.size);
+    edges = graph.GetAllEdges();
+    std::vector<Edge*> edges = graph.GetAllEdges();
+    for(auto edge = edges.begin(); edge != edges.end(); ++edge)
+        AddEdge((*edge)->Clone());
+}
+UnorientedGraph &UnorientedGraph::operator=(const UnorientedGraph &graph)
+{
+#ifndef DEBUG
+    srand(time(NULL));
+#endif
+    adjacencyMatrix = new std::vector< std::vector<Edge*> >(graph.size);
+    InitializeNewGraph(graph.size);
+    edges = graph.GetAllEdges();
+    std::vector<Edge*> edges = graph.GetAllEdges();
+    for(auto edge = edges.begin(); edge != edges.end(); ++edge)
+        AddEdge((*edge)->Clone());
+}
 UnorientedGraph::~UnorientedGraph()
 {
     this->DeleteAllEdges();
@@ -41,7 +64,7 @@ std::vector<unsigned int> UnorientedGraph::GetParents(unsigned int vertex) const
             parents.push_back(adjacencyMatrix->at(i).at(vertex)->From);
     return parents;
 }
-std::vector<Edge *> UnorientedGraph::GetAllEdges()
+std::vector<Edge *> UnorientedGraph::GetAllEdges() const
 {
     return edges;
 }

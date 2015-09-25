@@ -3,9 +3,9 @@
 #include <iostream>
 #include "MinDSU.h"
 
-GraphValuedEdge<double>* Boruvka(GraphValuedEdge<double> *original)
+UnorientedGraphValuedEdge<double>* Boruvka(UnorientedGraphValuedEdge<double> *original)
 {
-    GraphValuedEdge<double>* mst = new GraphValuedEdge<double>(original->Size());
+    UnorientedGraphValuedEdge<double>* mst = new UnorientedGraphValuedEdge<double>(original->Size());
     MinDSU dsu(mst->Size());
     std::vector<ValuedEdge<double>*> minEdge;
     while(dsu.SetCount() > 1)
@@ -44,7 +44,7 @@ void Boruvka()
     unsigned int n, m;
     std::cin >> n;
     std::cin >> m;
-    GraphValuedEdge<double> graph(n);
+    UnorientedGraphValuedEdge<double> graph(n);
     for(int i = 0; i < m; ++i)
     {
         unsigned int u, v;
@@ -52,7 +52,7 @@ void Boruvka()
         std::cin >> u >> v >> val;
         graph.AddEdge(u, v, val);
     }
-    GraphValuedEdge<double>* mst = Boruvka(&graph);
+    UnorientedGraphValuedEdge<double>* mst = Boruvka(&graph);
     std::vector<Edge*> edges = mst->GetAllEdgesSorted();
     for(int i = 0; i < edges.size(); ++i)
         std::cout << edges[i]->From << " " << edges[i]->To << " " << ((ValuedEdge<double>*)edges[i])->GetValue() << std::endl;

@@ -1,6 +1,6 @@
 #include "GraphManager.h"
 #include "GraphFileFormat.h"
-#include "GraphValuedEdge.hpp"
+#include "UnorientedGraphValuedEdge.hpp"
 
 UnorientedGraph* GraphManager::GetRandomUnorientedGraph(unsigned int size)
 {
@@ -12,13 +12,13 @@ UnorientedGraph* GraphManager::GetRandomUnorientedGraph(unsigned int size, doubl
     g->RandomizeGraph(probability);
     return g;
 }
-Graph* GraphManager::GetRandomGraph(unsigned int size)
+OrientedGraph* GraphManager::GetRandomGraph(unsigned int size)
 {
     return GetRandomGraph(size, 0.5);
 }
-Graph* GraphManager::GetRandomGraph(unsigned int size, double probability)
+OrientedGraph* GraphManager::GetRandomGraph(unsigned int size, double probability)
 {
-    Graph* g = new Graph(size);
+    OrientedGraph* g = new OrientedGraph(size);
     g->RandomizeGraph(probability);
     return g;
 }
@@ -43,15 +43,15 @@ IGraph* GraphManager::ReadFromFile(std::string path)
     throw std::exception();
     return NULL;
 }
-Graph* GraphManager::ReadFromFileGraphRegular(std::ifstream& file)
+OrientedGraph* GraphManager::ReadFromFileGraphRegular(std::ifstream& file)
 {
-    Graph* g = new Graph(1);
+    OrientedGraph* g = new OrientedGraph(1);
     g->ReadFromFile(file);
     return g;
 }
-GraphValuedEdge<int>* GraphManager::ReadFromFileGraphIntValuedEdge(std::ifstream& file)
+UnorientedGraphValuedEdge<int>* GraphManager::ReadFromFileGraphIntValuedEdge(std::ifstream& file)
 {
-    GraphValuedEdge<int>* g = new GraphValuedEdge<int>(1);
+    UnorientedGraphValuedEdge<int>* g = new UnorientedGraphValuedEdge<int>(1);
     g->ReadFromFile(file);
     return g;
 }

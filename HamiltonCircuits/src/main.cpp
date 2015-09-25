@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
-#include "Graph.h"
+#include "OrientedGraph.h"
 #include "GraphManager.h"
 #include "Hamilton.h"
 

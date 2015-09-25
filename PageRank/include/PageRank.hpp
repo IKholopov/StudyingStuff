@@ -5,10 +5,10 @@
 #include <vector>
 #include <map>
 #include <cmath>
-#include "Graph.h"
+#include "OrientedGraph.h"
 
 template <class T>
-class PageRank: public Graph
+class PageRank: public OrientedGraph
 {
     public:
         std::map<T, unsigned int> Data;
@@ -30,7 +30,7 @@ class PageRank: public Graph
 };
 
 template <class T>
-PageRank<T>::PageRank(unsigned int size, double d):Graph(size)
+PageRank<T>::PageRank(unsigned int size, double d):OrientedGraph(size)
 {
     this->d = d;
     this->size = size;

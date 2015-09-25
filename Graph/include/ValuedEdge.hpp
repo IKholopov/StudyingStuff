@@ -16,6 +16,10 @@ class ValuedEdge: public Edge
         {
             return new ValuedEdge(To, From, value);
         }
+        virtual Edge* Clone()
+        {
+            return new ValuedEdge(*this);
+        }
 
     private:
         ValueType value;

@@ -5,7 +5,7 @@
 #include "MinPQ.hpp"
 
 
-GraphValuedEdge<double>* Prim(GraphValuedEdge<double>* original)
+UnorientedGraphValuedEdge<double>* Prim(UnorientedGraphValuedEdge<double>* original)
 {
     MinPQ<double> q;
     std::vector<double> dist;
@@ -19,7 +19,7 @@ GraphValuedEdge<double>* Prim(GraphValuedEdge<double>* original)
     dist[0] = 0;
     p[0] = -1;
     q.DecreaseKey(0, 0);
-    GraphValuedEdge<double>* mst = new GraphValuedEdge<double>(original->Size());
+    UnorientedGraphValuedEdge<double>* mst = new UnorientedGraphValuedEdge<double>(original->Size());
     while(q.size() > 0)
     {
         std::pair<double, int> v = q.pop();
@@ -47,7 +47,7 @@ void Prim()
     unsigned int n, m;
     std::cin >> n;
     std::cin >> m;
-    GraphValuedEdge<double> graph(n);
+    UnorientedGraphValuedEdge<double> graph(n);
     for(int i = 0; i < m; ++i)
     {
         unsigned int u, v;
@@ -55,7 +55,7 @@ void Prim()
         std::cin >> u >> v >> val;
         graph.AddEdge(u, v, val);
     }
-    GraphValuedEdge<double>* mst = Prim(&graph);
+    UnorientedGraphValuedEdge<double>* mst = Prim(&graph);
     std::vector<Edge*> edges = mst->GetAllEdgesSorted();
     for(int i = 0; i < edges.size(); ++i)
         std::cout << edges[i]->From << " " << edges[i]->To << " " << ((ValuedEdge<double>*)edges[i])->GetValue() << std::endl;

@@ -6,7 +6,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <time.h>
 #include <stdlib.h>
-#include "Graph.h"
+#include "OrientedGraph.h"
 #include "GraphManager.h"
 #include "CustomGenerator.h"
 

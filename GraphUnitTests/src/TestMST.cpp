@@ -11,12 +11,12 @@ void TestMST()
 {
     int n, p;
     std::cin >> n >> p;
-    GraphValuedEdge<double>* graph = GenerateGraph(n, p);
-    GraphValuedEdge<double>* mstK = Kruskal(graph);
+    UnorientedGraphValuedEdge<double>* graph = GenerateGraph(n, p);
+    UnorientedGraphValuedEdge<double>* mstK = Kruskal(graph);
     std::vector<Edge*> edgesK = mstK->GetAllEdgesSorted();
-    GraphValuedEdge<double>* mstP = Prim(graph);
+    UnorientedGraphValuedEdge<double>* mstP = Prim(graph);
     std::vector<Edge*> edgesP = mstP->GetAllEdgesSorted();
-    GraphValuedEdge<double>* mstB = Boruvka(graph);
+    UnorientedGraphValuedEdge<double>* mstB = Boruvka(graph);
     std::vector<Edge*> edgesB = mstB->GetAllEdgesSorted();
 #ifdef DEBUG
     std::cout << "Boruvka" << std::endl;
@@ -80,7 +80,7 @@ void TimeTest()
 {
     int n;
     std::cin >> n;
-    GraphValuedEdge<double> *mstk, *mstb, *mstp;
+    UnorientedGraphValuedEdge<double> *mstk, *mstb, *mstp;
     const int testsPerPercentage = 10;
     for(int i = 10; i <= 100; i += 10)
     {
@@ -90,7 +90,7 @@ void TimeTest()
         double sumB = 0;
         for(int j = 0; j < testsPerPercentage; ++j)
         {
-            GraphValuedEdge<double>* graph = GenerateGraph(n, i);
+            UnorientedGraphValuedEdge<double>* graph = GenerateGraph(n, i);
             start_t = clock();
             mstk = Kruskal(graph);
             end_t = clock();

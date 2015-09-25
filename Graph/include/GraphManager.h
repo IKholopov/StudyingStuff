@@ -8,22 +8,22 @@
 #include <fstream>
 #include <stdio.h>
 
-#include "Graph.h"
-#include "GraphValuedEdge.hpp"
+#include "OrientedGraph.h"
+#include "UnorientedGraphValuedEdge.hpp"
 
 class GraphManager
 {
     public:
         static UnorientedGraph* GetRandomUnorientedGraph(unsigned int size);
         static UnorientedGraph* GetRandomUnorientedGraph(unsigned int size, double probability);
-        static Graph* GetRandomGraph(unsigned int size);
-        static Graph* GetRandomGraph(unsigned int size, double probability);
-        static void RandomizeGraph(Graph* g, double probability);
-        //static void RandomizeUnorientedGraph(Graph *g, double probability);
+        static OrientedGraph* GetRandomGraph(unsigned int size);
+        static OrientedGraph* GetRandomGraph(unsigned int size, double probability);
+        static void RandomizeGraph(OrientedGraph* g, double probability);
+        //static void RandomizeUnorientedGraph(OrientedGraph *g, double probability);
         static IGraph* ReadFromFile(std::string path);
     private:
-        static Graph* ReadFromFileGraphRegular(std::ifstream& file);
-        static GraphValuedEdge<int>* ReadFromFileGraphIntValuedEdge(std::ifstream& file);
+        static OrientedGraph* ReadFromFileGraphRegular(std::ifstream& file);
+        static UnorientedGraphValuedEdge<int>* ReadFromFileGraphIntValuedEdge(std::ifstream& file);
 };
 
 /*      File format:

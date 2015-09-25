@@ -2,12 +2,12 @@
 #define _CUSTOM_GENERATOR_H__
 
 #include <iostream>
-#include "GraphValuedEdge.hpp"
+#include "UnorientedGraphValuedEdge.hpp"
 
 void GenerateToStream();
 void GenerateToStream(std::ostream& outstr, std::istream& instr);
-GraphValuedEdge<double>* GenerateGraph(unsigned int size, int percentage);
-GraphValuedEdge<double>* GenerateGraphFrom(std::istream& str);
-GraphValuedEdge<double>* GenerateGraphFromCin();
+UnorientedGraphValuedEdge<double>* GenerateGraph(unsigned int size, int percentage);
+UnorientedGraphValuedEdge<double>* GenerateGraphFrom(std::istream& str);
+UnorientedGraphValuedEdge<double>* GenerateGraphFromCin();
 
 #endif
