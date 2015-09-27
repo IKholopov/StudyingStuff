@@ -9,8 +9,10 @@ class UnorientedGraph:public IGraph
 {
     public:
         UnorientedGraph(unsigned int size);
+        UnorientedGraph(unsigned int size, const std::vector<Edge*>& edges);
         UnorientedGraph(const UnorientedGraph& graph);
         UnorientedGraph& operator=(const UnorientedGraph& graph);
+        UnorientedGraph* Clone() const;
         virtual ~UnorientedGraph();
 
         unsigned int Size() const;

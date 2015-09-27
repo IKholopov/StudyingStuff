@@ -14,6 +14,8 @@ class OrientedGraph: public IGraph
         OrientedGraph(unsigned int size);
         OrientedGraph(const OrientedGraph& graph);
         OrientedGraph& operator=(const OrientedGraph& graph);
+        OrientedGraph* Clone() const;
+
         virtual ~OrientedGraph();
 
         unsigned int Size() const;

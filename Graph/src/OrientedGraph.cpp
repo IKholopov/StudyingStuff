@@ -41,6 +41,14 @@ OrientedGraph &OrientedGraph::operator=(const OrientedGraph &graph)
     for(auto edge = edges.begin(); edge != edges.end(); ++edge)
         AddEdge((*edge)->Clone());
 }
+
+OrientedGraph *OrientedGraph::Clone() const
+{
+    std::vector<Edge*> newEdges;
+    for(auto e: this->edges)
+        newEdges.push_back(e->Clone());
+    return new OrientedGraph(this->size, newEdges);
+}
 OrientedGraph::~OrientedGraph()
 {
     this->DeleteAllEdges();

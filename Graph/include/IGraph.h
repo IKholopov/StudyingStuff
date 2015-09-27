@@ -28,6 +28,7 @@ class IGraph
         virtual ~IGraph() {};
         virtual unsigned int Size() const = 0;
         virtual unsigned int NumberOfEdges() const = 0;
+        virtual IGraph* Clone() const = 0;
         virtual std::vector<unsigned int> GetChilds(unsigned int vertex) const = 0;
         virtual std::vector<unsigned int> GetParents(unsigned int vertex) const = 0;
         virtual void ReadFromFile(std::ifstream& file) = 0;
