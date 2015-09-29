@@ -23,6 +23,7 @@ class AdjacencyMatrixOriented:public IOriented
     bool AddEdge(int from, int to);
     bool CheckEdge(int from, int to);
     Edge* GetEdge(int from, int to);
+    Edge* RemoveEdge(int from, int to);
     void DeleteAllEdges();
 protected:
     unsigned int size;

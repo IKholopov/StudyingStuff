@@ -124,9 +124,15 @@ bool AdjacencyMatrixOriented::CheckEdge(int from, int to)
         return true;
     return adjacencyMatrix->at(from).at(to) != NULL;
 }
-Edge *AdjacencyMatrixOriented::GetEdge(int from, int to)
+Edge* AdjacencyMatrixOriented::GetEdge(int from, int to)
 {
     return adjacencyMatrix->at(from).at(to);
+}
+Edge* AdjacencyMatrixOriented::RemoveEdge(int from, int to)
+{
+    Edge* e = this->adjacencyMatrix->at(from).at(to);
+    this->adjacencyMatrix->at(from).at(to) = NULL;
+    return e;
 }
 void AdjacencyMatrixOriented::DeleteAllEdges()
 {

@@ -3,7 +3,7 @@
 
 #include"IGraph.h"
 
-class IUnoriented: IGraph
+class IUnoriented: public IGraph
 {
 
 };
