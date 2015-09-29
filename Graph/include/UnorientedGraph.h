@@ -3,41 +3,23 @@
 
 #include <vector>
 #include <fstream>
-#include"IGraph.h"
+#include"BaseGraph.h"
 
-class UnorientedGraph:public IGraph
+class UnorientedGraph: public BaseGraph
 {
     public:
-        UnorientedGraph(unsigned int size);
-        UnorientedGraph(unsigned int size, const std::vector<Edge*>& edges);
-        UnorientedGraph(const UnorientedGraph& graph);
-        UnorientedGraph& operator=(const UnorientedGraph& graph);
+        UnorientedGraph(IGraph& graph):BaseGraph(graph) {};
+        UnorientedGraph(unsigned int size, IGraph& graph):BaseGraph(size, graph) {};
+        UnorientedGraph(IGraph* graph):BaseGraph(graph) {};
+        UnorientedGraph(unsigned int size, IGraph* graph):BaseGraph(size, graph) {};
         UnorientedGraph* Clone() const;
         virtual ~UnorientedGraph();
 
-        unsigned int Size() const;
-        unsigned int NumberOfEdges() const;
-        virtual std::vector<unsigned int> GetChilds(unsigned int vertex) const;
-        std::vector<unsigned int> GetParents(unsigned int vertex) const;
-        std::vector<Edge*> GetAllEdges() const;
-        std::vector<Edge*> GetAllEdgesSorted();
         virtual void ReadFromFile(std::ifstream& file);
         void WriteToFile(std::string filename);
         virtual void WriteToFile(std::ofstream& file);
         virtual void RandomizeGraph(double probability);
-        void AddNodes(size_t amount);
-        bool AddEdge(int from, int to);
-        bool CheckEdge(int from, int to);
         void NormalizeEdges();
-        Edge* GetEdge(int from, int to);
-        void DeleteAllEdges();
-    protected:
-        unsigned int size;
-        std::vector<Edge*> edges;
-        std::vector< std::vector<Edge*> >* adjacencyMatrix;
-
-        bool AddEdge(Edge *edge);
-        void InitializeNewGraph(unsigned int size);
 };
 
 #endif

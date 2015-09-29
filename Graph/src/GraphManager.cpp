@@ -1,6 +1,8 @@
 #include "GraphManager.h"
 #include "GraphFileFormat.h"
 #include "UnorientedGraphValuedEdge.hpp"
+#include "AdjacencyMatrixOriented.h"
+#include "AdjacencyMatrixUnoriented.h"
 
 UnorientedGraph* GraphManager::GetRandomUnorientedGraph(unsigned int size)
 {
@@ -8,7 +10,7 @@ UnorientedGraph* GraphManager::GetRandomUnorientedGraph(unsigned int size)
 }
 UnorientedGraph* GraphManager::GetRandomUnorientedGraph(unsigned int size, double probability)
 {
-    UnorientedGraph* g = new UnorientedGraph(size);
+    UnorientedGraph* g = new UnorientedGraph(*(new AdjacencyMatrixUnoriented(size)));
     g->RandomizeGraph(probability);
     return g;
 }
@@ -18,16 +20,16 @@ OrientedGraph* GraphManager::GetRandomGraph(unsigned int size)
 }
 OrientedGraph* GraphManager::GetRandomGraph(unsigned int size, double probability)
 {
-    OrientedGraph* g = new OrientedGraph(size);
+    OrientedGraph* g = new OrientedGraph(*(new AdjacencyMatrixOriented(size)));
     g->RandomizeGraph(probability);
     return g;
 }
-IGraph* GraphManager::ReadFromFile(std::string path)
+BaseGraph *GraphManager::ReadFromFile(std::string path)
 {
     std::ifstream file(path.c_str());
     std::string s;
     std::getline(file, s);
-    IGraph* g;
+    BaseGraph* g;
     if(s == GR_TYPE_GRAPH_REGULAR)
     {
         g = GraphManager::ReadFromFileGraphRegular(file);
@@ -45,13 +47,13 @@ IGraph* GraphManager::ReadFromFile(std::string path)
 }
 OrientedGraph* GraphManager::ReadFromFileGraphRegular(std::ifstream& file)
 {
-    OrientedGraph* g = new OrientedGraph(1);
+    OrientedGraph* g = new OrientedGraph(*(new AdjacencyMatrixOriented(1)));
     g->ReadFromFile(file);
     return g;
 }
 UnorientedGraphValuedEdge<int>* GraphManager::ReadFromFileGraphIntValuedEdge(std::ifstream& file)
 {
-    UnorientedGraphValuedEdge<int>* g = new UnorientedGraphValuedEdge<int>(1);
+    UnorientedGraphValuedEdge<int>* g = new UnorientedGraphValuedEdge<int>(1, *(new AdjacencyMatrixUnoriented()));
     g->ReadFromFile(file);
     return g;
 }

@@ -2,10 +2,11 @@
 
 #include <iostream>
 #include "MinDSU.h"
+#include "AdjacencyMatrixUnoriented.h"
 
 UnorientedGraphValuedEdge<double>* Boruvka(UnorientedGraphValuedEdge<double> *original)
 {
-    UnorientedGraphValuedEdge<double>* mst = new UnorientedGraphValuedEdge<double>(original->Size());
+    UnorientedGraphValuedEdge<double>* mst = new UnorientedGraphValuedEdge<double>(original->Size(), new AdjacencyMatrixUnoriented());
     MinDSU dsu(mst->Size());
     std::vector<ValuedEdge<double>*> minEdge;
     while(dsu.SetCount() > 1)
@@ -44,7 +45,7 @@ void Boruvka()
     unsigned int n, m;
     std::cin >> n;
     std::cin >> m;
-    UnorientedGraphValuedEdge<double> graph(n);
+    UnorientedGraphValuedEdge<double> graph(n, new AdjacencyMatrixUnoriented());
     for(int i = 0; i < m; ++i)
     {
         unsigned int u, v;

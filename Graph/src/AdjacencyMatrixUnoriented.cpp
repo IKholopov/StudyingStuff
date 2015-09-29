@@ -3,6 +3,14 @@
 #include<assert.h>
 #include<algorithm>
 
+#define DEFAULT_NODES_AMOUNT 1
+
+AdjacencyMatrixUnoriented::AdjacencyMatrixUnoriented()
+{
+    this->size = 0;
+    adjacencyMatrix = new std::vector< std::vector<Edge*> >(DEFAULT_NODES_AMOUNT);
+    InitializeNewGraph(DEFAULT_NODES_AMOUNT);
+}
 AdjacencyMatrixUnoriented::AdjacencyMatrixUnoriented(unsigned int size, const std::vector<Edge *> &edges)
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(size);

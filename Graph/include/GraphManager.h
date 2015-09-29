@@ -20,7 +20,7 @@ class GraphManager
         static OrientedGraph* GetRandomGraph(unsigned int size, double probability);
         static void RandomizeGraph(OrientedGraph* g, double probability);
         //static void RandomizeUnorientedGraph(OrientedGraph *g, double probability);
-        static IGraph* ReadFromFile(std::string path);
+        static BaseGraph* ReadFromFile(std::string path);
     private:
         static OrientedGraph* ReadFromFileGraphRegular(std::ifstream& file);
         static UnorientedGraphValuedEdge<int>* ReadFromFileGraphIntValuedEdge(std::ifstream& file);

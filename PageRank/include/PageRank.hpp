@@ -6,6 +6,7 @@
 #include <map>
 #include <cmath>
 #include "OrientedGraph.h"
+#include "AdjacencyMatrixOriented.h"
 
 template <class T>
 class PageRank: public OrientedGraph
@@ -30,15 +31,14 @@ class PageRank: public OrientedGraph
 };
 
 template <class T>
-PageRank<T>::PageRank(unsigned int size, double d):OrientedGraph(size)
+PageRank<T>::PageRank(unsigned int size, double d):OrientedGraph(size, new AdjacencyMatrixOriented())
 {
     this->d = d;
-    this->size = size;
     oldRank = new std::vector<double>();
     rank = new std::vector<double>();
-    for(int i = 0; i < size; ++i)
+    for(int i = 0; i < Size(); ++i)
     {
-        rank->push_back(1.0 / size);
+        rank->push_back(1.0 / Size());
     }
 }
 template <class T>
@@ -53,7 +53,7 @@ bool PageRank<T>::AddPage(T page)
         if(GetIndexOfPage(page) != -1)
             return false;
         this->AddNodes(1);
-        Data[page] = this->size - 1;
+        Data[page] = this->Size() - 1;
         return true;
 }
 template <class T>
@@ -61,9 +61,9 @@ void PageRank<T>::InitRank()
 {
     oldRank->clear();
     rank->clear();
-    for(int i = 0; i < size; ++i)
+    for(int i = 0; i < Size(); ++i)
     {
-        rank->push_back(1.0 / size);
+        rank->push_back(1.0 / Size());
     }
 }
 template <class T>
@@ -82,7 +82,7 @@ void PageRank<T>::PageRankForSteps(int steps)
         oldRank = rank;
         rank = temp;
         rank->clear();
-        for(int j = 0; j < size; ++j)
+        for(int j = 0; j < Size(); ++j)
         {
             double sum = 0;
             std::vector<unsigned int> parents = GetParents(j);
@@ -93,7 +93,7 @@ void PageRank<T>::PageRankForSteps(int steps)
                 std::vector<unsigned int> childs = GetChilds(parents[k]);
                 sum += oldRank->at(k) / childs.size();
             }
-            rank->push_back((1.0 - d) / size + d * sum);
+            rank->push_back((1.0 - d) / Size() + d * sum);
         }
     }
 }
@@ -106,7 +106,7 @@ void PageRank<T>::PageRankToConverge()
     {
             PageRankForSteps(1);
             converge = true;
-            for(int i = 0; i < this->size; ++i)
+            for(int i = 0; i < this->Size(); ++i)
                 if(std::abs(oldRank->at(i) - rank->at(i)) > error)
                 {
                     converge = false;

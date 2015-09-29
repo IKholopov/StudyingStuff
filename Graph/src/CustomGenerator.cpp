@@ -1,4 +1,5 @@
 #include "CustomGenerator.h"
+#include "AdjacencyMatrixUnoriented.h"
 #include <limits>
 
 double randVal()
@@ -18,7 +19,7 @@ UnorientedGraphValuedEdge<double>* GenerateGraphFrom(std::istream& str)
 }
 UnorientedGraphValuedEdge<double>* GenerateGraph(unsigned int size, int percentage)
 {
-    UnorientedGraphValuedEdge<double>* g = new UnorientedGraphValuedEdge<double>(size);
+    UnorientedGraphValuedEdge<double>* g = new UnorientedGraphValuedEdge<double>(size, *(new AdjacencyMatrixUnoriented()));
     g->GenerateAccurateUnorientedGraph(percentage, &randVal);
     return g;
 }

@@ -32,6 +32,10 @@ bool BaseGraph::AddEdge(int from, int to)
 {
     return graph->AddEdge(from, to);
 }
+bool BaseGraph::AddEdge(Edge *edge)
+{
+    return graph->AddEdge(edge);
+}
 bool BaseGraph::CheckEdge(int from, int to)
 {
     return graph->CheckEdge(from, to);
@@ -44,10 +48,25 @@ void BaseGraph::DeleteAllEdges()
 {
     return graph->DeleteAllEdges();
 }
+void BaseGraph::InitializeNewGraph(unsigned int size)
+{
+    this->graph->InitializeNewGraph(size);
+}
 BaseGraph::BaseGraph(IGraph &graph)
 {
     this->graph = &graph;
 }
-
-
-
+BaseGraph::BaseGraph(IGraph *graph)
+{
+    this->graph = graph;
+}
+BaseGraph::BaseGraph(unsigned int size, IGraph &graph)
+{
+    this->graph = &graph;
+    this->graph->InitializeNewGraph(size);
+}
+BaseGraph::BaseGraph(unsigned int size, IGraph* graph)
+{
+    this->graph = graph;
+    this->graph->InitializeNewGraph(size);
+}

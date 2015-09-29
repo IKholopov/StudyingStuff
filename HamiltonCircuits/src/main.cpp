@@ -13,7 +13,7 @@ int main()
             int counter = 0;
             for(int j = 0; j < amount; ++j)
             {
-                IGraph* g = GraphManager::GetRandomUnorientedGraph(i);
+                BaseGraph* g = GraphManager::GetRandomUnorientedGraph(i);
                 if(HamiltonVerify::CheckIfHamilton(g))
                 {
                     ++counter;

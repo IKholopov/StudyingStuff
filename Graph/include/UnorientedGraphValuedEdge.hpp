@@ -15,7 +15,10 @@ template <class EdgeValueTupe>
 class UnorientedGraphValuedEdge: public UnorientedGraph
 {
     public:
-        UnorientedGraphValuedEdge(unsigned int size): UnorientedGraph(size) {}
+        UnorientedGraphValuedEdge(IGraph& graph): UnorientedGraph(graph) {}
+        UnorientedGraphValuedEdge(unsigned int size, IGraph& graph):UnorientedGraph(size, graph) {};
+        UnorientedGraphValuedEdge(IGraph* graph): UnorientedGraph(graph) {}
+        UnorientedGraphValuedEdge(unsigned int size, IGraph* graph):UnorientedGraph(size, graph) {};
         virtual ~UnorientedGraphValuedEdge();
 
         using UnorientedGraph::WriteToFile;
@@ -30,7 +33,6 @@ class UnorientedGraphValuedEdge: public UnorientedGraph
         int BFS(unsigned int source, unsigned int destination);
         int Dijkstra(unsigned int source, unsigned int destination);
 };
-
 template <class T>
 UnorientedGraphValuedEdge<T>::~UnorientedGraphValuedEdge()
 {
@@ -41,7 +43,7 @@ void UnorientedGraphValuedEdge<T>::ReadFromFile(std::ifstream &file)
 {
     unsigned int size, edgeSz;
     file >> size;
-    this->UnorientedGraph::InitializeNewGraph(size);
+    this->graph->InitializeNewGraph(size);
     file >> edgeSz;
     for(int i = 0; i < edgeSz; ++i)
     {
@@ -57,7 +59,7 @@ template <class T>
 void UnorientedGraphValuedEdge<T>::WriteToFile(std::ostream &file)
 {
     std::vector<Edge*> sorted = this->GetAllEdgesSorted();
-    file << this->size << std::endl;
+    file << this->Size() << std::endl;
     file << sorted.size() << std::endl;
     for(int i = 0; i < sorted.size(); ++i)
         file << sorted[i]->From << " " << sorted[i]->To << " " <<
@@ -67,7 +69,7 @@ template <class T>
 bool UnorientedGraphValuedEdge<T>::CheckConnection()
 {
     std::vector<bool> visited;
-    visited.resize(this->size);
+    visited.resize(this->Size());
     std::fill(visited.begin(), visited.end(), false);
     DFS(0, &visited);
     for(int i = 0; i < visited.size(); ++i)
@@ -89,9 +91,11 @@ void UnorientedGraphValuedEdge<T>::DFS(unsigned int vertex, std::vector<bool>* v
 template <class T>
 void UnorientedGraphValuedEdge<T>::GenerateAccurateUnorientedGraph(int percentage, T (*randFunc)())
 {
-    this->InitializeNewGraph(this->size);
-    int required = percentage * (size * (size - 1) / 2) / 100;
-    while(edges.size() < required)
+    unsigned int size = this->Size();
+    this->graph->InitializeNewGraph(this->Size());
+    int required = percentage * (Size() * (Size() - 1) / 2) / 100;
+    int edgesCounter = 0;
+    while(edgesCounter < required)
     {
         unsigned int u = rand() % size;
         unsigned int v = rand() % size;
@@ -100,7 +104,7 @@ void UnorientedGraphValuedEdge<T>::GenerateAccurateUnorientedGraph(int percentag
                 v = 0;
             else
                 v++;
-        while(adjacencyMatrix->at(u).at(v) != NULL)
+        while(graph->GetEdge(u,v) != NULL)
         {
             if(v == size - 1)
             {
@@ -129,6 +133,7 @@ void UnorientedGraphValuedEdge<T>::GenerateAccurateUnorientedGraph(int percentag
         }
         T val = randFunc();
         this->AddEdge(u, v, val);
+        ++edgesCounter;
     }
     while(!CheckConnection())
     {
@@ -139,7 +144,7 @@ void UnorientedGraphValuedEdge<T>::GenerateAccurateUnorientedGraph(int percentag
                 v = 0;
             else
                 v++;
-        while(adjacencyMatrix->at(u).at(v) != NULL)
+        while(this->graph->GetEdge(u,v) != NULL)
         {
             if(v == size - 1)
             {
@@ -168,12 +173,13 @@ void UnorientedGraphValuedEdge<T>::GenerateAccurateUnorientedGraph(int percentag
         }
         T val = randFunc();
         this->AddEdge(u, v, val);
+        ++edgesCounter;
     }
 }
 template <class T>
 void UnorientedGraphValuedEdge<T>::RandomizeGraph(double probability, T (*randFunc)())
 {
-    this->InitializeNewGraph(this->size);
+    this->graph->InitializeNewGraph(this->Size());
     for(int i = 0; i < this->Size() - 1; ++i)
         for(int j = i; j < this->Size(); ++j)
         {
@@ -204,9 +210,9 @@ int UnorientedGraphValuedEdge<T>::BFS(unsigned int source, unsigned int destinat
     //std::priority_queue< std::pair<int, int>, std::vector< std::pair<int, int> >,   //first - prioriry
       //      EdgeComparator> q;                                                     //second - vertex
     MinPQ<T> q;
-    int d[this->size];
-    bool visited[this->size];
-    for(int i = 0; i < this->size; ++i)
+    int d[this->Size()];
+    bool visited[this->Size()];
+    for(int i = 0; i < this->Size(); ++i)
     {
         visited[i] = false;
         d[i] = -1;
@@ -222,9 +228,9 @@ int UnorientedGraphValuedEdge<T>::BFS(unsigned int source, unsigned int destinat
             continue;
         visited[u] = true;
         //std::vector<unsigned int> vs = this->GetChilds(u);
-        for(int i = 0; i < size; ++i)
+        for(int i = 0; i < this->Size(); ++i)
         {
-            ValuedEdge<T>* vs = (ValuedEdge<T>*)adjacencyMatrix->at(u).at(i);
+            ValuedEdge<T>* vs = static_cast<ValuedEdge<T>*>(graph->GetEdge(u, i));
             if(vs == NULL)
                 continue;
             if(visited[i])
@@ -244,8 +250,8 @@ template <class T>
 int UnorientedGraphValuedEdge<T>::Dijkstra(unsigned int source, unsigned int destination)
 {
     MinPQ<T> q;
-    unsigned int d[this->size];
-    for(int i = 0; i < this->size; ++i)
+    unsigned int d[this->Size()];
+    for(int i = 0; i < this->Size(); ++i)
     {
         q.push(std::pair<T, unsigned int>(INT32_MAX, i));
         d[i] = -1;
@@ -256,7 +262,7 @@ int UnorientedGraphValuedEdge<T>::Dijkstra(unsigned int source, unsigned int des
     int dist = 0;
     while (q.size() > 0) {
         for(int i = 0; i < q.size(); ++i)
-            if(this->adjacencyMatrix->at(u).at(q.GetAt(i).second) != NULL)
+            if(this->graph->GetEdge(u, q.GetAt(i).second) != NULL)
             {
                 if(((ValuedEdge<T>*)this->GetEdge(u, q.GetAt(i).second))->GetValue() + dist < q.GetAt(i).first)
                     q.DecreaseKey(i, ((ValuedEdge<T>*)this->GetEdge(u, q.GetAt(i).second))->GetValue() + dist);

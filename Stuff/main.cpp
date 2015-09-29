@@ -13,7 +13,7 @@
 
 int main()
 {
-    IGraph* g = GenerateGraphFromCin();
+    BaseGraph* g = GenerateGraphFromCin();
     delete g;
     return 0;
 }

@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <iostream>
+#include "AdjacencyMatrixUnoriented.h"
 #include "MinPQ.hpp"
 
 
@@ -19,7 +20,7 @@ UnorientedGraphValuedEdge<double>* Prim(UnorientedGraphValuedEdge<double>* origi
     dist[0] = 0;
     p[0] = -1;
     q.DecreaseKey(0, 0);
-    UnorientedGraphValuedEdge<double>* mst = new UnorientedGraphValuedEdge<double>(original->Size());
+    UnorientedGraphValuedEdge<double>* mst = new UnorientedGraphValuedEdge<double>(original->Size(), new AdjacencyMatrixUnoriented());
     while(q.size() > 0)
     {
         std::pair<double, int> v = q.pop();
@@ -47,7 +48,7 @@ void Prim()
     unsigned int n, m;
     std::cin >> n;
     std::cin >> m;
-    UnorientedGraphValuedEdge<double> graph(n);
+    UnorientedGraphValuedEdge<double> graph(n, new AdjacencyMatrixUnoriented());
     for(int i = 0; i < m; ++i)
     {
         unsigned int u, v;

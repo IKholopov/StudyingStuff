@@ -8,7 +8,7 @@
 class HamiltonVerify
 {
     public:
-        static bool CheckIfHamilton(IGraph* g);
+        static bool CheckIfHamilton(BaseGraph *g);
 };
 
 #endif
