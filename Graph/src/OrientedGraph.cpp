@@ -74,5 +74,6 @@ void OrientedGraph::BFS(unsigned int source, std::function<void(unsigned int, un
             operation(u, v);
             q.push(v);
         }
+        vertexes[u] = Color::Black;
     }
 }

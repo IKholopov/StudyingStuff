@@ -14,13 +14,15 @@ class ValuedEdge: public Edge
         }
         ~ValuedEdge()
         {
-            if(std::is_pointer<ValueType>::value)
-                delete value;
         }
 
         ValueType GetValue()
         {
             return value;
+        }
+        void SetValue(ValueType value)
+        {
+            this->value = value;
         }
         virtual Edge* GetReversed()
         {

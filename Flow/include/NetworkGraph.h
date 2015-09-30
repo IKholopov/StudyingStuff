@@ -6,13 +6,13 @@
 #include "OrientedGraphValuedEdge.hpp"
 
 template <class FlowType>
-class NetworkGraph: public OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>*>
+class NetworkGraph: public OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>
 {
     public:
-        NetworkGraph(IGraph& graph): OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>*>(graph) {}
-        NetworkGraph(unsigned int size, IGraph& graph):OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>*>(size, graph) {}
-        NetworkGraph(IGraph* graph): OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>*>(graph) {}
-        NetworkGraph(unsigned int size, IGraph* graph):OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>*>(size, graph) {}
+        NetworkGraph(IGraph& graph): OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(graph) {}
+        NetworkGraph(unsigned int size, IGraph& graph):OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(size, graph) {}
+        NetworkGraph(IGraph* graph): OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(graph) {}
+        NetworkGraph(unsigned int size, IGraph* graph):OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(size, graph) {}
         ~NetworkGraph() {}
 
         std::pair<NetworkGraph<FlowType>*, std::vector<unsigned int>*> GetLayeredNetwork(unsigned int source, unsigned int sink);\
@@ -27,7 +27,7 @@ std::pair<NetworkGraph<FlowType>*, std::vector<unsigned int>* > NetworkGraph<Flo
     std::vector<unsigned int>* distances = new std::vector<unsigned int>(this->Size(), 0);
     this->BFS(source, [&distances](unsigned int u, unsigned int v){
         if(distances->at(v) == 0)
-            distances->at(v) = u + 1;
+            distances->at(v) = distances->at(u) + 1;
     });
     IGraph* implementation = this->graph->Clone();
     implementation->DeleteAllEdges();
@@ -41,12 +41,12 @@ std::pair<NetworkGraph<FlowType>*, std::vector<unsigned int>* > NetworkGraph<Flo
 template <class FlowType>
 void NetworkGraph<FlowType>::AddResidiual(unsigned int from, unsigned int to, FlowType flow)
 {
-    auto directEdge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>*>*>(this->GetEdge(from, to));
-    assert(directEdge == NULL);
-    assert(directEdge->GetValue()->Capacity - flow >= 0);
-    directEdge->GetValue()->Capacity -= flow;
-    auto reversedEdge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>*>*>(this->GetEdge(to, from));
+    auto directEdge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(this->GetEdge(from, to));
+    assert(directEdge != NULL);
+    assert(directEdge->GetValue().Capacity - flow >= 0);
+    directEdge->SetValue(NetworkEdgeValue<FlowType>(directEdge->GetValue().Capacity - flow, directEdge->GetValue().Flow));
+    auto reversedEdge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(this->GetEdge(to, from));
     if(reversedEdge == NULL)
-        this->BaseGraph::AddEdge(new ValuedEdge<NetworkEdgeValue<FlowType>*>(from, to, new NetworkEdgeValue<FlowType>(flow, 0)));
+        this->BaseGraph::AddEdge(new ValuedEdge<NetworkEdgeValue<FlowType>>(from, to, NetworkEdgeValue<FlowType>(flow, 0)));
 
 }

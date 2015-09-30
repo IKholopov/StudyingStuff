@@ -10,6 +10,7 @@ template <class FlowType>
 class NetworkEdgeValue
 {
     public:
+        NetworkEdgeValue() {}
         NetworkEdgeValue(FlowType capacity, FlowType flow)
         {
             this->Capacity = capacity;
