@@ -28,10 +28,16 @@ int main()
     v.push_back(new NetEdge(6, 8, NetworkEdgeValue<int>(3, 0)));
     v.push_back(new NetEdge(7, 8, NetworkEdgeValue<int>(2, 0)));
     v.push_back(new NetEdge(8, 7, NetworkEdgeValue<int>(3, 0)));
-    auto flowed = NetworkManager<int>::instance().ThreeIndiansAlgorithm(9, v, 0, 8);*/
-    NetworkGraph<int> graph(2, new AdjacencyMatrixOriented());
-    graph.RandomizeGraph(1, &randInt);
-    NetworkManager<int>::instance().ThreeIndiansAlgorithm(graph, 0, 1);
-
+    auto flowed = NetworkManager<int>::instance().ThreeIndiansAlgorithm(9, v, 0, 8);
+    NetworkGraph<int> graph(500, new AdjacencyMatrixOriented());
+    graph.RandomizeGraph(0.04, &randInt);
+    NetworkManager<int>::instance().ThreeIndiansAlgorithm(graph, 0, 1);*/
+    auto in = NetworkManager<int>::instance().ReadGraph(std::cin, new AdjacencyMatrixOriented());
+    auto edges = in.first;
+    auto graph = in.second;
+    NetworkManager<int>::instance().ThreeIndiansAlgorithm(*graph, 0, graph->Size() - 1);
+    NetworkManager<int>::instance().WriteGraphFlow(std::cout, graph, edges);
+    delete graph;
+    delete edges;
     return 0;
 }

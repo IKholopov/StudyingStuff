@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <queue>
+#include <istream>
+#include <ostream>
 #include "NetworkEdge.h"
 #include "NetworkGraph.h"
 #include "AdjacencyMatrixOriented.h"
@@ -16,6 +18,9 @@ class NetworkManager
                                                       unsigned int source, unsigned int sink);
         void ThreeIndiansAlgorithm(NetworkGraph<FlowType>& graph,
                                                       unsigned int source, unsigned int sink);
+        std::pair<std::vector<Edge>*,NetworkGraph<FlowType>*> ReadGraph(std::istream& stream, IGraph *realization);
+        void WriteGraphFlow(std::ostream& stream, NetworkGraph<FlowType>* graph, std::vector<Edge>* edges);
+
     private:
         NetworkManager() {}
 };
@@ -194,6 +199,36 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
     }
     graph.FlowFromResidual(*residualNetwork);
     delete residualNetwork;
+}
+template <class FlowType>
+std::pair<std::vector<Edge> *, NetworkGraph<FlowType> *> NetworkManager<FlowType>::ReadGraph(std::istream &stream, IGraph* realization)
+{
+    unsigned int n, m, from, to;
+    FlowType val;
+    stream >> n;
+    stream >> m;
+    std::vector<Edge>* edges = new std::vector<Edge>();
+    NetworkGraph<FlowType>* graph = new NetworkGraph<FlowType>(n, realization);
+    for(unsigned int i = 0; i < m; ++i)
+    {
+        stream >> from;
+        stream >> to;
+        stream >> val;
+        edges->push_back(Edge(from - 1, to - 1));
+        graph->AddEdge(from - 1, to - 1, NetworkEdgeValue<FlowType>(val, 0));
+    }
+    return std::pair<std::vector<Edge>*, NetworkGraph<FlowType>*>(edges, graph);
+}
+template <class FlowType>
+void NetworkManager<FlowType>::WriteGraphFlow(std::ostream &stream, NetworkGraph<FlowType> *graph, std::vector<Edge> *edges)
+{
+    auto v = graph->GetChilds(0);
+    FlowType sum = 0;
+    for(auto a: v)
+        sum += graph->GetEdgeValue(0, a).Flow;
+    stream << sum << std::endl;
+    for(auto a: *edges)
+        stream << graph->GetEdgeValue(a.From, a.To).Flow << std::endl;
 }
 
 #endif

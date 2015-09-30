@@ -2,7 +2,7 @@
 #define GRAPH_BASEGRAPH_H
 
 #include "IGraph.h"
-#include "functional"
+#include <functional>
 
 class BaseGraph //Wrapper for different IGraph implementations
 {
