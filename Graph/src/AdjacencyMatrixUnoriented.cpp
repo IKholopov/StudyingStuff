@@ -144,6 +144,24 @@ Edge* AdjacencyMatrixUnoriented::RemoveEdge(int from, int to)
     this->adjacencyMatrix->at(to).at(from) = NULL;
     return e;
 }
+void AdjacencyMatrixUnoriented::DeleteEdge(unsigned int from, unsigned int to)
+{
+    if(this->adjacencyMatrix->at(from).at(to) != NULL)
+        delete this->adjacencyMatrix->at(from).at(to);
+}
+void AdjacencyMatrixUnoriented::DeleteNodeEdges(unsigned int v)
+{
+    for(auto a: *(this->adjacencyMatrix))
+    {
+        if(a.at(v) != NULL)
+            delete a.at(v);
+    }
+    for(auto a: this->adjacencyMatrix->at(v))
+    {
+        if(a != NULL)
+             delete a;
+    }
+}
 void AdjacencyMatrixUnoriented::DeleteAllEdges()
 {
     for(int i = 0; i < size; ++i)

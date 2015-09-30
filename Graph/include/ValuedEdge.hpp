@@ -1,5 +1,9 @@
 #ifndef __VALUED_EDGE_H__
 #define __VALUED_EDGE_H__
+
+#include <type_traits>
+#include "Edge.h"
+
 template <class ValueType>
 class ValuedEdge: public Edge
 {
@@ -8,6 +12,12 @@ class ValuedEdge: public Edge
         {
             this->value = value;
         }
+        ~ValuedEdge()
+        {
+            if(std::is_pointer<ValueType>::value)
+                delete value;
+        }
+
         ValueType GetValue()
         {
             return value;
@@ -21,7 +31,7 @@ class ValuedEdge: public Edge
             return new ValuedEdge(*this);
         }
 
-    private:
+    protected:
         ValueType value;
 };
 

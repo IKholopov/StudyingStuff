@@ -7,7 +7,7 @@ class AdjacencyMatrixOriented:public IOriented
 {
     public:
         AdjacencyMatrixOriented();
-        AdjacencyMatrixOriented(unsigned int size, const std::vector<Edge*>& edges);
+        AdjacencyMatrixOriented(unsigned int size, std::vector<Edge*>& edges);
         AdjacencyMatrixOriented(unsigned int size);
         AdjacencyMatrixOriented(const AdjacencyMatrixOriented& graph);
         AdjacencyMatrixOriented& operator=(const AdjacencyMatrixOriented& graph);
@@ -27,6 +27,8 @@ class AdjacencyMatrixOriented:public IOriented
         bool CheckEdge(int from, int to);
         Edge* GetEdge(int from, int to);
         Edge* RemoveEdge(int from, int to);
+        void DeleteEdge(unsigned int from, unsigned int to);
+        void DeleteNodeEdges(unsigned int v);
         void DeleteAllEdges();
         void InitializeNewGraph(unsigned int size);
     protected:

@@ -27,6 +27,8 @@ class AdjacencyMatrixUnoriented:public IUnoriented
         bool CheckEdge(int from, int to);
         Edge* GetEdge(int from, int to);
         Edge* RemoveEdge(int from, int to);
+        void DeleteEdge(unsigned int from, unsigned int to);
+        void DeleteNodeEdges(unsigned int v);
         void DeleteAllEdges();
         void InitializeNewGraph(unsigned int size);
     protected:

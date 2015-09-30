@@ -1,7 +1,8 @@
 #ifndef GRAPH_BASEGRAPH_H
 #define GRAPH_BASEGRAPH_H
 
-#include"IGraph.h"
+#include "IGraph.h"
+#include "functional"
 
 class BaseGraph //Wrapper for different IGraph implementations
 {
@@ -20,6 +21,8 @@ class BaseGraph //Wrapper for different IGraph implementations
         bool AddEdge(Edge* edge);
         bool CheckEdge(int from, int to);
         Edge* GetEdge(int from, int to);
+        void DeleteEdge(int from, int to);
+        void DeleteNodeEdges(unsigned int v);
         void DeleteAllEdges();
         void InitializeNewGraph(unsigned int size);
     protected:

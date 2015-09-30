@@ -11,7 +11,7 @@ AdjacencyMatrixOriented::AdjacencyMatrixOriented()
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(DEFAULT_NODES_AMOUNT);
     InitializeNewGraph(DEFAULT_NODES_AMOUNT);
 }
-AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned int size, const std::vector<Edge *> &edges)
+AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned int size, std::vector<Edge *> &edges)
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(size);
     InitializeNewGraph(size);
@@ -141,6 +141,24 @@ Edge* AdjacencyMatrixOriented::RemoveEdge(int from, int to)
     Edge* e = this->adjacencyMatrix->at(from).at(to);
     this->adjacencyMatrix->at(from).at(to) = NULL;
     return e;
+}
+void AdjacencyMatrixOriented::DeleteEdge(unsigned int from, unsigned int to)
+{
+    if(this->adjacencyMatrix->at(from).at(to) != NULL)
+        delete this->adjacencyMatrix->at(from).at(to);
+}
+void AdjacencyMatrixOriented::DeleteNodeEdges(unsigned int v)
+{
+    for(auto a: *(this->adjacencyMatrix))
+    {
+        if(a.at(v) != NULL)
+            delete a.at(v);
+    }
+    for(auto a: this->adjacencyMatrix->at(v))
+    {
+        if(a != NULL)
+             delete a;
+    }
 }
 void AdjacencyMatrixOriented::DeleteAllEdges()
 {

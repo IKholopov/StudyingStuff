@@ -22,6 +22,7 @@ class OrientedGraph: public BaseGraph
         void WriteToFile(std::string filename);
         virtual void WriteToFile(std::ofstream& file);
         virtual void RandomizeGraph(double probability);
+        void BFS(unsigned int source, std::function<void(unsigned int, unsigned int)> operation);
 };
 
 #endif

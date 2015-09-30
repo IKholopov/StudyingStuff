@@ -44,6 +44,14 @@ Edge *BaseGraph::GetEdge(int from, int to)
 {
     return graph->GetEdge(from, to);
 }
+void BaseGraph::DeleteEdge(int from, int to)
+{
+    this->graph->DeleteEdge(from, to);
+}
+void BaseGraph::DeleteNodeEdges(unsigned int v)
+{
+    this->graph->DeleteNodeEdges(v);
+}
 void BaseGraph::DeleteAllEdges()
 {
     return graph->DeleteAllEdges();

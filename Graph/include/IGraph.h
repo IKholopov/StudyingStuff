@@ -21,6 +21,8 @@ class IGraph
         virtual std::vector<Edge*> GetAllEdges() const = 0;
         virtual std::vector<Edge*> GetAllEdgesSorted() = 0;
         virtual Edge* RemoveEdge(int from, int to) = 0;
+        virtual void DeleteEdge(unsigned int from, unsigned int to) = 0;
+        virtual void DeleteNodeEdges(unsigned int v) = 0;
         virtual void DeleteAllEdges() = 0;
         virtual void InitializeNewGraph(unsigned int size) = 0;
         virtual bool AddEdge(Edge *edge) = 0;

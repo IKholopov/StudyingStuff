@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <algorithm>
+#include <queue>
 #include "GraphFileFormat.h"
 
 BaseGraph* OrientedGraph::Clone() const
@@ -53,4 +54,25 @@ void OrientedGraph::RandomizeGraph(double probability)
                 this->AddEdge(i, j);
             }
         }
+}
+void OrientedGraph::BFS(unsigned int source, std::function<void(unsigned int, unsigned int)> operation)
+{
+    enum Color{White, Grey, Black};
+    std::vector<Color> vertexes (this->Size(), Color::White);
+    std::queue<unsigned int> q;
+    q.push(source);
+    while(!q.empty())
+    {
+        unsigned int u = q.front();
+        q.pop();
+        if(vertexes[u] == Color::Black)
+            continue;
+        vertexes[u] = Color::Grey;
+        auto childs = this->GetChilds(u);
+        for(auto v: childs)
+        {
+            operation(u, v);
+            q.push(v);
+        }
+    }
 }

@@ -14,8 +14,10 @@ template <class EdgeValueTupe>
 class OrientedGraphValuedEdge: public OrientedGraph
 {
     public:
-        OrientedGraphValuedEdge(unsigned int size): OrientedGraph(size) {}
-        OrientedGraphValuedEdge(const OrientedGraph& graph):OrientedGraph(graph) {};
+    OrientedGraphValuedEdge(IGraph& graph): OrientedGraph(graph) {}
+    OrientedGraphValuedEdge(unsigned int size, IGraph& graph):OrientedGraph(size, graph) {};
+    OrientedGraphValuedEdge(IGraph* graph): OrientedGraph(graph) {}
+    OrientedGraphValuedEdge(unsigned int size, IGraph* graph):OrientedGraph(size, graph) {};
         virtual ~OrientedGraphValuedEdge();
 
         using OrientedGraph::WriteToFile;
@@ -55,7 +57,7 @@ template <class T>
 void OrientedGraphValuedEdge<T>::WriteToFile(std::ostream &file)
 {
     std::vector<Edge*> sorted = this->GetAllEdgesSorted();
-    file << this->size << std::endl;
+    file << this->Size() << std::endl;
     file << sorted.size() << std::endl;
     for(int i = 0; i < sorted.size(); ++i)
         file << sorted[i]->From << " " << sorted[i]->To << " " <<
@@ -87,7 +89,7 @@ void OrientedGraphValuedEdge<T>::DFS(unsigned int vertex, std::vector<bool>* vis
 template <class T>
 void OrientedGraphValuedEdge<T>::RandomizeGraph(double probability, T (*randFunc)())
 {
-    this->InitializeNewGraph(this->size);
+    this->graph->InitializeNewGraph(this->Size());
     for(int i = 0; i < this->Size() - 1; ++i)
         for(int j = 0; j < this->Size(); ++j)
         {
