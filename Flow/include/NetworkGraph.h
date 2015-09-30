@@ -35,9 +35,9 @@ std::pair<NetworkGraph<FlowType>*, std::vector<long>* > NetworkGraph<FlowType>::
     implementation->DeleteAllEdges();
     NetworkGraph<FlowType>* layered = new NetworkGraph<FlowType>(this->Size(), implementation);
     std::vector<Edge*> edges = this->GetAllEdges();
-    for(auto e: edges)
-        if(distances->at(e->From) + 1 == distances->at(e->To))
-            layered->BaseGraph::AddEdge(e->Clone());
+    for(auto e = edges.begin(); e != edges.end(); ++e)
+        if(distances->at((*e)->From) + 1 == distances->at((*e)->To))
+            layered->BaseGraph::AddEdge((*e)->Clone());
     return std::pair<NetworkGraph<FlowType>*, std::vector<long>* >(layered, distances);
 }
 template <class FlowType>

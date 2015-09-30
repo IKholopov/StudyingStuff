@@ -15,10 +15,10 @@ AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned int size, std::vector<
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(size);
     InitializeNewGraph(size);
-    for(auto edge: edges)
+    for(auto edge = edges.begin(); edge != edges.end(); ++edge)
     {
-        assert(adjacencyMatrix->at(edge->From).at(edge->To) == NULL);
-        adjacencyMatrix->at(edge->From).at(edge->To) = edge;
+        assert(adjacencyMatrix->at((*edge)->From).at((*edge)->To) == NULL);
+        adjacencyMatrix->at((*edge)->From).at((*edge)->To) = (*edge);
     }
 }
 AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned int size)
@@ -31,24 +31,24 @@ AdjacencyMatrixOriented::AdjacencyMatrixOriented(const AdjacencyMatrixOriented &
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(graph.size);
     InitializeNewGraph(graph.size);
     std::vector<Edge*> edges = graph.GetAllEdges();
-    for(auto edge: edges)
-        adjacencyMatrix->at(edge->From).at(edge->To) = edge->Clone();
+    for(auto edge = edges.begin(); edge != edges.end(); ++edge)
+        adjacencyMatrix->at((*edge)->From).at((*edge)->To) = (*edge)->Clone();
 }
 AdjacencyMatrixOriented &AdjacencyMatrixOriented::operator=(const AdjacencyMatrixOriented &graph)
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(graph.size);
     InitializeNewGraph(graph.size);
     std::vector<Edge*> edges = graph.GetAllEdges();
-    for(auto edge: edges)
-        adjacencyMatrix->at(edge->From).at(edge->To) = edge->Clone();
+    for(auto edge = edges.begin(); edge != edges.end(); ++edge)
+        adjacencyMatrix->at((*edge)->From).at((*edge)->To) = (*edge)->Clone();
 }
 AdjacencyMatrixOriented *AdjacencyMatrixOriented::Clone() const
 {
     std::vector<Edge*> newEdges;
-    for(auto v: *(this->adjacencyMatrix))
-        for(auto u: v)
-            if(u != NULL)
-                newEdges.push_back(u->Clone());
+    for(auto v = this->adjacencyMatrix->begin(); v != this->adjacencyMatrix->end(); ++v)
+        for(auto u = v->begin(); u != v->end(); ++u)
+            if(*u != NULL)
+                newEdges.push_back((*u)->Clone());
     return new AdjacencyMatrixOriented(this->size, newEdges);
 }
 AdjacencyMatrixOriented::~AdjacencyMatrixOriented()
@@ -63,9 +63,9 @@ unsigned int AdjacencyMatrixOriented::Size() const
 unsigned int AdjacencyMatrixOriented::NumberOfEdges() const
 {
     unsigned long counter = 0;
-    for(auto v: *(this->adjacencyMatrix))
-        for(auto u: v)
-            if(u != NULL)
+    for(auto v = this->adjacencyMatrix->begin(); v != this->adjacencyMatrix->end(); ++v)
+        for(auto u = v->begin(); u != v->end(); ++u)
+            if(*u != NULL)
                ++counter;
     return counter;
 }
@@ -88,19 +88,19 @@ std::vector<unsigned int> AdjacencyMatrixOriented::GetParents(unsigned int verte
 std::vector<Edge*> AdjacencyMatrixOriented::GetAllEdges() const
 {
     std::vector<Edge*> edges;
-    for(auto v: *(this->adjacencyMatrix))
-        for(auto u: v)
-            if(u != NULL)
-               edges.push_back(u);
+    for(auto v = this->adjacencyMatrix->begin(); v != this->adjacencyMatrix->end(); ++v)
+        for(auto u = v->begin(); u != v->end(); ++u)
+            if(*u != NULL)
+               edges.push_back(*u);
     return edges;
 }
 std::vector<Edge*> AdjacencyMatrixOriented::GetAllEdgesSorted()
 {
     std::vector<Edge*> edges;
-    for(auto v: *(this->adjacencyMatrix))
-        for(auto u: v)
-            if(u != NULL)
-               edges.push_back(u);
+    for(auto v = this->adjacencyMatrix->begin(); v != this->adjacencyMatrix->end(); ++v)
+        for(auto u = v->begin(); u != v->end(); ++u)
+            if(*u != NULL)
+               edges.push_back(*u);
     std::sort(edges.begin(), edges.end(), [](Edge* a, Edge* b) {
         if(a->From == b->From)
             return a->To < b->To;
@@ -171,10 +171,10 @@ void AdjacencyMatrixOriented::DeleteNodeEdges(unsigned int v)
 }
 void AdjacencyMatrixOriented::DeleteAllEdges()
 {
-    for(auto v: *(this->adjacencyMatrix))
-        for(auto u: v)
-            if(u != NULL)
-               delete u;
+    for(auto v = this->adjacencyMatrix->begin(); v != this->adjacencyMatrix->end(); ++v)
+        for(auto u = v->begin(); u != v->end(); ++u)
+            if(*u != NULL)
+               delete *u;
     adjacencyMatrix->clear();
 }
 bool AdjacencyMatrixOriented::AddEdge(Edge *edge)
