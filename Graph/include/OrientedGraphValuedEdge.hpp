@@ -18,17 +18,17 @@ class OrientedGraphValuedEdge: public OrientedGraph
     OrientedGraphValuedEdge(unsigned int size, IGraph& graph):OrientedGraph(size, graph) {};
     OrientedGraphValuedEdge(IGraph* graph): OrientedGraph(graph) {}
     OrientedGraphValuedEdge(unsigned int size, IGraph* graph):OrientedGraph(size, graph) {};
-        virtual ~OrientedGraphValuedEdge();
+    virtual ~OrientedGraphValuedEdge();
 
-        using OrientedGraph::WriteToFile;
-        virtual void ReadFromFile(std::istream &file);
-        virtual void WriteToFile(std::ostream &file);
-        virtual void RandomizeGraph(double probability, EdgeValueTupe (*randFunc)());
-        void GenerateAccurateGraph(int percentage, EdgeValueTupe (*randFunc)());
-        bool AddEdge(int from, int to, EdgeValueTupe value);
-        bool CheckConnection();
-        void DFS(unsigned int  vertex, std::vector<bool>*visited);
-        EdgeValueTupe GetEdgeValue(int from, int to);
+    using OrientedGraph::WriteToFile;
+    virtual void ReadFromFile(std::istream &file);
+    virtual void WriteToFile(std::ostream &file);
+    virtual void RandomizeGraph(double probability, EdgeValueTupe (*randFunc)());
+    void GenerateAccurateGraph(int percentage, EdgeValueTupe (*randFunc)());
+    bool AddEdge(int from, int to, EdgeValueTupe value);
+    bool CheckConnection();
+    void DFS(unsigned int  vertex, std::vector<bool>*visited);
+    EdgeValueTupe GetEdgeValue(int from, int to);
 };
 
 template <class T>

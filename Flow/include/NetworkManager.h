@@ -2,6 +2,7 @@
 #define FLOW_NETWORKMANAGER_H
 
 #include <vector>
+#include <queue>
 #include "NetworkEdge.h"
 #include "NetworkGraph.h"
 #include "AdjacencyMatrixOriented.h"
@@ -13,6 +14,8 @@ class NetworkManager
         static NetworkManager<FlowType>& instance();
         NetworkGraph<FlowType>* ThreeIndiansAlgorithm(std::size_t size, std::vector<ValuedEdge<NetworkEdgeValue<FlowType> > *> &edges,
                                                       unsigned int source, unsigned int sink);
+        void ThreeIndiansAlgorithm(NetworkGraph<FlowType>& graph,
+                                                      unsigned int source, unsigned int sink);
     private:
         NetworkManager() {}
 };
@@ -23,30 +26,40 @@ NetworkManager<FlowType> &NetworkManager<FlowType>::instance()
     static NetworkManager<FlowType> instance;
     return instance;
 }
-
 template <class FlowType>
-NetworkGraph<FlowType>* NetworkManager<FlowType>::ThreeIndiansAlgorithm(std::size_t size, std::vector<ValuedEdge<NetworkEdgeValue<FlowType>>* >& edges,
-                                                                        unsigned int source, unsigned int sink)
+NetworkGraph<FlowType> *NetworkManager<FlowType>::ThreeIndiansAlgorithm(std::size_t size, std::vector<ValuedEdge<NetworkEdgeValue<FlowType> > *> &edges, unsigned int source, unsigned int sink)
 {
     std::vector<Edge*> edgeData;
     for(auto edge: edges)
         edgeData.push_back(edge);
     NetworkGraph<FlowType>* graph = new NetworkGraph<FlowType>(new AdjacencyMatrixOriented(size, edgeData));
-    NetworkGraph<FlowType>* residualNetwork = static_cast< NetworkGraph<FlowType>* >(graph->Clone());
+    this->ThreeIndiansAlgorithm(*graph, source,sink);
+    return graph;
+}
+template <class FlowType>
+void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &graph,
+                                                                       unsigned int source, unsigned int sink)
+{
+    assert(source < graph.Size() && sink < graph.Size());
+    NetworkGraph<FlowType>* residualNetwork = static_cast< NetworkGraph<FlowType>* >(graph.Clone());
     while(true)
     {
         auto layered = residualNetwork->GetLayeredNetwork(source, sink);
         auto distances = layered.second;
         auto layeredNetwork = layered.first;
         if(distances->at(sink) == 0)
+        {
+            delete layeredNetwork;
+            delete distances;
             break;
+        }
         std::vector<FlowType> capacities(layeredNetwork->Size(), 0);
         std::vector<FlowType> sumIn(layeredNetwork->Size(), 0);
         std::vector<FlowType> sumOut(layeredNetwork->Size(), 0);
         std::vector<FlowType> flowExceeds(layeredNetwork->Size(), 0);
         std::function<void(unsigned int i)> updateCapacity = [&capacities, &layeredNetwork, &sumIn, &sumOut, &updateCapacity, &source, &sink]
                 (unsigned int i){
-            if(i == source || i == sink)
+            if(i == source)
                 return;
             std::vector<unsigned int> childs = layeredNetwork->GetChilds(i);
             sumOut[i] = 0;
@@ -61,6 +74,11 @@ NetworkGraph<FlowType>* NetworkManager<FlowType>::ThreeIndiansAlgorithm(std::siz
             capacities[i] = sumIn[i] < sumOut[i] ? sumIn[i] : sumOut[i];
             if(capacities[i] == 0)
             {
+                if(i == sink)
+                {
+                    capacities[i] = sumIn[i];
+                    return;
+                }
                 layeredNetwork->DeleteNodeEdges(i);
                 for(auto v: childs)
                     updateCapacity(v);
@@ -79,14 +97,14 @@ NetworkGraph<FlowType>* NetworkManager<FlowType>::ThreeIndiansAlgorithm(std::siz
                     continue;
                 if(flow >= edge->GetValue().Capacity)
                 {
-                    residualNetwork->AddResidiual(v, index, edge->GetValue().Capacity);
+                    residualNetwork->AddFlowToResidiual(v, index, edge->GetValue().Capacity);
                     flow -= edge->GetValue().Capacity;
                     flowExceeds[v] += edge->GetValue().Capacity;
                     layeredNetwork->DeleteEdge(v, index);
                 }
                 else
                 {
-                    residualNetwork->AddResidiual(v, index, flow);
+                    residualNetwork->AddFlowToResidiual(v, index, flow);
                     edge->SetValue(NetworkEdgeValue<FlowType>(edge->GetValue().Capacity - flow, edge->GetValue().Flow));
                     flowExceeds[v] += flow;
                     break;
@@ -104,14 +122,14 @@ NetworkGraph<FlowType>* NetworkManager<FlowType>::ThreeIndiansAlgorithm(std::siz
                     continue;
                 if(flow >= edge->GetValue().Capacity)
                 {
-                    residualNetwork->AddResidiual(index, v, edge->GetValue().Capacity);
+                    residualNetwork->AddFlowToResidiual(index, v, edge->GetValue().Capacity);
                     flow -= edge->GetValue().Capacity;
                     flowExceeds[v] += edge->GetValue().Capacity;
                     layeredNetwork->DeleteEdge(index, v);
                 }
                 else
                 {
-                    residualNetwork->AddResidiual(index, v, flow);
+                    residualNetwork->AddFlowToResidiual(index, v, flow);
                     edge->SetValue(NetworkEdgeValue<FlowType>(edge->GetValue().Capacity - flow, edge->GetValue().Flow));
                     flowExceeds[v] += flow;
                     break;
@@ -120,51 +138,62 @@ NetworkGraph<FlowType>* NetworkManager<FlowType>::ThreeIndiansAlgorithm(std::siz
         };
         for(int i = 0; i < layeredNetwork->Size(); ++i)
         {
-            if(i == source || i == sink || capacities[i] != 0)
+            if(i == source || capacities[i] != 0)
                 continue;
             updateCapacity(i);
         }
         while(layeredNetwork->NumberOfEdges() != 0){
-            FlowType min = layeredNetwork->Size();
+            FlowType min = 0;
             unsigned int minIndex = 0;
+            for(int j = 0; j < capacities.size(); ++j)
+                if(capacities[j] != 0)
+                {
+                    min = capacities[j];
+                    break;
+                }
             for(int j = 0; j < capacities.size(); ++j)
                 if(capacities[j] != 0 && min > capacities[j])
                 {
                     min = capacities[j];
                     minIndex = j;
                 }
-            assert(min != layeredNetwork->Size());
+            assert(min != 0);
             flowExceeds[minIndex] = min;
-            std::vector<unsigned int> parents = layeredNetwork->GetParents(minIndex);
-            std::vector<unsigned int> childs = layeredNetwork->GetChilds(minIndex);
             backward(minIndex);
             forward(minIndex);
             flowExceeds[minIndex] = 0;
             capacities[minIndex] = 0;
             sumIn[minIndex] = 0;
             sumOut[minIndex] = 0;
+            std::queue<unsigned int> updateQueue;
+            updateQueue.push(minIndex);
             for(long i = (distances->at(minIndex) - 1); i > 0; --i)
                 for(unsigned int j = 0; j < distances->size(); ++j)
                     if(distances->at(j) == i)
                     {
                         backward(j);
+                        updateQueue.push(j);
                         flowExceeds[j] = 0;
                     }
-            for(unsigned int i = distances->at(minIndex) + 1; i < residualNetwork->Size() - 1; ++i)
+            for(long i = distances->at(minIndex) + 1; i < residualNetwork->Size() - 1; ++i)
                 for(unsigned int j = 0; j < distances->size(); ++j)
                     if(distances->at(j) == i)
                     {
                         forward(j);
+                        updateQueue.push(j);
                         flowExceeds[j] = 0;
                     }
-            updateCapacity(minIndex);
-            for(auto v: parents)
-                updateCapacity(v);
-            for(auto v: childs)
-                updateCapacity(v);
+            while(!updateQueue.empty())
+            {
+                updateCapacity(updateQueue.front());
+                updateQueue.pop();
+            }
         }
+        delete layeredNetwork;
+        delete distances;
     }
-    return NULL;
+    graph.FlowFromResidual(*residualNetwork);
+    delete residualNetwork;
 }
 
 #endif
