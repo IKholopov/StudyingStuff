@@ -7,32 +7,32 @@ class AdjacencyMatrixUnoriented:public IUnoriented
 {
     public:
         AdjacencyMatrixUnoriented();
-        AdjacencyMatrixUnoriented(unsigned int size, const std::vector<Edge*>& edges);
-        AdjacencyMatrixUnoriented(unsigned int size);
+        AdjacencyMatrixUnoriented(unsigned long long size, const std::vector<Edge*>& edges);
+        AdjacencyMatrixUnoriented(unsigned long long size);
         AdjacencyMatrixUnoriented(const AdjacencyMatrixUnoriented& graph);
         AdjacencyMatrixUnoriented& operator=(const AdjacencyMatrixUnoriented& graph);
         AdjacencyMatrixUnoriented* Clone() const;
 
         ~AdjacencyMatrixUnoriented();
 
-        unsigned int Size() const;
-        unsigned int NumberOfEdges() const;
-        std::vector<unsigned int> GetChilds(unsigned int vertex) const;
-        std::vector<unsigned int> GetParents(unsigned int vertex) const;
+        unsigned long long Size() const;
+        unsigned long long NumberOfEdges() const;
+        std::vector<unsigned long long> GetChilds(unsigned long long vertex) const;
+        std::vector<unsigned long long> GetParents(unsigned long long vertex) const;
         std::vector<Edge*> GetAllEdges() const;
         std::vector<Edge*> GetAllEdgesSorted();
         void AddNodes(size_t amount);                               //Append to and
-        bool AddEdge(int from, int to);
+        bool AddEdge(long long from, long long to);
         bool AddEdge(Edge* edge);
-        bool CheckEdge(int from, int to);
-        Edge* GetEdge(int from, int to);
-        Edge* RemoveEdge(int from, int to);
-        void DeleteEdge(unsigned int from, unsigned int to);
-        void DeleteNodeEdges(unsigned int v);
+        bool CheckEdge(long long from, long long to);
+        Edge* GetEdge(long long from, long long to);
+        Edge* RemoveEdge(long long from, long long to);
+        void DeleteEdge(unsigned long long from, unsigned long long to);
+        void DeleteNodeEdges(unsigned long long v);
         void DeleteAllEdges();
-        void InitializeNewGraph(unsigned int size);
+        void InitializeNewGraph(unsigned long long size);
     protected:
-        unsigned int size;
+        unsigned long long size;
         std::vector< std::vector<Edge*> >* adjacencyMatrix;
 };
 

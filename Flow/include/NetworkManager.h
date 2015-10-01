@@ -15,9 +15,9 @@ class NetworkManager
     public:
         static NetworkManager<FlowType>& instance();
         NetworkGraph<FlowType>* ThreeIndiansAlgorithm(std::size_t size, std::vector<ValuedEdge<NetworkEdgeValue<FlowType> > *> &edges,
-                                                      unsigned int source, unsigned int sink);
+                                                      unsigned long long source, unsigned long long sink);
         void ThreeIndiansAlgorithm(NetworkGraph<FlowType>& graph,
-                                                      unsigned int source, unsigned int sink);
+                                                      unsigned long long source, unsigned long long sink);
         std::pair<std::vector<Edge>*,NetworkGraph<FlowType>*> ReadGraph(std::istream& stream, IGraph *realization);
         void WriteGraphFlow(std::ostream& stream, NetworkGraph<FlowType>* graph, std::vector<Edge>* edges);
 
@@ -32,7 +32,7 @@ NetworkManager<FlowType> &NetworkManager<FlowType>::instance()
     return instance;
 }
 template <class FlowType>
-NetworkGraph<FlowType> *NetworkManager<FlowType>::ThreeIndiansAlgorithm(std::size_t size, std::vector<ValuedEdge<NetworkEdgeValue<FlowType> > *> &edges, unsigned int source, unsigned int sink)
+NetworkGraph<FlowType> *NetworkManager<FlowType>::ThreeIndiansAlgorithm(std::size_t size, std::vector<ValuedEdge<NetworkEdgeValue<FlowType> > *> &edges, unsigned long long source, unsigned long long sink)
 {
     std::vector<Edge*> edgeData;
     for(auto edge = edges.begin(); edge != edges.end(); ++ edge)
@@ -43,7 +43,7 @@ NetworkGraph<FlowType> *NetworkManager<FlowType>::ThreeIndiansAlgorithm(std::siz
 }
 template <class FlowType>
 void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &graph,
-                                                                       unsigned int source, unsigned int sink)
+                                                                       unsigned long long source, unsigned long long sink)
 {
     assert(source < graph.Size() && sink < graph.Size());
     NetworkGraph<FlowType>* residualNetwork = static_cast< NetworkGraph<FlowType>* >(graph.Clone());
@@ -62,17 +62,17 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
         std::vector<FlowType> sumIn(layeredNetwork->Size(), 0);
         std::vector<FlowType> sumOut(layeredNetwork->Size(), 0);
         std::vector<FlowType> flowExceeds(layeredNetwork->Size(), 0);
-        std::function<void(unsigned int i)> updateCapacity = [&capacities, &layeredNetwork, &sumIn, &sumOut, &updateCapacity, &source, &sink]
-                (unsigned int i){
+        std::function<void(unsigned long long i)> updateCapacity = [&capacities, &layeredNetwork, &sumIn, &sumOut, &updateCapacity, &source, &sink]
+                (unsigned long long i){
             if(i == source)
                 return;
-            std::vector<unsigned int> childs = layeredNetwork->GetChilds(i);
+            std::vector<unsigned long long> childs = layeredNetwork->GetChilds(i);
             sumOut[i] = 0;
             sumIn[i] = 0;
             for(auto v = childs.begin(); v != childs.end(); ++v)
                 if(layeredNetwork->CheckEdge(i, *v))
                     sumOut[i] += static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(layeredNetwork->GetEdge(i, *v))->GetValue().Capacity;
-            std::vector<unsigned int> parents = layeredNetwork->GetParents(i);
+            std::vector<unsigned long long> parents = layeredNetwork->GetParents(i);
             for(auto v = parents.begin(); v != parents.end(); ++v)
                 if(layeredNetwork->CheckEdge(*v, i))
                     sumIn[i] += static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(layeredNetwork->GetEdge(*v, i))->GetValue().Capacity;
@@ -91,9 +91,9 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                     updateCapacity(*v);
             }
         };
-        std::function<void(unsigned int v)> backward = [&layeredNetwork, &residualNetwork, &flowExceeds](unsigned int index)
+        std::function<void(unsigned long long v)> backward = [&layeredNetwork, &residualNetwork, &flowExceeds](unsigned long long index)
         {
-            std::vector<unsigned int> parents = layeredNetwork->GetParents(index);
+            std::vector<unsigned long long> parents = layeredNetwork->GetParents(index);
             FlowType flow = flowExceeds[index];
             for(auto v = parents.begin(); v != parents.end(); ++v)
             {
@@ -116,9 +116,9 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                 }
             }
         };
-        std::function<void(unsigned int v)> forward = [&layeredNetwork, &residualNetwork, &flowExceeds](unsigned int index)
+        std::function<void(unsigned long long v)> forward = [&layeredNetwork, &residualNetwork, &flowExceeds](unsigned long long index)
         {
-            std::vector<unsigned int> childs = layeredNetwork->GetChilds(index);
+            std::vector<unsigned long long> childs = layeredNetwork->GetChilds(index);
             FlowType flow = flowExceeds[index];
             for(auto v = childs.begin(); v != childs.end(); ++v)
             {
@@ -141,7 +141,7 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                 }
             }
         };
-        for(int i = 0; i < layeredNetwork->Size(); ++i)
+        for(long long i = 0; i < layeredNetwork->Size(); ++i)
         {
             if(i == source || capacities[i] != 0)
                 continue;
@@ -149,14 +149,14 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
         }
         while(layeredNetwork->NumberOfEdges() != 0){
             FlowType min = 0;
-            unsigned int minIndex = 0;
-            for(int j = 0; j < capacities.size(); ++j)
+            unsigned long long minIndex = 0;
+            for(long long j = 0; j < capacities.size(); ++j)
                 if(capacities[j] != 0)
                 {
                     min = capacities[j];
                     break;
                 }
-            for(int j = 0; j < capacities.size(); ++j)
+            for(long long j = 0; j < capacities.size(); ++j)
                 if(capacities[j] != 0 && min > capacities[j])
                 {
                     min = capacities[j];
@@ -170,10 +170,10 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
             capacities[minIndex] = 0;
             sumIn[minIndex] = 0;
             sumOut[minIndex] = 0;
-            std::queue<unsigned int> updateQueue;
+            std::queue<unsigned long long> updateQueue;
             updateQueue.push(minIndex);
             for(long i = (distances->at(minIndex) - 1); i > 0; --i)
-                for(unsigned int j = 0; j < distances->size(); ++j)
+                for(unsigned long long j = 0; j < distances->size(); ++j)
                     if(distances->at(j) == i)
                     {
                         backward(j);
@@ -181,7 +181,7 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                         flowExceeds[j] = 0;
                     }
             for(long i = distances->at(minIndex) + 1; i < residualNetwork->Size() - 1; ++i)
-                for(unsigned int j = 0; j < distances->size(); ++j)
+                for(unsigned long long j = 0; j < distances->size(); ++j)
                     if(distances->at(j) == i)
                     {
                         forward(j);
@@ -203,13 +203,13 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
 template <class FlowType>
 std::pair<std::vector<Edge> *, NetworkGraph<FlowType> *> NetworkManager<FlowType>::ReadGraph(std::istream &stream, IGraph* realization)
 {
-    unsigned int n, m, from, to;
+    unsigned long long n, m, from, to;
     FlowType val;
     stream >> n;
     stream >> m;
     std::vector<Edge>* edges = new std::vector<Edge>();
     NetworkGraph<FlowType>* graph = new NetworkGraph<FlowType>(n, realization);
-    for(unsigned int i = 0; i < m; ++i)
+    for(unsigned long long i = 0; i < m; ++i)
     {
         stream >> from;
         stream >> to;

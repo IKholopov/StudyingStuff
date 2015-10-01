@@ -1,18 +1,18 @@
 #include"BaseGraph.h"
 
-unsigned int BaseGraph::Size() const
+unsigned long long BaseGraph::Size() const
 {
     return graph->Size();
 }
-unsigned int BaseGraph::NumberOfEdges() const
+unsigned long long BaseGraph::NumberOfEdges() const
 {
     return graph->NumberOfEdges();
 }
-std::vector<unsigned int> BaseGraph::GetChilds(unsigned int vertex) const
+std::vector<unsigned long long> BaseGraph::GetChilds(unsigned long long vertex) const
 {
     return graph->GetChilds(vertex);
 }
-std::vector<unsigned int> BaseGraph::GetParents(unsigned int vertex) const
+std::vector<unsigned long long> BaseGraph::GetParents(unsigned long long vertex) const
 {
     return graph->GetParents(vertex);
 }
@@ -28,7 +28,7 @@ void BaseGraph::AddNodes(size_t amount)
 {
     graph->AddNodes(amount);
 }
-bool BaseGraph::AddEdge(int from, int to)
+bool BaseGraph::AddEdge(long long from, long long to)
 {
     return graph->AddEdge(from, to);
 }
@@ -36,19 +36,19 @@ bool BaseGraph::AddEdge(Edge *edge)
 {
     return graph->AddEdge(edge);
 }
-bool BaseGraph::CheckEdge(int from, int to)
+bool BaseGraph::CheckEdge(long long from, long long to)
 {
     return graph->CheckEdge(from, to);
 }
-Edge *BaseGraph::GetEdge(int from, int to)
+Edge *BaseGraph::GetEdge(long long from, long long to)
 {
     return graph->GetEdge(from, to);
 }
-void BaseGraph::DeleteEdge(int from, int to)
+void BaseGraph::DeleteEdge(long long from, long long to)
 {
     this->graph->DeleteEdge(from, to);
 }
-void BaseGraph::DeleteNodeEdges(unsigned int v)
+void BaseGraph::DeleteNodeEdges(unsigned long long v)
 {
     this->graph->DeleteNodeEdges(v);
 }
@@ -56,7 +56,7 @@ void BaseGraph::DeleteAllEdges()
 {
     return graph->DeleteAllEdges();
 }
-void BaseGraph::InitializeNewGraph(unsigned int size)
+void BaseGraph::InitializeNewGraph(unsigned long long size)
 {
     this->graph->InitializeNewGraph(size);
 }
@@ -68,12 +68,12 @@ BaseGraph::BaseGraph(IGraph *graph)
 {
     this->graph = graph;
 }
-BaseGraph::BaseGraph(unsigned int size, IGraph &graph)
+BaseGraph::BaseGraph(unsigned long long size, IGraph &graph)
 {
     this->graph = &graph;
     this->graph->InitializeNewGraph(size);
 }
-BaseGraph::BaseGraph(unsigned int size, IGraph* graph)
+BaseGraph::BaseGraph(unsigned long long size, IGraph* graph)
 {
     this->graph = graph;
     this->graph->InitializeNewGraph(size);

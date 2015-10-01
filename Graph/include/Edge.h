@@ -4,7 +4,7 @@
 class Edge
 {
     public:
-        Edge(unsigned int from, unsigned int to)
+        Edge(unsigned long long from, unsigned long long to)
         {
             this->From = from;
             this->To = to;
@@ -18,8 +18,8 @@ class Edge
             return new Edge(*this);
         }
 
-        unsigned int From;
-        unsigned int To;
+        unsigned long long From;
+        unsigned long long To;
 };
 
 #endif

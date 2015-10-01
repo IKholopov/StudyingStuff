@@ -10,28 +10,28 @@ class BaseGraph //Wrapper for different IGraph implementations
         virtual BaseGraph* Clone() const = 0;
         virtual ~BaseGraph() {}
 
-        unsigned int Size() const;
-        unsigned int NumberOfEdges() const;
-        std::vector<unsigned int> GetChilds(unsigned int vertex) const;
-        std::vector<unsigned int> GetParents(unsigned int vertex) const;
+        unsigned long long Size() const;
+        unsigned long long NumberOfEdges() const;
+        std::vector<unsigned long long> GetChilds(unsigned long long vertex) const;
+        std::vector<unsigned long long> GetParents(unsigned long long vertex) const;
         std::vector<Edge*> GetAllEdges() const;
         std::vector<Edge*> GetAllEdgesSorted(); //const;
         void AddNodes(size_t amount);
-        bool AddEdge(int from, int to);
+        bool AddEdge(long long from, long long to);
         bool AddEdge(Edge* edge);
-        bool CheckEdge(int from, int to);
-        Edge* GetEdge(int from, int to);
-        void DeleteEdge(int from, int to);
-        void DeleteNodeEdges(unsigned int v);
+        bool CheckEdge(long long from, long long to);
+        Edge* GetEdge(long long from, long long to);
+        void DeleteEdge(long long from, long long to);
+        void DeleteNodeEdges(unsigned long long v);
         void DeleteAllEdges();
-        void InitializeNewGraph(unsigned int size);
+        void InitializeNewGraph(unsigned long long size);
     protected:
         IGraph* graph;
 
         BaseGraph(IGraph& graph);
         BaseGraph(IGraph* graph);
-        BaseGraph(unsigned int size, IGraph& graph);
-        BaseGraph(unsigned int size, IGraph* graph);
+        BaseGraph(unsigned long long size, IGraph& graph);
+        BaseGraph(unsigned long long size, IGraph* graph);
 };
 
 #endif
