@@ -1,4 +1,4 @@
-#include"AdjacencyMatrixOriented.h"
+#include "AdjacencyMatrixOriented.h"
 
 #include<assert.h>
 #include<algorithm>

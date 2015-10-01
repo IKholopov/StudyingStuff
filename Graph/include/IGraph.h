@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <iostream>
-#include"Edge.h"
+#include "Edge.h"
 
 class IGraph
 {

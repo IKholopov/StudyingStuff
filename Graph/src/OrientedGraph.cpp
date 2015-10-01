@@ -69,10 +69,10 @@ void OrientedGraph::BFS(unsigned long long source, std::function<void(unsigned l
             continue;
         vertexes[u] = Color::Grey;
         auto childs = this->GetChilds(u);
-        for(auto v: childs)
+        for(auto v = childs.begin(); v != childs.end(); ++v)
         {
-            operation(u, v);
-            q.push(v);
+            operation(u, *v);
+            q.push(*v);
         }
         vertexes[u] = Color::Black;
     }

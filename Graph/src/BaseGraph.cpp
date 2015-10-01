@@ -1,4 +1,4 @@
-#include"BaseGraph.h"
+#include "BaseGraph.h"
 
 unsigned long long BaseGraph::Size() const
 {
