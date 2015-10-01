@@ -9,9 +9,9 @@ class UnorientedGraph: public BaseGraph
 {
     public:
         UnorientedGraph(IGraph& graph):BaseGraph(graph) {};
-        UnorientedGraph(unsigned int size, IGraph& graph):BaseGraph(size, graph) {};
+        UnorientedGraph(unsigned long long size, IGraph& graph):BaseGraph(size, graph) {};
         UnorientedGraph(IGraph* graph):BaseGraph(graph) {};
-        UnorientedGraph(unsigned int size, IGraph* graph):BaseGraph(size, graph) {};
+        UnorientedGraph(unsigned long long size, IGraph* graph):BaseGraph(size, graph) {};
         UnorientedGraph* Clone() const;
         virtual ~UnorientedGraph();
 

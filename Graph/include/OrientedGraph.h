@@ -11,9 +11,9 @@ class OrientedGraph: public BaseGraph
 {
     public:
         OrientedGraph(IGraph& graph):BaseGraph(graph) {};
-        OrientedGraph(unsigned int size, IGraph& graph):BaseGraph(size, graph) {};
+        OrientedGraph(unsigned long long size, IGraph& graph):BaseGraph(size, graph) {};
         OrientedGraph(IGraph* graph):BaseGraph(graph) {};
-        OrientedGraph(unsigned int size, IGraph* graph):BaseGraph(size, graph) {};
+        OrientedGraph(unsigned long long size, IGraph* graph):BaseGraph(size, graph) {};
         BaseGraph* Clone() const;
 
         virtual ~OrientedGraph();
@@ -22,7 +22,7 @@ class OrientedGraph: public BaseGraph
         void WriteToFile(std::string filename);
         virtual void WriteToFile(std::ofstream& file);
         virtual void RandomizeGraph(double probability);
-        void BFS(unsigned int source, std::function<void(unsigned int, unsigned int)> operation);
+        void BFS(unsigned long long source, std::function<void(unsigned long long, unsigned long long)> operation);
 };
 
 #endif

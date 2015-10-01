@@ -10,23 +10,23 @@ class NetworkGraph: public OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>
 {
     public:
         NetworkGraph(IGraph& graph): OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(graph) {}
-        NetworkGraph(unsigned int size, IGraph& graph):OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(size, graph) {}
+        NetworkGraph(unsigned long long size, IGraph& graph):OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(size, graph) {}
         NetworkGraph(IGraph* graph): OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(graph) {}
-        NetworkGraph(unsigned int size, IGraph* graph):OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(size, graph) {}
+        NetworkGraph(unsigned long long size, IGraph* graph):OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(size, graph) {}
         ~NetworkGraph() {}
 
-        std::pair<NetworkGraph<FlowType> *, std::vector<long> *> GetLayeredNetwork(unsigned int source, unsigned int sink);\
-        void AddFlowToResidiual(unsigned int from, unsigned int to, FlowType flow);
+        std::pair<NetworkGraph<FlowType> *, std::vector<long> *> GetLayeredNetwork(unsigned long long source, unsigned long long sink);\
+        void AddFlowToResidiual(unsigned long long from, unsigned long long to, FlowType flow);
         void FlowFromResidual(NetworkGraph<FlowType> &residual);
 };
 
 #endif
 
 template <class FlowType>
-std::pair<NetworkGraph<FlowType>*, std::vector<long>* > NetworkGraph<FlowType>::GetLayeredNetwork(unsigned int source, unsigned int sink)
+std::pair<NetworkGraph<FlowType>*, std::vector<long>* > NetworkGraph<FlowType>::GetLayeredNetwork(unsigned long long source, unsigned long long sink)
 {
     std::vector<long>* distances = new std::vector<long>(this->Size(), 0);
-    this->BFS(source, [&distances](unsigned int u, unsigned int v){
+    this->BFS(source, [&distances](unsigned long long u, unsigned long long v){
         if(distances->at(v) == 0)
             distances->at(v) = distances->at(u) + 1;
     });
@@ -41,7 +41,7 @@ std::pair<NetworkGraph<FlowType>*, std::vector<long>* > NetworkGraph<FlowType>::
     return std::pair<NetworkGraph<FlowType>*, std::vector<long>* >(layered, distances);
 }
 template <class FlowType>
-void NetworkGraph<FlowType>::AddFlowToResidiual(unsigned int from, unsigned int to, FlowType flow)
+void NetworkGraph<FlowType>::AddFlowToResidiual(unsigned long long from, unsigned long long to, FlowType flow)
 {
     auto directEdge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(this->GetEdge(from, to));
     assert(directEdge != NULL);

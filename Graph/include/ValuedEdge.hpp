@@ -8,7 +8,7 @@ template <class ValueType>
 class ValuedEdge: public Edge
 {
     public:
-        ValuedEdge(unsigned int from, unsigned int to, ValueType value):Edge(from, to)
+        ValuedEdge(unsigned long long from, unsigned long long to, ValueType value):Edge(from, to)
         {
             this->value = value;
         }

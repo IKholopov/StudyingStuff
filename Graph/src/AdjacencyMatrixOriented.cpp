@@ -11,7 +11,7 @@ AdjacencyMatrixOriented::AdjacencyMatrixOriented()
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(DEFAULT_NODES_AMOUNT);
     InitializeNewGraph(DEFAULT_NODES_AMOUNT);
 }
-AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned int size, std::vector<Edge *> &edges)
+AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned long long size, std::vector<Edge *> &edges)
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(size);
     InitializeNewGraph(size);
@@ -21,7 +21,7 @@ AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned int size, std::vector<
         adjacencyMatrix->at(edge->From).at(edge->To) = edge;
     }
 }
-AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned int size)
+AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned long long size)
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(size);
     InitializeNewGraph(size);
@@ -56,11 +56,11 @@ AdjacencyMatrixOriented::~AdjacencyMatrixOriented()
     this->DeleteAllEdges();
     delete adjacencyMatrix;
 }
-unsigned int AdjacencyMatrixOriented::Size() const
+unsigned long long AdjacencyMatrixOriented::Size() const
 {
     return size;
 }
-unsigned int AdjacencyMatrixOriented::NumberOfEdges() const
+unsigned long long AdjacencyMatrixOriented::NumberOfEdges() const
 {
     unsigned long counter = 0;
     for(auto v: *(this->adjacencyMatrix))
@@ -69,18 +69,18 @@ unsigned int AdjacencyMatrixOriented::NumberOfEdges() const
                ++counter;
     return counter;
 }
-std::vector<unsigned int> AdjacencyMatrixOriented::GetChilds(unsigned int vertex) const
+std::vector<unsigned long long> AdjacencyMatrixOriented::GetChilds(unsigned long long vertex) const
 {
-    std::vector<unsigned int> childs;
-    for(int i = 0; i < size; ++i)
+    std::vector<unsigned long long> childs;
+    for(long long i = 0; i < size; ++i)
         if(adjacencyMatrix->at(vertex).at(i) != NULL)
             childs.push_back(adjacencyMatrix->at(vertex).at(i)->To);
     return childs;
 }
-std::vector<unsigned int> AdjacencyMatrixOriented::GetParents(unsigned int vertex) const
+std::vector<unsigned long long> AdjacencyMatrixOriented::GetParents(unsigned long long vertex) const
 {
-    std::vector<unsigned int> parents;
-    for(int i = 0; i < size; ++i)
+    std::vector<unsigned long long> parents;
+    for(long long i = 0; i < size; ++i)
         if(adjacencyMatrix->at(i).at(vertex) != NULL)
             parents.push_back(adjacencyMatrix->at(i).at(vertex)->From);
     return parents;
@@ -113,36 +113,36 @@ void AdjacencyMatrixOriented::AddNodes(size_t amount)
     size_t oldSize = this->size;
     this->size += amount;
     adjacencyMatrix->resize(size);
-    for(int i = 0; i < size; ++i)
+    for(long long i = 0; i < size; ++i)
         adjacencyMatrix->at(i).resize(size);
-    for(int i = 0; i < oldSize; ++i)
-        for(int j = oldSize; j < size; ++j)
+    for(long long i = 0; i < oldSize; ++i)
+        for(long long j = oldSize; j < size; ++j)
             adjacencyMatrix->at(i).at(j) = NULL;
-    for(int i = oldSize; i < size; ++i)
-        for(int j = 0; j < size; ++j)
+    for(long long i = oldSize; i < size; ++i)
+        for(long long j = 0; j < size; ++j)
             adjacencyMatrix->at(i).at(j) = NULL;
 }
-bool AdjacencyMatrixOriented::AddEdge(int from, int to)
+bool AdjacencyMatrixOriented::AddEdge(long long from, long long to)
 {
     return AddEdge(new Edge(from, to));
 }
-bool AdjacencyMatrixOriented::CheckEdge(int from, int to)
+bool AdjacencyMatrixOriented::CheckEdge(long long from, long long to)
 {
     if(from == to)
         return true;
     return adjacencyMatrix->at(from).at(to) != NULL;
 }
-Edge* AdjacencyMatrixOriented::GetEdge(int from, int to)
+Edge* AdjacencyMatrixOriented::GetEdge(long long from, long long to)
 {
     return adjacencyMatrix->at(from).at(to);
 }
-Edge* AdjacencyMatrixOriented::RemoveEdge(int from, int to)
+Edge* AdjacencyMatrixOriented::RemoveEdge(long long from, long long to)
 {
     Edge* e = this->adjacencyMatrix->at(from).at(to);
     this->adjacencyMatrix->at(from).at(to) = NULL;
     return e;
 }
-void AdjacencyMatrixOriented::DeleteEdge(unsigned int from, unsigned int to)
+void AdjacencyMatrixOriented::DeleteEdge(unsigned long long from, unsigned long long to)
 {
     if(this->adjacencyMatrix->at(from).at(to) != NULL)
     {
@@ -150,7 +150,7 @@ void AdjacencyMatrixOriented::DeleteEdge(unsigned int from, unsigned int to)
         this->adjacencyMatrix->at(from).at(to) = NULL;
     }
 }
-void AdjacencyMatrixOriented::DeleteNodeEdges(unsigned int v)
+void AdjacencyMatrixOriented::DeleteNodeEdges(unsigned long long v)
 {
     for(auto a = this->adjacencyMatrix->begin(); a != this->adjacencyMatrix->end(); ++a)
     {
@@ -185,15 +185,15 @@ bool AdjacencyMatrixOriented::AddEdge(Edge *edge)
     adjacencyMatrix->at(edge->From).at(edge->To) = edge;
     return true;
 }
-void AdjacencyMatrixOriented::InitializeNewGraph(unsigned int size)
+void AdjacencyMatrixOriented::InitializeNewGraph(unsigned long long size)
 {
     this->DeleteAllEdges();
     this->size = size;
     adjacencyMatrix->resize(size);
-    for(int i = 0; i < size; ++i)
+    for(long long i = 0; i < size; ++i)
     {
         adjacencyMatrix->at(i).resize(size);
-        for(int j = 0; j < size; ++j)
+        for(long long j = 0; j < size; ++j)
             adjacencyMatrix->at(i).at(j)= NULL;
     }
 }
