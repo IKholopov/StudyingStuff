@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include "NetworkManager.h"
+#include "EdgeListOriented.h"
 
 NetworkEdgeValue<long long> randInt()
 {
@@ -32,7 +33,7 @@ int main()
     NetworkGraph<long long> graph(500, new AdjacencyMatrixOriented());
     graph.RandomizeGraph(0.04, &randInt);
     NetworkManager<long long>::instance().ThreeIndiansAlgorithm(graph, 0, 1);*/
-    auto in = NetworkManager<long long>::instance().ReadGraph(std::cin, new AdjacencyMatrixOriented());
+    auto in = NetworkManager<long long>::instance().ReadGraph(std::cin, new EdgeListOriented());
     auto edges = in.first;
     auto graph = in.second;
     NetworkManager<long long>::instance().ThreeIndiansAlgorithm(*graph, 0, graph->Size() - 1);
