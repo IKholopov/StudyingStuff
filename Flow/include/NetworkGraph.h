@@ -34,10 +34,11 @@ std::pair<NetworkGraph<FlowType>*, std::vector<long>* > NetworkGraph<FlowType>::
     IGraph* implementation = this->graph->Clone();
     implementation->DeleteAllEdges();
     NetworkGraph<FlowType>* layered = new NetworkGraph<FlowType>(this->Size(), implementation);
-    std::vector<Edge*> edges = this->GetAllEdges();
-    for(auto e = edges.begin(); e != edges.end(); ++e)
+    auto edges = this->GetAllEdges();
+    for(auto e = edges->begin(); e != edges->end(); ++e)
         if(distances->at((*e)->From) + 1 == distances->at((*e)->To))
             layered->BaseGraph::AddEdge((*e)->Clone());
+    delete edges;
     return std::pair<NetworkGraph<FlowType>*, std::vector<long>* >(layered, distances);
 }
 template <class FlowType>
@@ -59,8 +60,8 @@ void NetworkGraph<FlowType>::AddFlowToResidiual(unsigned long long from, unsigne
 template <class FlowType>
 void NetworkGraph<FlowType>::FlowFromResidual(NetworkGraph<FlowType> &residual)
 {
-    std::vector<Edge*> edges = this->GetAllEdges();
-    for(auto e = edges.begin(); e != edges.end(); ++e)
+    auto edges = this->GetAllEdges();
+    for(auto e = edges->begin(); e != edges->end(); ++e)
     {
         ValuedEdge<NetworkEdgeValue<FlowType>>* edge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(*e);
         if(!residual.CheckEdge(edge->From, edge->To))
@@ -72,4 +73,5 @@ void NetworkGraph<FlowType>::FlowFromResidual(NetworkGraph<FlowType> &residual)
                 edge->SetValue(NetworkEdgeValue<FlowType>(edge->GetValue().Capacity, edge->GetValue().Capacity - resEdge->GetValue().Capacity));
         }
     }
+    delete edges;
 }

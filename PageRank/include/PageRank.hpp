@@ -85,15 +85,17 @@ void PageRank<T>::PageRankForSteps(int steps)
         for(int j = 0; j < Size(); ++j)
         {
             double sum = 0;
-            std::vector<unsigned long long> parents = GetParents(j);
-                for(int k = 0; k < parents.size(); ++k)
+            auto parents = GetParents(j);
+                for(int k = 0; k < parents->size(); ++k)
             {
                 if(j == k)
                     continue;
-                std::vector<unsigned long long> childs = GetChilds(parents[k]);
-                sum += oldRank->at(k) / childs.size();
+                auto childs = GetChilds(parents->at(k));
+                sum += oldRank->at(k) / childs->size();
+                delete childs;
             }
             rank->push_back((1.0 - d) / Size() + d * sum);
+            delete parents;
         }
     }
 }

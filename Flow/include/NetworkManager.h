@@ -66,14 +66,14 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                 (unsigned long long i){
             if(i == source)
                 return;
-            std::vector<unsigned long long> childs = layeredNetwork->GetChilds(i);
+            auto childs = layeredNetwork->GetChilds(i);
             sumOut[i] = 0;
             sumIn[i] = 0;
-            for(auto v = childs.begin(); v != childs.end(); ++v)
+            for(auto v = childs->begin(); v != childs->end(); ++v)
                 if(layeredNetwork->CheckEdge(i, *v))
                     sumOut[i] += static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(layeredNetwork->GetEdge(i, *v))->GetValue().Capacity;
-            std::vector<unsigned long long> parents = layeredNetwork->GetParents(i);
-            for(auto v = parents.begin(); v != parents.end(); ++v)
+            auto parents = layeredNetwork->GetParents(i);
+            for(auto v = parents->begin(); v != parents->end(); ++v)
                 if(layeredNetwork->CheckEdge(*v, i))
                     sumIn[i] += static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(layeredNetwork->GetEdge(*v, i))->GetValue().Capacity;
             capacities[i] = sumIn[i] < sumOut[i] ? sumIn[i] : sumOut[i];
@@ -82,20 +82,25 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                 if(i == sink)
                 {
                     capacities[i] = sumIn[i];
+                    delete childs;
+                    delete parents;
                     return;
                 }
                 layeredNetwork->DeleteNodeEdges(i);
-                for(auto v = childs.begin(); v != childs.end(); ++v)
+                for(auto v = childs->begin(); v != childs->end(); ++v)
                     updateCapacity(*v);
-                for(auto v = parents.begin(); v != parents.end(); ++v)
+                for(auto v = parents->begin(); v != parents->end(); ++v)
                     updateCapacity(*v);
             }
+            childs->empty();
+            delete childs;
+            delete parents;
         };
         std::function<void(unsigned long long v)> backward = [&layeredNetwork, &residualNetwork, &flowExceeds](unsigned long long index)
         {
-            std::vector<unsigned long long> parents = layeredNetwork->GetParents(index);
+            auto parents = layeredNetwork->GetParents(index);
             FlowType flow = flowExceeds[index];
-            for(auto v = parents.begin(); v != parents.end(); ++v)
+            for(auto v = parents->begin(); v != parents->end(); ++v)
             {
                 auto edge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(layeredNetwork->GetEdge(*v, index));
                 if(edge == NULL)
@@ -115,12 +120,13 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                     break;
                 }
             }
+            delete parents;
         };
         std::function<void(unsigned long long v)> forward = [&layeredNetwork, &residualNetwork, &flowExceeds](unsigned long long index)
         {
-            std::vector<unsigned long long> childs = layeredNetwork->GetChilds(index);
+            auto childs = layeredNetwork->GetChilds(index);
             FlowType flow = flowExceeds[index];
-            for(auto v = childs.begin(); v != childs.end(); ++v)
+            for(auto v = childs->begin(); v != childs->end(); ++v)
             {
                 auto edge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(layeredNetwork->GetEdge(index, *v));
                 if(edge == NULL)
@@ -140,6 +146,7 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                     break;
                 }
             }
+            delete childs;
         };
         for(long long i = 0; i < layeredNetwork->Size(); ++i)
         {
@@ -224,8 +231,9 @@ void NetworkManager<FlowType>::WriteGraphFlow(std::ostream &stream, NetworkGraph
 {
     auto v = graph->GetChilds(0);
     FlowType sum = 0;
-    for(auto a = v.begin(); a != v.end(); ++a)
+    for(auto a = v->begin(); a != v->end(); ++a)
         sum += graph->GetEdgeValue(0, *a).Flow;
+    delete v;
     stream << sum << std::endl;
     for(auto a = (*edges).begin(); a != (*edges).end(); ++a)
         stream << graph->GetEdgeValue((*a).From, (*a).To).Flow << std::endl;

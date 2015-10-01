@@ -57,8 +57,9 @@ void Prim()
         graph.AddEdge(u, v, val);
     }
     UnorientedGraphValuedEdge<double>* mst = Prim(&graph);
-    std::vector<Edge*> edges = mst->GetAllEdgesSorted();
-    for(int i = 0; i < edges.size(); ++i)
-        std::cout << edges[i]->From << " " << edges[i]->To << " " << ((ValuedEdge<double>*)edges[i])->GetValue() << std::endl;
+    std::vector<Edge*>* edges = mst->GetAllEdgesSorted();
+    for(int i = 0; i < edges->size(); ++i)
+        std::cout << edges->at(i)->From << " " << edges->at(i)->To << " " << ((ValuedEdge<double>*)edges->at(i))->GetValue() << std::endl;
+    delete edges;
     delete mst;
 }

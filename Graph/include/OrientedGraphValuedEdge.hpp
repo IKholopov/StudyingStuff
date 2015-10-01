@@ -56,12 +56,13 @@ void OrientedGraphValuedEdge<T>::ReadFromFile(std::istream &file)
 template <class T>
 void OrientedGraphValuedEdge<T>::WriteToFile(std::ostream &file)
 {
-    std::vector<Edge*> sorted = this->GetAllEdgesSorted();
+    std::vector<Edge*>* sorted = this->GetAllEdgesSorted();
     file << this->Size() << std::endl;
-    file << sorted.size() << std::endl;
-    for(long long i = 0; i < sorted.size(); ++i)
-        file << sorted[i]->From << " " << sorted[i]->To << " " <<
-                ((ValuedEdge<T>*)sorted[i])->GetValue() << std::endl;
+    file << sorted->size() << std::endl;
+    for(long long i = 0; i < sorted->size(); ++i)
+        file << sorted->at(i)->From << " " << sorted->at(i)->To << " " <<
+                ((ValuedEdge<T>*)sorted->at(i))->GetValue() << std::endl;
+    delete sorted;
 }
 template <class T>
 bool OrientedGraphValuedEdge<T>::CheckConnection()

@@ -29,11 +29,11 @@ void OrientedGraph::ReadFromFile(std::ifstream& file)
 }
 void OrientedGraph::WriteToFile(std::ofstream &file)
 {
-    std::vector<Edge*> edges = this->graph->GetAllEdges();
+    std::vector<Edge*>* edges = this->graph->GetAllEdges();
     file << this->Size() << std::endl;
-    file << edges.size() << std::endl;
-    for(long long i = 0; i < edges.size(); ++i)
-        file << edges[i]->From << " " << edges[i]->To << std::endl;
+    file << edges->size() << std::endl;
+    for(long long i = 0; i < edges->size(); ++i)
+        file << edges->at(i)->From << " " << edges->at(i)->To << std::endl;
 }
 void OrientedGraph::WriteToFile(std::string filename)
 {
@@ -69,11 +69,12 @@ void OrientedGraph::BFS(unsigned long long source, std::function<void(unsigned l
             continue;
         vertexes[u] = Color::Grey;
         auto childs = this->GetChilds(u);
-        for(auto v = childs.begin(); v != childs.end(); ++v)
+        for(auto v = childs->begin(); v != childs->end(); ++v)
         {
             operation(u, *v);
             q.push(*v);
         }
         vertexes[u] = Color::Black;
+        delete childs;
     }
 }
