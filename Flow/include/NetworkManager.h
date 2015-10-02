@@ -52,6 +52,18 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
         auto layered = residualNetwork->GetLayeredNetwork(source, sink);
         auto distances = layered.second;
         auto layeredNetwork = layered.first;
+
+        std::vector<Edge*>* edges = residualNetwork->GetAllEdges();
+        for(auto e: *edges)
+            assert(e->From <= 600 && e->To <= 600);
+        delete edges;
+
+        edges = layeredNetwork->GetAllEdges();
+        for(auto e: *edges)
+            assert(e->From <= 600 && e->To <= 600);
+        delete edges;
+
+
         if(distances->at(sink) == 0)
         {
             delete layeredNetwork;
@@ -66,87 +78,92 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                 (unsigned long long i){
             if(i == source)
                 return;
-            auto childs = layeredNetwork->GetChilds(i);
+            auto childs = layeredNetwork->GetOutgoing(i);
             sumOut[i] = 0;
             sumIn[i] = 0;
+            std::vector<unsigned int> downNodes;
+            std::vector<unsigned int> upNodes;
             for(auto v = childs->begin(); v != childs->end(); ++v)
-                if(layeredNetwork->CheckEdge(i, *v))
-                    sumOut[i] += static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(layeredNetwork->GetEdge(i, *v))->GetValue().Capacity;
-            auto parents = layeredNetwork->GetParents(i);
+            {
+                    sumOut[i] += static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(*v)->GetValue().Capacity;
+                    downNodes.push_back((*v)->To);
+            }
+            auto parents = layeredNetwork->GetIngoing(i);
             for(auto v = parents->begin(); v != parents->end(); ++v)
-                if(layeredNetwork->CheckEdge(*v, i))
-                    sumIn[i] += static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(layeredNetwork->GetEdge(*v, i))->GetValue().Capacity;
+            {
+                    sumIn[i] += (static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(*v))->GetValue().Capacity;
+                    upNodes.push_back((*v)->From);
+            }
             capacities[i] = sumIn[i] < sumOut[i] ? sumIn[i] : sumOut[i];
             if(capacities[i] == 0)
             {
                 if(i == sink)
                 {
                     capacities[i] = sumIn[i];
-                    delete childs;
-                    delete parents;
                     return;
                 }
                 layeredNetwork->DeleteNodeEdges(i);
-                for(auto v = childs->begin(); v != childs->end(); ++v)
-                    updateCapacity(*v);
-                for(auto v = parents->begin(); v != parents->end(); ++v)
-                    updateCapacity(*v);
+                for(auto v = downNodes.begin(); v != downNodes.end(); ++v)
+                    updateCapacity((*v));
+                for(auto v = upNodes.begin(); v != upNodes.end(); ++v)
+                    updateCapacity((*v));
             }
-            childs->empty();
-            delete childs;
-            delete parents;
         };
         std::function<void(unsigned long long v)> backward = [&layeredNetwork, &residualNetwork, &flowExceeds](unsigned long long index)
         {
-            auto parents = layeredNetwork->GetParents(index);
+            auto parents = layeredNetwork->GetIngoing(index);
+            std::vector<unsigned int> edgesToDelete;
             FlowType flow = flowExceeds[index];
-            for(auto v = parents->begin(); v != parents->end(); ++v)
+            for(auto e = parents->begin(); e != parents->end(); ++e)
             {
-                auto edge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(layeredNetwork->GetEdge(*v, index));
+                auto edge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(*e);
                 if(edge == NULL)
                     continue;
                 if(flow >= edge->GetValue().Capacity)
                 {
-                    residualNetwork->AddFlowToResidiual(*v, index, edge->GetValue().Capacity);
+                    residualNetwork->AddFlowToResidiual(edge->From, index, edge->GetValue().Capacity);
                     flow -= edge->GetValue().Capacity;
-                    flowExceeds[*v] += edge->GetValue().Capacity;
-                    layeredNetwork->DeleteEdge(*v, index);
+                    flowExceeds[edge->From] += edge->GetValue().Capacity;
+                    edgesToDelete.push_back(edge->From);
                 }
                 else
                 {
-                    residualNetwork->AddFlowToResidiual(*v, index, flow);
+                    residualNetwork->AddFlowToResidiual(edge->From, index, flow);
                     edge->SetValue(NetworkEdgeValue<FlowType>(edge->GetValue().Capacity - flow, edge->GetValue().Flow));
-                    flowExceeds[*v] += flow;
+                    flowExceeds[edge->From] += flow;
                     break;
                 }
             }
-            delete parents;
+            for(auto e = edgesToDelete.begin(); e != edgesToDelete.end(); ++e)
+                layeredNetwork->DeleteEdge(*e, index);
         };
         std::function<void(unsigned long long v)> forward = [&layeredNetwork, &residualNetwork, &flowExceeds](unsigned long long index)
         {
-            auto childs = layeredNetwork->GetChilds(index);
+            auto childs = layeredNetwork->GetOutgoing(index);
+            std::vector<unsigned int> edgesToDelete;
             FlowType flow = flowExceeds[index];
-            for(auto v = childs->begin(); v != childs->end(); ++v)
+            for(auto e = childs->begin(); e != childs->end(); ++e)
             {
-                auto edge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(layeredNetwork->GetEdge(index, *v));
+                auto edge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(*e);
                 if(edge == NULL)
                     continue;
                 if(flow >= edge->GetValue().Capacity)
                 {
-                    residualNetwork->AddFlowToResidiual(index, *v, edge->GetValue().Capacity);
+                    residualNetwork->AddFlowToResidiual(index, edge->To, edge->GetValue().Capacity);
                     flow -= edge->GetValue().Capacity;
-                    flowExceeds[*v] += edge->GetValue().Capacity;
-                    layeredNetwork->DeleteEdge(index, *v);
+                    flowExceeds[edge->To] += edge->GetValue().Capacity;
+                    edgesToDelete.push_back(edge->To);
                 }
                 else
                 {
-                    residualNetwork->AddFlowToResidiual(index, *v, flow);
+                    residualNetwork->AddFlowToResidiual(index, edge->To, flow);
                     edge->SetValue(NetworkEdgeValue<FlowType>(edge->GetValue().Capacity - flow, edge->GetValue().Flow));
-                    flowExceeds[*v] += flow;
+                    flowExceeds[edge->To] += flow;
                     break;
                 }
             }
-            delete childs;
+            for(auto e = edgesToDelete.begin(); e != edgesToDelete.end(); ++e)
+                layeredNetwork->DeleteEdge(index, *e);
         };
         for(long long i = 0; i < layeredNetwork->Size(); ++i)
         {

@@ -3,18 +3,22 @@
 
 #include <utility>
 #include "NetworkEdge.h"
+#include "IMultiGraph.h"
 #include "OrientedGraphValuedEdge.hpp"
 
 template <class FlowType>
 class NetworkGraph: public OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>
 {
     public:
-        NetworkGraph(IGraph& graph): OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(graph) {}
+        NetworkGraph(IMultiGraph& graph): OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(graph) {}
         NetworkGraph(unsigned long long size, IGraph& graph):OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(size, graph) {}
-        NetworkGraph(IGraph* graph): OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(graph) {}
+        NetworkGraph(IMultiGraph* graph): OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(graph) {}
         NetworkGraph(unsigned long long size, IGraph* graph):OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>(size, graph) {}
         ~NetworkGraph() {}
 
+        const std::vector<Edge*>* GetAllEdgesConst() const;
+        const std::vector<Edge*>* GetOutgoing(unsigned long long vertex) const;
+        const std::vector<Edge*>* GetIngoing(unsigned long long vertex) const;
         std::pair<NetworkGraph<FlowType> *, std::vector<long> *> GetLayeredNetwork(unsigned long long source, unsigned long long sink);\
         void AddFlowToResidiual(unsigned long long from, unsigned long long to, FlowType flow);
         void FlowFromResidual(NetworkGraph<FlowType> &residual);
@@ -22,6 +26,21 @@ class NetworkGraph: public OrientedGraphValuedEdge<NetworkEdgeValue<FlowType>>
 
 #endif
 
+template <class FlowType>
+const std::vector<Edge *> *NetworkGraph<FlowType>::GetAllEdgesConst() const
+{
+    return static_cast<IMultiGraph*>(this->graph)->GetAllEdgesConst();
+}
+template <class FlowType>
+const std::vector<Edge *> *NetworkGraph<FlowType>::GetOutgoing(unsigned long long vertex) const
+{
+    return static_cast<IMultiGraph*>(this->graph)->GetOutgoing(vertex);
+}
+template <class FlowType>
+const std::vector<Edge *> *NetworkGraph<FlowType>::GetIngoing(unsigned long long vertex) const
+{
+    return static_cast<IMultiGraph*>(this->graph)->GetIngoing(vertex);
+}
 template <class FlowType>
 std::pair<NetworkGraph<FlowType>*, std::vector<long>* > NetworkGraph<FlowType>::GetLayeredNetwork(unsigned long long source, unsigned long long sink)
 {
