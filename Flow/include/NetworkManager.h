@@ -45,6 +45,7 @@ template <class FlowType>
 void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &graph,
                                                                        unsigned long long source, unsigned long long sink)
 {
+
     assert(source < graph.Size() && sink < graph.Size());
     NetworkGraph<FlowType>* residualNetwork = static_cast< NetworkGraph<FlowType>* >(graph.Clone());
     while(true)
@@ -52,6 +53,10 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
         auto layered = residualNetwork->GetLayeredNetwork(source, sink);
         auto distances = layered.second;
         auto layeredNetwork = layered.first;
+        std::vector<std::vector<bool>> layeredDeleted(layeredNetwork->Size());
+        for(int i = 0; i < layeredDeleted.size(); ++i)
+            layeredDeleted[i].resize(layeredNetwork->Size(), 0);
+        unsigned long long remainingEdges = layeredNetwork->GetAllEdgesConst()->size();
         if(distances->at(sink) == 0)
         {
             delete layeredNetwork;
@@ -62,7 +67,7 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
         std::vector<FlowType> sumIn(layeredNetwork->Size(), 0);
         std::vector<FlowType> sumOut(layeredNetwork->Size(), 0);
         std::vector<FlowType> flowExceeds(layeredNetwork->Size(), 0);
-        std::function<void(unsigned long long i)> updateCapacity = [&capacities, &layeredNetwork, &sumIn, &sumOut, &updateCapacity, &source, &sink]
+        std::function<void(unsigned long long i)> updateCapacity = [&layeredDeleted, &remainingEdges,&capacities, &layeredNetwork, &sumIn, &sumOut, &updateCapacity, &source, &sink]
                 (unsigned long long i){
             if(i == source)
                 return;
@@ -73,14 +78,20 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
             std::vector<unsigned int> upNodes;
             for(auto v = childs->begin(); v != childs->end(); ++v)
             {
+                if(!layeredDeleted[i][(*v)->To])
+                {
                     sumOut[i] += static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(*v)->GetValue().Capacity;
                     downNodes.push_back((*v)->To);
+                }
             }
             auto parents = layeredNetwork->GetIngoing(i);
             for(auto v = parents->begin(); v != parents->end(); ++v)
             {
+                if(!layeredDeleted[(*v)->From][i])
+                {
                     sumIn[i] += (static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(*v))->GetValue().Capacity;
                     upNodes.push_back((*v)->From);
+                }
             }
             capacities[i] = sumIn[i] < sumOut[i] ? sumIn[i] : sumOut[i];
             if(capacities[i] == 0)
@@ -90,14 +101,28 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                     capacities[i] = sumIn[i];
                     return;
                 }
-                layeredNetwork->DeleteNodeEdges(i);
-                for(auto v = downNodes.begin(); v != downNodes.end(); ++v)
-                    updateCapacity((*v));
-                for(auto v = upNodes.begin(); v != upNodes.end(); ++v)
-                    updateCapacity((*v));
+                for(auto v = childs->begin(); v != childs->end(); ++v)
+                {
+                    if(!layeredDeleted[i][(*v)->To])
+                    {
+                        layeredDeleted[i][(*v)->To] = 1;
+                        --remainingEdges;
+                        updateCapacity((*v)->To);
+                    }
+                }
+                for(auto v = parents->begin(); v != parents->end(); ++v)
+                {
+                    if(!layeredDeleted[(*v)->From][i])
+                    {
+                        layeredDeleted[(*v)->From][i] = 1;
+                        --remainingEdges;
+                        updateCapacity((*v)->From);
+                    }
+                }
+                //layeredNetwork->DeleteNodeEdges(i);
             }
         };
-        std::function<void(unsigned long long v)> backward = [&layeredNetwork, &residualNetwork, &flowExceeds](unsigned long long index)
+        std::function<void(unsigned long long v)> backward = [&layeredDeleted, &remainingEdges, &layeredNetwork, &residualNetwork, &flowExceeds](unsigned long long index)
         {
             auto parents = layeredNetwork->GetIngoing(index);
             std::vector<unsigned int> edgesToDelete;
@@ -105,7 +130,7 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
             for(auto e = parents->begin(); e != parents->end(); ++e)
             {
                 auto edge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(*e);
-                if(edge == NULL)
+                if(edge == NULL || layeredDeleted[edge->From][edge->To])
                     continue;
                 if(flow >= edge->GetValue().Capacity)
                 {
@@ -123,9 +148,15 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                 }
             }
             for(auto e = edgesToDelete.begin(); e != edgesToDelete.end(); ++e)
-                layeredNetwork->DeleteEdge(*e, index);
+            {
+                if(!layeredDeleted[(*e)][index])
+                {
+                    layeredDeleted[(*e)][index] = 1;
+                    --remainingEdges;
+                }
+            }
         };
-        std::function<void(unsigned long long v)> forward = [&layeredNetwork, &residualNetwork, &flowExceeds](unsigned long long index)
+        std::function<void(unsigned long long v)> forward = [&layeredDeleted, &remainingEdges, &layeredNetwork, &residualNetwork, &flowExceeds](unsigned long long index)
         {
             auto childs = layeredNetwork->GetOutgoing(index);
             std::vector<unsigned int> edgesToDelete;
@@ -133,7 +164,7 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
             for(auto e = childs->begin(); e != childs->end(); ++e)
             {
                 auto edge = static_cast<ValuedEdge<NetworkEdgeValue<FlowType>>*>(*e);
-                if(edge == NULL)
+                if(edge == NULL || layeredDeleted[edge->From][edge->To])
                     continue;
                 if(flow >= edge->GetValue().Capacity)
                 {
@@ -151,7 +182,13 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                 }
             }
             for(auto e = edgesToDelete.begin(); e != edgesToDelete.end(); ++e)
-                layeredNetwork->DeleteEdge(index, *e);
+            {
+                if(!layeredDeleted[index][(*e)])
+                {
+                    layeredDeleted[index][(*e)] = 1;
+                    --remainingEdges;
+                }
+            }
         };
         for(long long i = 0; i < layeredNetwork->Size(); ++i)
         {
@@ -159,7 +196,7 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                 continue;
             updateCapacity(i);
         }
-        while(layeredNetwork->NumberOfEdges() != 0){
+        while(remainingEdges != 0){
             FlowType min = 0;
             unsigned long long minIndex = 0;
             for(long long j = 0; j < capacities.size(); ++j)
@@ -174,7 +211,8 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
                     min = capacities[j];
                     minIndex = j;
                 }
-            assert(min != 0);
+            if(min == 0)
+                break;//assert(min != 0);
             flowExceeds[minIndex] = min;
             backward(minIndex);
             forward(minIndex);
