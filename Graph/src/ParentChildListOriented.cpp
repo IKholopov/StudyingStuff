@@ -181,34 +181,37 @@ void ParentChildListOriented::DeleteEdge(unsigned long long from, unsigned long 
 }
 void ParentChildListOriented::DeleteNodeEdges(unsigned long long v)
 {
-    std::vector<Edge*> edgesToDelete;
     for(long long i = 0; i < edges.size(); ++i)
         if(edges[i]->From == v || edges[i]->To == v)
         {
-            edgesToDelete.push_back(edges[i]);
+            delete(edges[i]);
             edges.erase(edges.begin() + i);
             --i;
         }
     for(int i  = 0; i < this->ingoingEdges.size(); ++i)
     {
         for(int j = 0; j < this->ingoingEdges[i].size(); ++j)
-            if(ingoingEdges[i][j]->From == v || ingoingEdges[i][j]->To == v )
+        {
+            Edge* e = ingoingEdges[i][j];
+            if(e->From == v || e->To == v )
             {
                 ingoingEdges[i].erase(ingoingEdges[i].begin() + j);
                 --j;
             }
+        }
     }
     for(int i  = 0; i < this->outgoingEdges.size(); ++i)
     {
         for(int j = 0; j < this->outgoingEdges[i].size(); ++j)
-            if(outgoingEdges[i][j]->From == v || outgoingEdges[i][j]->To == v )
+        {
+            Edge* e = outgoingEdges[i][j];
+            if(e->From == v || e->To == v )
             {
                 outgoingEdges[i].erase(outgoingEdges[i].begin() + j);
                 --j;
             }
+        }
     }
-    for(auto e = edgesToDelete.begin(); e < edgesToDelete.end(); ++e)
-        delete (*e);
     this->ingoingEdges.at(v).clear();
     this->outgoingEdges.at(v).clear();
 

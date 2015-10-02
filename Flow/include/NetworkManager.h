@@ -52,18 +52,6 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
         auto layered = residualNetwork->GetLayeredNetwork(source, sink);
         auto distances = layered.second;
         auto layeredNetwork = layered.first;
-
-        std::vector<Edge*>* edges = residualNetwork->GetAllEdges();
-        for(auto e: *edges)
-            assert(e->From <= 600 && e->To <= 600);
-        delete edges;
-
-        edges = layeredNetwork->GetAllEdges();
-        for(auto e: *edges)
-            assert(e->From <= 600 && e->To <= 600);
-        delete edges;
-
-
         if(distances->at(sink) == 0)
         {
             delete layeredNetwork;
