@@ -1,25 +1,22 @@
 #ifndef GRAPH_EDGE_H
 #define GRAPH_EDGE_H
 
+#include <istream>
+
 class Edge
 {
     public:
-        Edge(unsigned long long from, unsigned long long to)
-        {
-            this->From = from;
-            this->To = to;
-        }
-        virtual Edge* GetReversed()
-        {
-            return new Edge(To, From);
-        }
-        virtual Edge* Clone()
-        {
-            return new Edge(*this);
-        }
+        Edge(unsigned long long from, unsigned long long to);
 
+        //TODOstatic  Edge* ReadEdge(std::istream& stream);
+        virtual Edge* GetReversed();
+        virtual Edge* Clone();
+        unsigned long long GetId();
         unsigned long long From;
         unsigned long long To;
+        void SetId(unsigned long long id);
+    protected:
+        unsigned long long id;
 };
 
 #endif

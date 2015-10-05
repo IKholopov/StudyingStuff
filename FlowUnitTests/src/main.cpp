@@ -4,9 +4,9 @@
 #include "EdgeListOriented.h"
 #include "ParentChildListOriented.h"
 
-NetworkEdgeValue<long long> randInt()
+long long randInt()
 {
-    return NetworkEdgeValue<long long>(rand() % 25 + 1, 0);
+    return rand() % 25 + 1;
 }
 
 int main()
@@ -30,6 +30,7 @@ int main()
     v.push_back(new NetEdge(6, 8, NetworkEdgeValue<long long>(3, 0)));
     v.push_back(new NetEdge(7, 8, NetworkEdgeValue<long long>(2, 0)));
     v.push_back(new NetEdge(8, 7, NetworkEdgeValue<long long>(3, 0)));
+
     auto flowed = NetworkManager<long long>::instance().ThreeIndiansAlgorithm(9, v, 0, 8);
     NetworkGraph<long long> graph(500, new AdjacencyMatrixOriented());
     graph.RandomizeGraph(0.04, &randInt);

@@ -24,7 +24,7 @@ void OrientedGraph::ReadFromFile(std::ifstream& file)
         unsigned long long from, to;
         file >> from;
         file >> to;
-        this->AddEdge(from, to);
+        // TODO: this->AddEdge(from, to);
     }
 }
 void OrientedGraph::WriteToFile(std::ofstream &file)
@@ -51,11 +51,12 @@ void OrientedGraph::RandomizeGraph(double probability)
                 continue;
             if(!(rand() % (long long)(1.0 / probability)))
             {
-                this->AddEdge(i, j);
+                //TODO: this->AddEdge(i, j);
             }
         }
 }
-void OrientedGraph::BFS(unsigned long long source, std::function<void(unsigned long long, unsigned long long)> operation)
+void OrientedGraph::BFS(unsigned long long source, std::function<bool(unsigned long long, unsigned long long, Edge* edge)> operation,
+                        std::function<bool(Edge* edge)> edgeCondition)
 {
     enum Color{White, Grey, Black};
     std::vector<Color> vertexes (this->Size(), Color::White);
@@ -71,7 +72,13 @@ void OrientedGraph::BFS(unsigned long long source, std::function<void(unsigned l
         auto childs = this->GetChilds(u);
         for(auto v = childs->begin(); v != childs->end(); ++v)
         {
-            operation(u, *v);
+            if(!edgeCondition(this->GetEdge(u, *v)))
+                continue;
+            if(!operation(u, *v, this->GetEdge(u, *v)))
+            {
+                q.push(*v);
+                break;
+            }
             q.push(*v);
         }
         vertexes[u] = Color::Black;

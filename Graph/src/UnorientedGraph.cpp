@@ -21,7 +21,7 @@ void UnorientedGraph::ReadFromFile(std::ifstream &file)
         unsigned long long from, to;
         file >> from;
         file >> to;
-        this->AddEdge(from, to);
+        //TODO: this->AddEdge(from, to);
     }
 }
 void UnorientedGraph::WriteToFile(std::string filename)
@@ -48,7 +48,7 @@ void UnorientedGraph::RandomizeGraph(double probability)
                 continue;
             if(!(rand() % (long long)(1.0 / probability)))
             {
-                this->AddEdge(i, j);
+                //TODO: this->AddEdge(i, j);
             }
         }
 }

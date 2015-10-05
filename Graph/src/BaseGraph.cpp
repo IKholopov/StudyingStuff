@@ -28,10 +28,6 @@ void BaseGraph::AddNodes(size_t amount)
 {
     graph->AddNodes(amount);
 }
-bool BaseGraph::AddEdge(long long from, long long to)
-{
-    return graph->AddEdge(from, to);
-}
 bool BaseGraph::AddEdge(Edge *edge)
 {
     return graph->AddEdge(edge);

@@ -137,6 +137,20 @@ Edge* ParentChildListOriented::GetEdge(long long from, long long to)
             return *u;
     return NULL;
 }
+Edge*ParentChildListOriented::GetEdge(long long from, long long to, unsigned long long id)
+{
+    for(auto u = this->outgoingEdges[from].begin(); u != this->outgoingEdges[from].end(); ++u)
+        if((*u)->To == to && (*u)->GetId() == id)
+            return *u;
+    return NULL;
+}
+Edge*ParentChildListOriented::GetEdge(unsigned long long id)
+{
+    for(auto u = this->edges.begin(); u != edges.end(); ++u)
+        if((*u)->GetId() == id)
+            return *u;
+    return NULL;
+}
 Edge* ParentChildListOriented::RemoveEdge(long long from, long long to)
 {
     Edge* edge = NULL;
@@ -235,9 +249,9 @@ bool ParentChildListOriented::AddEdge(Edge *edge)
 }
 void ParentChildListOriented::InitializeNewGraph(unsigned long long size)
 {
+    this->DeleteAllEdges();
     this->ingoingEdges.resize(size);
     this->outgoingEdges.resize(size);
-    this->DeleteAllEdges();
     this->size = size;
 }
 const std::vector<Edge *> *ParentChildListOriented::GetOutgoing(unsigned long long vertex) const

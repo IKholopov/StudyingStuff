@@ -85,8 +85,8 @@ void TestDictionary(std::string st)
         {
             if(j == i)
                 continue;
-            pr->AddEdge(pr->GetIndexOfPage(test[j]), pr->GetIndexOfPage(test[i]));
-            pr->AddEdge(pr->GetIndexOfPage(test[i]), pr->GetIndexOfPage(test[j]));
+            //TODO: pr->AddEdge(pr->GetIndexOfPage(test[j]), pr->GetIndexOfPage(test[i]));
+            //TODO: pr->AddEdge(pr->GetIndexOfPage(test[i]), pr->GetIndexOfPage(test[j]));
         }
         i = ++i % RANGE;
     }

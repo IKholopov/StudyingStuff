@@ -15,7 +15,6 @@ class IGraph
         virtual std::vector<unsigned long long>* GetChilds(unsigned long long vertex) const = 0;
         virtual std::vector<unsigned long long>* GetParents(unsigned long long vertex) const = 0;
         virtual void AddNodes(size_t amount) = 0;
-        virtual bool AddEdge(long long from, long long to) = 0;
         virtual bool CheckEdge(long long from, long long to) = 0;
         virtual Edge* GetEdge(long long from, long long to) = 0;
         virtual std::vector<Edge*>* GetAllEdges() const = 0;
