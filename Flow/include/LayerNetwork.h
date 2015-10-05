@@ -43,9 +43,9 @@ LayerNetwork<FlowType>::LayerNetwork(unsigned long long source, unsigned long lo
     this->source = source;
     this->sink = sink;
     distances = new std::vector<unsigned long long>(this->Size(), 0);
-    base.BFS(source, [&distances](unsigned long long u, unsigned long long v, Edge* e){
-        if(distances->at(v) == 0 && v != u)
-            distances->at(v) = distances->at(u) + 1;
+    base.BFS(source, [this](unsigned long long u, unsigned long long v, Edge* e){
+        if(this->distances->at(v) == 0 && v != u)
+            this->distances->at(v) = this->distances->at(u) + 1;
         return true;
     },
     [](Edge* edge){
@@ -122,36 +122,36 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
         assert(min != 0);
         auto p = VertexPotential(minVertex);
         flow[minVertex] = p;
-        this->BFS(minVertex, [&](unsigned long long from, unsigned long long to, Edge* e){
+        this->BFS(minVertex, [this, &flow, &residual](unsigned long long from, unsigned long long to, Edge* e){
             auto edge = static_cast<NetworkEdge<FlowType>*>(e);
             auto deltaFlow = flow[from] < edge->GetCapacity() ? flow[from] : edge->GetCapacity();
             residual.AddFlow(from, to, edge->GetId(), deltaFlow);
             flow[to] += deltaFlow;
             flow[from] -= deltaFlow;
-            outSums[from] -= deltaFlow;
-            inSums[to] -= deltaFlow;
+            this->outSums[from] -= deltaFlow;
+            this->inSums[to] -= deltaFlow;
             edge->SetCapacity(edge->GetCapacity() - deltaFlow);
             if(edge->GetCapacity() == 0)
             {
-                activeEdges[edge->GetId()] = 0;
-                --activeEdgesCounter;
+                this->activeEdges[edge->GetId()] = 0;
+                --(this->activeEdgesCounter);
             }
             return flow[from] > 0;
         }, true);
         flow[minVertex] = p;
-        this->BFS(minVertex, [&](unsigned long long to, unsigned long long from, Edge* e){
+        this->BFS(minVertex, [this, &flow, &residual](unsigned long long to, unsigned long long from, Edge* e){
             auto edge = static_cast<NetworkEdge<FlowType>*>(e);
             auto deltaFlow = flow[to] < edge->GetCapacity() ? flow[to] : edge->GetCapacity();
             residual.AddFlow(from, to, edge->GetId(), deltaFlow);
             flow[to] -= deltaFlow;
             flow[from] += deltaFlow;
-            outSums[from] -= deltaFlow;
-            inSums[to] -= deltaFlow;
+            this->outSums[from] -= deltaFlow;
+            this->inSums[to] -= deltaFlow;
             edge->SetCapacity(edge->GetCapacity() - deltaFlow);
             if(edge->GetCapacity() == 0)
             {
-                activeEdges[edge->GetId()] = 0;
-                --activeEdgesCounter;
+                this->activeEdges[edge->GetId()] = 0;
+                --(this->activeEdgesCounter);
             }
             return flow[to] > 0;
         }, false);
