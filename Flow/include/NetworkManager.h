@@ -6,6 +6,7 @@
 #include <istream>
 #include <ostream>
 #include "LayerNetwork.h"
+#include "ParentChildListOriented.h"
 
 template <class FlowType>
 class NetworkManager
@@ -43,7 +44,6 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
         if(layeredNetwork->GetDistances()->at(sink) == 0)
         {
             delete layeredNetwork;
-            delete distances;
             break;
         }
         layeredNetwork->FindBlockingPath(*residualNetwork);
