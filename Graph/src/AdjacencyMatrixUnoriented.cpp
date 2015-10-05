@@ -31,17 +31,19 @@ AdjacencyMatrixUnoriented::AdjacencyMatrixUnoriented(const AdjacencyMatrixUnorie
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(graph.size);
     InitializeNewGraph(graph.size);
-    std::vector<Edge*> edges = graph.GetAllEdges();
-    for(auto edge: edges)
+    std::vector<Edge*>* edges = graph.GetAllEdges();
+    for(auto edge: *edges)
         adjacencyMatrix->at(edge->From).at(edge->To) = edge->Clone();
+    delete edges;
 }
 AdjacencyMatrixUnoriented &AdjacencyMatrixUnoriented::operator=(const AdjacencyMatrixUnoriented &graph)
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(graph.size);
     InitializeNewGraph(graph.size);
-    std::vector<Edge*> edges = graph.GetAllEdges();
-    for(auto edge: edges)
+    std::vector<Edge*>* edges = graph.GetAllEdges();
+    for(auto edge: *edges)
         adjacencyMatrix->at(edge->From).at(edge->To) = edge->Clone();
+    delete edges;
 }
 AdjacencyMatrixUnoriented *AdjacencyMatrixUnoriented::Clone() const
 {
@@ -70,39 +72,39 @@ unsigned long long AdjacencyMatrixUnoriented::NumberOfEdges() const
                ++counter;
     return counter;
 }
-std::vector<unsigned long long> AdjacencyMatrixUnoriented::GetChilds(unsigned long long vertex) const
+std::vector<unsigned long long> *AdjacencyMatrixUnoriented::GetChilds(unsigned long long vertex) const
 {
-    std::vector<unsigned long long> childs;
+    std::vector<unsigned long long>* childs = new std::vector<unsigned long long>();
     for(long long i = 0; i < size; ++i)
         if(adjacencyMatrix->at(vertex).at(i) != NULL)
-            childs.push_back(adjacencyMatrix->at(vertex).at(i)->To);
+            childs->push_back(adjacencyMatrix->at(vertex).at(i)->To);
     return childs;
 }
-std::vector<unsigned long long> AdjacencyMatrixUnoriented::GetParents(unsigned long long vertex) const
+std::vector<unsigned long long> *AdjacencyMatrixUnoriented::GetParents(unsigned long long vertex) const
 {
-    std::vector<unsigned long long> parents;
+    std::vector<unsigned long long>* parents = new std::vector<unsigned long long>();
     for(long long i = 0; i < size; ++i)
         if(adjacencyMatrix->at(i).at(vertex) != NULL)
-            parents.push_back(adjacencyMatrix->at(i).at(vertex)->From);
+            parents->push_back(adjacencyMatrix->at(i).at(vertex)->From);
     return parents;
 }
-std::vector<Edge*> AdjacencyMatrixUnoriented::GetAllEdges() const
+std::vector<Edge *> *AdjacencyMatrixUnoriented::GetAllEdges() const
 {
-    std::vector<Edge*> edges;
+    std::vector<Edge*>* edges = new std::vector<Edge*>();
     for(long long i = 0; i < size; ++i)
         for(long long j = i + 1; j < size; ++j)
             if(this->adjacencyMatrix->at(i).at(j) != NULL)
-               edges.push_back(this->adjacencyMatrix->at(i).at(j));
+               edges->push_back(this->adjacencyMatrix->at(i).at(j));
     return edges;
 }
-std::vector<Edge*> AdjacencyMatrixUnoriented::GetAllEdgesSorted()
+std::vector<Edge *> *AdjacencyMatrixUnoriented::GetAllEdgesSorted()
 {
-    std::vector<Edge*> edges;
+    std::vector<Edge*>* edges = new std::vector<Edge*>();
     for(long long i = 0; i < size; ++i)
         for(long long j = i + 1; j < size; ++j)
             if(this->adjacencyMatrix->at(i).at(j) != NULL)
-               edges.push_back(this->adjacencyMatrix->at(i).at(j));
-    std::sort(edges.begin(), edges.end(), [](Edge* a, Edge* b) {
+               edges->push_back(this->adjacencyMatrix->at(i).at(j));
+    std::sort(edges->begin(), edges->end(), [](Edge* a, Edge* b) {
         if(a->From == b->From)
             return a->To < b->To;
         return a->From < b->From;

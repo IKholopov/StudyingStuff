@@ -1,4 +1,4 @@
-#include"BaseGraph.h"
+#include "BaseGraph.h"
 
 unsigned long long BaseGraph::Size() const
 {
@@ -8,29 +8,25 @@ unsigned long long BaseGraph::NumberOfEdges() const
 {
     return graph->NumberOfEdges();
 }
-std::vector<unsigned long long> BaseGraph::GetChilds(unsigned long long vertex) const
+std::vector<unsigned long long> *BaseGraph::GetChilds(unsigned long long vertex) const
 {
     return graph->GetChilds(vertex);
 }
-std::vector<unsigned long long> BaseGraph::GetParents(unsigned long long vertex) const
+std::vector<unsigned long long> *BaseGraph::GetParents(unsigned long long vertex) const
 {
     return graph->GetParents(vertex);
 }
-std::vector<Edge *> BaseGraph::GetAllEdges() const
+std::vector<Edge *> *BaseGraph::GetAllEdges() const
 {
     return graph->GetAllEdges();
 }
-std::vector<Edge *> BaseGraph::GetAllEdgesSorted() //const
+std::vector<Edge *> *BaseGraph::GetAllEdgesSorted() //const
 {
     return graph->GetAllEdgesSorted();
 }
 void BaseGraph::AddNodes(size_t amount)
 {
     graph->AddNodes(amount);
-}
-bool BaseGraph::AddEdge(long long from, long long to)
-{
-    return graph->AddEdge(from, to);
 }
 bool BaseGraph::AddEdge(Edge *edge)
 {

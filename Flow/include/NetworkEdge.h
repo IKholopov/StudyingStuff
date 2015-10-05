@@ -1,45 +1,49 @@
 #ifndef FLOW_NETWORKEDGE_H
 #define FLOW_NETWORKEDGE_H
 
-#include "ValuedEdge.hpp"
+#include "Edge.h"
 #include <assert.h>
 #include <istream>
 #include <ostream>
 
 template <class FlowType>
-class NetworkEdgeValue
+class NetworkEdge: public Edge
 {
     public:
-        NetworkEdgeValue() {}
-        NetworkEdgeValue(FlowType capacity, FlowType flow)
+        NetworkEdge() {}
+        NetworkEdge(unsigned long long id, unsigned long long from, unsigned long long to,
+                    FlowType capacity, FlowType flow):Edge(from, to)
         {
-            this->Capacity = capacity;
-            this->Flow = flow;
+            this->id = id;
+            this->capacity = capacity;
+            this->flow = flow;
+        }
+        NetworkEdge* Clone()
+        {
+            return new NetworkEdge(id, From, To, capacity, flow);
+        }
+        FlowType GetCapacity()
+        {
+            return capacity;
+        }
+        FlowType SetCapacity(long long capacity)
+        {
+            assert(capacity >= 0);
+            this->capacity = capacity;
+        }
+        FlowType GetFlow()
+        {
+            return flow;
+        }
+        FlowType SetFlow(long long flow)
+        {
+            assert(flow <= capacity);
+            this->flow = flow;
         }
 
-        FlowType Capacity;
-        FlowType Flow;
-
-        friend std::istream &operator>>(std::istream  &input, NetworkEdgeValue& value)
-        {
-            input >> value.Capacity;
-            return input;
-        }
-        friend std::ostream &operator<<(std::ostream  &output, const NetworkEdgeValue& value)
-        {
-            output << value.Flow << " " << value.Flow;
-            return output;
-        }
-        friend std::istream &operator>>(std::istream  &input, NetworkEdgeValue* value)
-        {
-            input >> value->Capacity;
-            return input;
-        }
-        friend std::ostream &operator<<(std::ostream  &output, const NetworkEdgeValue* value)
-        {
-            output << value->Flow << " " << value->Flow;
-            return output;
-        }
+    private:
+        FlowType capacity;
+        FlowType flow;
 };
 
 #endif

@@ -21,7 +21,7 @@ void UnorientedGraph::ReadFromFile(std::ifstream &file)
         unsigned long long from, to;
         file >> from;
         file >> to;
-        this->AddEdge(from, to);
+        //TODO: this->AddEdge(from, to);
     }
 }
 void UnorientedGraph::WriteToFile(std::string filename)
@@ -32,11 +32,11 @@ void UnorientedGraph::WriteToFile(std::string filename)
 }
 void UnorientedGraph::WriteToFile(std::ofstream &file)
 {
-    std::vector<Edge*> edges = this->graph->GetAllEdges();
+    std::vector<Edge*>* edges = this->graph->GetAllEdges();
     file << this->Size() << std::endl;
-    file << edges.size() << std::endl;
-    for(long long i = 0; i < edges.size(); ++i)
-        file << edges[i]->From << " " << edges[i]->To << std::endl;
+    file << edges->size() << std::endl;
+    for(long long i = 0; i < edges->size(); ++i)
+        file << edges->at(i)->From << " " << edges->at(i)->To << std::endl;
 }
 void UnorientedGraph::RandomizeGraph(double probability)
 {
@@ -48,18 +48,19 @@ void UnorientedGraph::RandomizeGraph(double probability)
                 continue;
             if(!(rand() % (long long)(1.0 / probability)))
             {
-                this->AddEdge(i, j);
+                //TODO: this->AddEdge(i, j);
             }
         }
 }
 void UnorientedGraph::NormalizeEdges()
 {
-    std::vector<Edge*> edges = this->graph->GetAllEdges();
-    for(long long i = 0; i < edges.size(); ++i)
-        if(edges[i]->From > edges[i]->To)
+    std::vector<Edge*>* edges = this->graph->GetAllEdges();
+    for(long long i = 0; i < edges->size(); ++i)
+        if(edges->at(i)->From > edges->at(i)->To)
         {
-            unsigned long long temp = edges[i]->From;
-            edges[i]->From = edges[i]->To;
-            edges[i]->To = temp;
+            unsigned long long temp = edges->at(i)->From;
+            edges->at(i)->From = edges->at(i)->To;
+            edges->at(i)->To = temp;
         }
+    delete edges;
 }

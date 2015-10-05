@@ -9,6 +9,7 @@
 #include "UnorientedGraph.h"
 #include "ValuedEdge.hpp"
 #include "MinPQ.hpp"
+#include "GraphFileFormat.h"
 
 template <class EdgeValueTupe>
 class UnorientedGraphValuedEdge: public UnorientedGraph
@@ -57,12 +58,13 @@ void UnorientedGraphValuedEdge<T>::ReadFromFile(std::ifstream &file)
 template <class T>
 void UnorientedGraphValuedEdge<T>::WriteToFile(std::ostream &file)
 {
-    std::vector<Edge*> sorted = this->GetAllEdgesSorted();
+    std::vector<Edge*>* sorted = this->GetAllEdgesSorted();
     file << this->Size() << std::endl;
-    file << sorted.size() << std::endl;
-    for(long long i = 0; i < sorted.size(); ++i)
-        file << sorted[i]->From << " " << sorted[i]->To << " " <<
-                ((ValuedEdge<T>*)sorted[i])->GetValue() << std::endl;
+    file << sorted->size() << std::endl;
+    for(long long i = 0; i < sorted->size(); ++i)
+        file << sorted->at(i)->From << " " << sorted->at(i)->To << " " <<
+                ((ValuedEdge<T>*)sorted->at(i))->GetValue() << std::endl;
+    delete sorted;
 }
 template <class T>
 bool UnorientedGraphValuedEdge<T>::CheckConnection()
@@ -79,13 +81,14 @@ bool UnorientedGraphValuedEdge<T>::CheckConnection()
 template <class T>
 void UnorientedGraphValuedEdge<T>::DFS(unsigned long long vertex, std::vector<bool>* visited)
 {
-    std::vector<unsigned long long> vs = this->GetChilds(vertex);
-    for(long long i = 0; i < vs.size(); ++i)
-        if(!visited->at(vs[i]))
+    std::vector<unsigned long long>* vs = this->GetChilds(vertex);
+    for(long long i = 0; i < vs->size(); ++i)
+        if(!visited->at(vs->at(i)))
         {
-            visited->at(vs[i]) = true;
-            DFS(vs[i], visited);
+            visited->at(vs->at(i)) = true;
+            DFS(vs->at(i), visited);
         }
+    delete vs;
 }
 template <class T>
 void UnorientedGraphValuedEdge<T>::GenerateAccurateUnorientedGraph(long long percentage, T (*randFunc)())

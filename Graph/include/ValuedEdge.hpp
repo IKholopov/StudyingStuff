@@ -16,9 +16,9 @@ class ValuedEdge: public Edge
         {
         }
 
-        ValueType GetValue()
+        ValueType GetValue() const
         {
-            return value;
+            return this->value;
         }
         void SetValue(ValueType value)
         {

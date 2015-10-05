@@ -17,10 +17,10 @@ class AdjacencyMatrixOriented:public IOriented
 
         unsigned long long Size() const;
         unsigned long long NumberOfEdges() const;
-        std::vector<unsigned long long> GetChilds(unsigned long long vertex) const;
-        std::vector<unsigned long long> GetParents(unsigned long long vertex) const;
-        std::vector<Edge*> GetAllEdges() const;
-        std::vector<Edge*> GetAllEdgesSorted();
+        std::vector<unsigned long long>* GetChilds(unsigned long long vertex) const;
+        std::vector<unsigned long long>* GetParents(unsigned long long vertex) const;
+        std::vector<Edge*>* GetAllEdges() const;
+        std::vector<Edge*>* GetAllEdgesSorted();
         void AddNodes(size_t amount);                               //Append to and
         bool AddEdge(long long from, long long to);
         bool AddEdge(Edge* edge);

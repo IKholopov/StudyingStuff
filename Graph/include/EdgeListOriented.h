@@ -1,19 +1,19 @@
-#ifndef GRAPH_ADJACENCYMATRIXUNORIENTED_H
-#define GRAPH_ADJACENCYMATRIXUNORIENTED_H
+#ifndef GRAPH_EDGELISTORIENTED_H
+#define GRAPH_EDGELISTORIENTED_H
 
-#include "IUnoriented.h"
+#include "IOriented.h"
 
-class AdjacencyMatrixUnoriented:public IUnoriented
+class EdgeListOriented:public IOriented
 {
     public:
-        AdjacencyMatrixUnoriented();
-        AdjacencyMatrixUnoriented(unsigned long long size, const std::vector<Edge*>& edges);
-        AdjacencyMatrixUnoriented(unsigned long long size);
-        AdjacencyMatrixUnoriented(const AdjacencyMatrixUnoriented& graph);
-        AdjacencyMatrixUnoriented& operator=(const AdjacencyMatrixUnoriented& graph);
-        AdjacencyMatrixUnoriented* Clone() const;
+        EdgeListOriented();
+        EdgeListOriented(unsigned long long size, std::vector<Edge*>& edges);
+        EdgeListOriented(unsigned long long size);
+        EdgeListOriented(const EdgeListOriented& graph);
+        EdgeListOriented& operator=(const EdgeListOriented& graph);
+        EdgeListOriented* Clone() const;
 
-        ~AdjacencyMatrixUnoriented();
+        ~EdgeListOriented();
 
         unsigned long long Size() const;
         unsigned long long NumberOfEdges() const;
@@ -33,7 +33,7 @@ class AdjacencyMatrixUnoriented:public IUnoriented
         void InitializeNewGraph(unsigned long long size);
     protected:
         unsigned long long size;
-        std::vector< std::vector<Edge*> >* adjacencyMatrix;
+        std::vector<Edge*> edges;
 };
 
 #endif

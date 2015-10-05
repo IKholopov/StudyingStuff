@@ -1,4 +1,4 @@
-#include"AdjacencyMatrixOriented.h"
+#include "AdjacencyMatrixOriented.h"
 
 #include<assert.h>
 #include<algorithm>
@@ -15,10 +15,10 @@ AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned long long size, std::v
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(size);
     InitializeNewGraph(size);
-    for(auto edge: edges)
+    for(auto edge = edges.begin(); edge != edges.end(); ++edge)
     {
-        assert(adjacencyMatrix->at(edge->From).at(edge->To) == NULL);
-        adjacencyMatrix->at(edge->From).at(edge->To) = edge;
+        assert(adjacencyMatrix->at((*edge)->From).at((*edge)->To) == NULL);
+        adjacencyMatrix->at((*edge)->From).at((*edge)->To) = (*edge);
     }
 }
 AdjacencyMatrixOriented::AdjacencyMatrixOriented(unsigned long long size)
@@ -30,25 +30,27 @@ AdjacencyMatrixOriented::AdjacencyMatrixOriented(const AdjacencyMatrixOriented &
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(graph.size);
     InitializeNewGraph(graph.size);
-    std::vector<Edge*> edges = graph.GetAllEdges();
-    for(auto edge: edges)
-        adjacencyMatrix->at(edge->From).at(edge->To) = edge->Clone();
+    std::vector<Edge*>* edges = graph.GetAllEdges();
+    for(auto edge = edges->begin(); edge != edges->end(); ++edge)
+        adjacencyMatrix->at((*edge)->From).at((*edge)->To) = (*edge)->Clone();
+    delete edges;
 }
 AdjacencyMatrixOriented &AdjacencyMatrixOriented::operator=(const AdjacencyMatrixOriented &graph)
 {
     adjacencyMatrix = new std::vector< std::vector<Edge*> >(graph.size);
     InitializeNewGraph(graph.size);
-    std::vector<Edge*> edges = graph.GetAllEdges();
-    for(auto edge: edges)
-        adjacencyMatrix->at(edge->From).at(edge->To) = edge->Clone();
+    std::vector<Edge*>* edges = graph.GetAllEdges();
+    for(auto edge = edges->begin(); edge != edges->end(); ++edge)
+        adjacencyMatrix->at((*edge)->From).at((*edge)->To) = (*edge)->Clone();
+    delete edges;
 }
 AdjacencyMatrixOriented *AdjacencyMatrixOriented::Clone() const
 {
     std::vector<Edge*> newEdges;
-    for(auto v: *(this->adjacencyMatrix))
-        for(auto u: v)
-            if(u != NULL)
-                newEdges.push_back(u->Clone());
+    for(auto v = this->adjacencyMatrix->begin(); v != this->adjacencyMatrix->end(); ++v)
+        for(auto u = v->begin(); u != v->end(); ++u)
+            if(*u != NULL)
+                newEdges.push_back((*u)->Clone());
     return new AdjacencyMatrixOriented(this->size, newEdges);
 }
 AdjacencyMatrixOriented::~AdjacencyMatrixOriented()
@@ -63,45 +65,45 @@ unsigned long long AdjacencyMatrixOriented::Size() const
 unsigned long long AdjacencyMatrixOriented::NumberOfEdges() const
 {
     unsigned long counter = 0;
-    for(auto v: *(this->adjacencyMatrix))
-        for(auto u: v)
-            if(u != NULL)
+    for(auto v = this->adjacencyMatrix->begin(); v != this->adjacencyMatrix->end(); ++v)
+        for(auto u = v->begin(); u != v->end(); ++u)
+            if(*u != NULL)
                ++counter;
     return counter;
 }
-std::vector<unsigned long long> AdjacencyMatrixOriented::GetChilds(unsigned long long vertex) const
+std::vector<unsigned long long> *AdjacencyMatrixOriented::GetChilds(unsigned long long vertex) const
 {
-    std::vector<unsigned long long> childs;
+    std::vector<unsigned long long>* childs = new std::vector<unsigned long long>();
     for(long long i = 0; i < size; ++i)
         if(adjacencyMatrix->at(vertex).at(i) != NULL)
-            childs.push_back(adjacencyMatrix->at(vertex).at(i)->To);
+            childs->push_back(adjacencyMatrix->at(vertex).at(i)->To);
     return childs;
 }
-std::vector<unsigned long long> AdjacencyMatrixOriented::GetParents(unsigned long long vertex) const
+std::vector<unsigned long long> *AdjacencyMatrixOriented::GetParents(unsigned long long vertex) const
 {
-    std::vector<unsigned long long> parents;
+    std::vector<unsigned long long>* parents = new std::vector<unsigned long long>();
     for(long long i = 0; i < size; ++i)
         if(adjacencyMatrix->at(i).at(vertex) != NULL)
-            parents.push_back(adjacencyMatrix->at(i).at(vertex)->From);
+            parents->push_back(adjacencyMatrix->at(i).at(vertex)->From);
     return parents;
 }
-std::vector<Edge*> AdjacencyMatrixOriented::GetAllEdges() const
+std::vector<Edge *> *AdjacencyMatrixOriented::GetAllEdges() const
 {
-    std::vector<Edge*> edges;
-    for(auto v: *(this->adjacencyMatrix))
-        for(auto u: v)
-            if(u != NULL)
-               edges.push_back(u);
+    std::vector<Edge*>* edges = new std::vector<Edge*>();
+    for(auto v = this->adjacencyMatrix->begin(); v != this->adjacencyMatrix->end(); ++v)
+        for(auto u = v->begin(); u != v->end(); ++u)
+            if(*u != NULL)
+               edges->push_back(*u);
     return edges;
 }
-std::vector<Edge*> AdjacencyMatrixOriented::GetAllEdgesSorted()
+std::vector<Edge *> *AdjacencyMatrixOriented::GetAllEdgesSorted()
 {
-    std::vector<Edge*> edges;
-    for(auto v: *(this->adjacencyMatrix))
-        for(auto u: v)
-            if(u != NULL)
-               edges.push_back(u);
-    std::sort(edges.begin(), edges.end(), [](Edge* a, Edge* b) {
+    std::vector<Edge*>* edges = new std::vector<Edge*>();
+    for(auto v = this->adjacencyMatrix->begin(); v != this->adjacencyMatrix->end(); ++v)
+        for(auto u = v->begin(); u != v->end(); ++u)
+            if(*u != NULL)
+               edges->push_back(*u);
+    std::sort(edges->begin(), edges->end(), [](Edge* a, Edge* b) {
         if(a->From == b->From)
             return a->To < b->To;
         return a->From < b->From;
@@ -171,10 +173,10 @@ void AdjacencyMatrixOriented::DeleteNodeEdges(unsigned long long v)
 }
 void AdjacencyMatrixOriented::DeleteAllEdges()
 {
-    for(auto v: *(this->adjacencyMatrix))
-        for(auto u: v)
-            if(u != NULL)
-               delete u;
+    for(auto v = this->adjacencyMatrix->begin(); v != this->adjacencyMatrix->end(); ++v)
+        for(auto u = v->begin(); u != v->end(); ++u)
+            if(*u != NULL)
+               delete *u;
     adjacencyMatrix->clear();
 }
 bool AdjacencyMatrixOriented::AddEdge(Edge *edge)
