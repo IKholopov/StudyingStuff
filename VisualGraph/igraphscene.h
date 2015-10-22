@@ -1,0 +1,5 @@
+#ifndef IGRAPHSCENE
+#define IGRAPHSCENE
+
+#endif // IGRAPHSCENE
+

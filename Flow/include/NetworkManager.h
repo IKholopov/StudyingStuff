@@ -6,7 +6,11 @@
 #include <istream>
 #include <ostream>
 #include "LayerNetwork.h"
+#include "NetworkDelta.h"
 #include "ParentChildListOriented.h"
+#include "TIAGraphDeltaIds.h"
+
+namespace GraphLibrary {
 
 template <class FlowType>
 class NetworkManager
@@ -14,6 +18,10 @@ class NetworkManager
     public:
         static NetworkManager<FlowType>& instance();
         void  ThreeIndiansAlgorithm(NetworkGraph<FlowType>& graph,
+                                                      unsigned long long source, unsigned long long sink,
+                                                      IMultiGraph *residualImpl = new ParentChildListOriented(),
+                                   IMultiGraph *layeredImpl = new ParentChildListOriented());
+        std::vector<NetworkDelta>*  ThreeIndiansAlgorithmDelta(NetworkGraph<FlowType>& graph,
                                                       unsigned long long source, unsigned long long sink,
                                                       IMultiGraph *residualImpl = new ParentChildListOriented(),
                                    IMultiGraph *layeredImpl = new ParentChildListOriented());
@@ -54,6 +62,34 @@ void NetworkManager<FlowType>::ThreeIndiansAlgorithm(NetworkGraph<FlowType> &gra
     delete layeredImpl;
 }
 template <class FlowType>
+std::vector<NetworkDelta>* NetworkManager<FlowType>::ThreeIndiansAlgorithmDelta(NetworkGraph<FlowType>& graph, unsigned long long source, unsigned long long sink, IMultiGraph* residualImpl, IMultiGraph* layeredImpl)
+{
+    std::vector<NetworkDelta>* deltas = new std::vector<NetworkDelta>();
+    ///ORIGINALGRAPH_ID = 0
+    ///RESIDUAL_ID = 1
+    ///LAYERED_ID = 2
+    assert(source < graph.Size() && sink < graph.Size());
+    ResidualNetwork<FlowType>* residualNetwork = new ResidualNetwork<FlowType>(*residualImpl, graph);
+    while(true)
+    {
+        auto layeredNetwork = new LayerNetwork<FlowType>(source, sink, *residualNetwork,
+                                                         *static_cast<IMultiGraph*>((*layeredImpl).Clone()), deltas);
+        if(layeredNetwork->GetDistances()->at(sink) == 0)
+        {
+            delete layeredNetwork;
+            break;
+        }
+        layeredNetwork->FindBlockingPath(*residualNetwork, deltas);
+        delete layeredNetwork;
+    }
+    NetworkDelta originalDelta(0);
+    graph.FlowFromResidual(*residualNetwork, &originalDelta);
+    deltas->push_back(originalDelta);
+    delete residualNetwork;
+    delete layeredImpl;
+    return deltas;
+}
+template <class FlowType>
 std::pair<std::vector<Edge> *, NetworkGraph<FlowType> *> NetworkManager<FlowType>::ReadGraph(std::istream &stream, IMultiGraph* realization)
 {
     unsigned long long n, m, from, to;
@@ -67,8 +103,8 @@ std::pair<std::vector<Edge> *, NetworkGraph<FlowType> *> NetworkManager<FlowType
         stream >> from;
         stream >> to;
         stream >> val;
-        edges->push_back(NetworkEdge<FlowType>(i, from - 1, to - 1, val, 0));
-        graph->AddEdge(new NetworkEdge<FlowType>(i, from - 1, to - 1, val, 0));
+        edges->push_back(NetworkEdge<FlowType>(i, from, to, val, 0));
+        graph->AddEdge(new NetworkEdge<FlowType>(i, from, to, val, 0));
     }
     return std::pair<std::vector<Edge>*, NetworkGraph<FlowType>*>(edges, graph);
 }
@@ -83,5 +119,7 @@ void NetworkManager<FlowType>::WriteGraphFlow(std::ostream &stream, NetworkGraph
     for(auto a = (*edges).begin(); a != (*edges).end(); ++a)
         stream << static_cast<NetworkEdge<FlowType>*>(graph->GetEdge((*a).From, (*a).To, (*a).GetId()))->GetFlow() << std::endl;
 }
+}
+
 
 #endif

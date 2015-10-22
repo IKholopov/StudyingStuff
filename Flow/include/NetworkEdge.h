@@ -6,6 +6,8 @@
 #include <istream>
 #include <ostream>
 
+namespace GraphLibrary {
+
 template <class FlowType>
 class NetworkEdge: public Edge
 {
@@ -20,13 +22,13 @@ class NetworkEdge: public Edge
         }
         NetworkEdge* Clone()
         {
-            return new NetworkEdge(id, From, To, capacity, flow);
+            return new NetworkEdge(this->id, this->From, this->To, capacity, flow);
         }
         FlowType GetCapacity()
         {
             return capacity;
         }
-        FlowType SetCapacity(long long capacity)
+        void SetCapacity(long long capacity)
         {
             assert(capacity >= 0);
             this->capacity = capacity;
@@ -35,7 +37,7 @@ class NetworkEdge: public Edge
         {
             return flow;
         }
-        FlowType SetFlow(long long flow)
+        void SetFlow(long long flow)
         {
             assert(flow <= capacity);
             this->flow = flow;
@@ -45,5 +47,7 @@ class NetworkEdge: public Edge
         FlowType capacity;
         FlowType flow;
 };
+
+}
 
 #endif

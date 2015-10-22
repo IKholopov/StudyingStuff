@@ -1,5 +1,5 @@
 #include "Edge.h"
-
+namespace GraphLibrary {
 Edge::Edge(unsigned long long from, unsigned long long to)
 {
     this->From = from;
@@ -27,4 +27,6 @@ unsigned long long Edge::GetId()
 void Edge::SetId(unsigned long long id)
 {
     this->id = id;
+}
+
 }

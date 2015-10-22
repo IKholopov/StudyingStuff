@@ -5,6 +5,7 @@
 #include "IMultiGraph.h"
 #include "OrientedGraph.h"
 #include "NetworkEdge.h"
+#include "NetworkDelta.h"
 
 template <class FlowType>
 class NetworkGraph: public OrientedGraph
@@ -24,6 +25,7 @@ class NetworkGraph: public OrientedGraph
         unsigned long long GetIdCounter() const;
         bool AddEdge(Edge* edge);
         void FlowFromResidual(NetworkGraph<FlowType> &residual);
+        void FlowFromResidual(NetworkGraph<FlowType> &residual, NetworkDelta* delta);
         virtual void BFS(unsigned long long source, std::function<bool(unsigned long long, unsigned long long, Edge* edge)> operation,
                          std::function<bool(Edge* edge)> edgeCondition, bool straight = true);
     protected:
@@ -80,6 +82,7 @@ bool NetworkGraph<FlowType>::AddEdge(Edge* edge)
     edge->SetId(this->GetIdCounter());
     IncreaseIdCounter();
     this->OrientedGraph::AddEdge(edge);
+    return true;
 }
 template <class FlowType>
 void NetworkGraph<FlowType>::FlowFromResidual(NetworkGraph<FlowType> &residual)
@@ -91,6 +94,22 @@ void NetworkGraph<FlowType>::FlowFromResidual(NetworkGraph<FlowType> &residual)
         auto resEdge = static_cast<NetworkEdge<FlowType>*>(residual.GetEdge(edge->From, edge->To, edge->GetId()));
         if(edge->GetCapacity() - resEdge->GetCapacity() >= 0)
             edge->SetFlow(edge->GetCapacity() - resEdge->GetCapacity());
+    }
+    delete edges;
+}
+template <class FlowType>
+void NetworkGraph<FlowType>::FlowFromResidual(NetworkGraph<FlowType> &residual, NetworkDelta* delta)
+{
+    auto edges = this->GetAllEdges();
+    for(auto e = edges->begin(); e != edges->end(); ++e)
+    {
+        NetworkEdge<FlowType>* edge = static_cast<NetworkEdge<FlowType>*>(*e);
+        auto resEdge = static_cast<NetworkEdge<FlowType>*>(residual.GetEdge(edge->From, edge->To, edge->GetId()));
+        if(edge->GetCapacity() - resEdge->GetCapacity() >= 0)
+        {
+            edge->SetFlow(edge->GetCapacity() - resEdge->GetCapacity());
+            delta->AddEdgeChange(new NetworkEdgeChange(edge->GetId(), edge->From, edge->To, edge->GetCapacity(), edge->GetFlow()));
+        }
     }
     delete edges;
 }

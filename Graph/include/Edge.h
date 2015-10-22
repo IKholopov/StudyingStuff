@@ -3,6 +3,8 @@
 
 #include <istream>
 
+namespace GraphLibrary {
+
 class Edge
 {
     public:
@@ -18,5 +20,8 @@ class Edge
     protected:
         unsigned long long id;
 };
+
+}
+
 
 #endif

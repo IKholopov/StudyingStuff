@@ -5,6 +5,8 @@
 #include <iostream>
 #include "Edge.h"
 
+using namespace GraphLibrary;
+
 class IGraph
 {
     public:

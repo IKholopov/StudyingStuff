@@ -1,0 +1,8 @@
+#ifndef FLOW_TIAGRAPHDELTAIDS_H
+#define FLOW_TIAGRAPHDELTAIDS_H
+
+enum TIADeltas {
+    ORIGINAL = 0, RESIDUAL = 1, LAYERED = 2
+};
+
+#endif

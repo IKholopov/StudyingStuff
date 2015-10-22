@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "src/GraphEditArea.h"
 
 namespace Ui {
 class MainWindow;
@@ -16,6 +17,7 @@ class MainWindow : public QMainWindow
         ~MainWindow();
 
     private:
+        GraphEditArea* graphArea;
         Ui::MainWindow *ui;
 };
 

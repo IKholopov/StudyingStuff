@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/icons/toolbar">
+        <file>icons/fast44.png</file>
+        <file>icons/file96.png</file>
+        <file>icons/VisualGraph.pro.user</file>
+        <file>icons/marketing8.png</file>
+        <file>icons/marketingbuzz.png</file>
+        <file>icons/play106.png</file>
+        <file>icons/save.png</file>
+        <file>icons/social24.png</file>
+    </qresource>
+</RCC>
