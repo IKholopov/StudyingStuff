@@ -34,6 +34,8 @@ class VisualEdge: public QGraphicsItem
 
         bool GetActive() const;
         void SetActive(bool value);
+        bool GetHighlighted() const;
+        void SetHighlighted(bool value);
 
     signals:
 
@@ -53,6 +55,7 @@ class VisualEdge: public QGraphicsItem
         QColor color = Qt::black;
         bool active = 1;
         int displayType;
+        bool highlighted = false;
 };
 
 #endif // EDGE_H

@@ -7,6 +7,26 @@ TIARunScene::TIARunScene(QTextEdit* messageBox, AlgorithmRunView* parent):GraphS
     view(parent),original(NULL), deltas(NULL), layered(NULL), residual(NULL), currentStep(0), messageBox(messageBox)
 {
 }
+TIARunScene::~TIARunScene()
+{
+    if(deltas != NULL)
+    {
+        for(auto d: *deltas)
+        {
+            for(auto e: d.GetEdgeChanges())
+                delete e;
+            for(auto v: d.GetNodeChanges())
+                delete v;
+        }
+        delete deltas;
+    }
+    if(original != NULL)
+        delete original;
+    if(residual != NULL)
+        delete residual;
+    if(layered != NULL)
+        delete layered;
+}
 void TIARunScene::mousePressedOnVertex(Vertex* v)
 {
     Q_UNUSED(v)
@@ -14,7 +34,16 @@ void TIARunScene::mousePressedOnVertex(Vertex* v)
 void TIARunScene::Initialize(const std::vector<std::vector<unsigned long long> >& graphData)
 {
     if(deltas != NULL)
+    {
+        for(auto d: *deltas)
+        {
+            for(auto e: d.GetEdgeChanges())
+                delete e;
+            for(auto v: d.GetNodeChanges())
+                delete v;
+        }
         delete deltas;
+    }
     deltas = GraphParser::parser().GetAlgorithmRun(graphData);
     if(original != NULL)
         delete original;
@@ -42,6 +71,12 @@ void TIARunScene::Initialize(const std::vector<std::vector<unsigned long long> >
 }
 void TIARunScene::NextStep()
 {
+    for(auto e: highlightedEdges)
+        e->SetHighlighted(false);
+    highlightedEdges.clear();
+    for(auto v: highlightedNodes)
+        v->SetHighlighted(false);
+    highlightedNodes.clear();
     if(currentStep == deltas->size())
         return;
     auto delta = deltas->at(currentStep++);
@@ -156,6 +191,8 @@ void TIARunScene::ProcessEdgeChange(VisualGraph* graph, NetworkEdgeChange* chang
     if(graph->GetEdge(change->Id) == NULL)
     {
         graph->AddEdge(change->From, change->To, change->Capacity);
+        highlightedEdges.push_back(graph->GetEdge(change->Id));
+        graph->GetEdge(change->Id)->SetHighlighted(true);
         if(graph != layered)
         {
             layered->AddEdge(change->From, change->To, change->Capacity);
@@ -171,6 +208,13 @@ void TIARunScene::ProcessEdgeChange(VisualGraph* graph, NetworkEdgeChange* chang
         graph->DisplayEdge(change->Id);
     change->OldCapacity = graph->GetEdge(change->Id)->GetCapacity();
     change->OldFlow = graph->GetEdge(change->Id)->GetFlow();
+    change->OldHighlighted = graph->GetEdge(change->Id)->GetHighlighted();
+    if(graph->GetEdge(change->Id)->GetCapacity() != change->Capacity ||
+            graph->GetEdge(change->Id)->GetFlow() != change->Flow)
+    {
+        highlightedEdges.push_back(graph->GetEdge(change->Id));
+        graph->GetEdge(change->Id)->SetHighlighted(true);
+    }
     graph->GetEdge(change->Id)->SetCapacity(change->Capacity);
     graph->GetEdge(change->Id)->SetFlow(change->Flow);
 }
@@ -187,6 +231,14 @@ void TIARunScene::ProcessNodeChange(VisualGraph* graph, NetworkNodeChange* chang
         graph->DisplayNode(change->Id);
     change->OldPotential = graph->GetNode(change->Id)->GetPotential();
     graph->GetNode(change->Id)->SetPotential(change->Potential);
+    change->OldHighlighted = graph->GetNode(change->Id)->GetHighlighted();
+    if(change->Highlighted)
+    {
+        highlightedNodes.push_back(graph->GetNode(change->Id));
+        graph->GetNode(change->Id)->SetHighlighted(true);
+    }
+    else
+        graph->GetNode(change->Id)->SetHighlighted(false);
 }
 void TIARunScene::ProcessBackwardEdgeChange(VisualGraph* graph, NetworkEdgeChange* change)
 {
@@ -196,6 +248,12 @@ void TIARunScene::ProcessBackwardEdgeChange(VisualGraph* graph, NetworkEdgeChang
         graph->HideEdge(change->Id);
     else
         graph->DisplayEdge(change->Id);
+    /*if(graph->GetEdge(change->Id)->GetCapacity() != change->OldCapacity ||
+            graph->GetEdge(change->Id)->GetFlow() != change->OldFlow)
+    {
+        highlightedEdges.push_back(graph->GetEdge(change->Id));
+        graph->GetEdge(change->Id)->SetHighlighted(true);
+    }*/
     graph->GetEdge(change->Id)->SetCapacity(change->OldCapacity);
     graph->GetEdge(change->Id)->SetFlow(change->OldFlow);
 }
@@ -210,6 +268,10 @@ void TIARunScene::ProcessBackwardNodeChange(VisualGraph* graph, NetworkNodeChang
     else
         graph->DisplayNode(change->Id);
     graph->GetNode(change->Id)->SetPotential(change->OldPotential);
+    /*if(change->OldHighlighted)
+        graph->GetNode(change->Id)->SetHighlighted(true);
+    else
+        graph->GetNode(change->Id)->SetHighlighted(false);*/
 }
 void TIARunScene::keyPressEvent(QKeyEvent* event)
 {

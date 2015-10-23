@@ -41,7 +41,10 @@ void Vertex::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QW
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
-    painter->setBrush(QBrush(color));
+    if(!highlighted)
+        painter->setBrush(QBrush(color));
+    else
+        painter->setBrush(QBrush(QColor(239, 108, 0)));
     painter->drawEllipse(-10, -10, 20, 20);
     QString str;
     switch(this->GetDisplayType())
@@ -200,4 +203,12 @@ int Vertex::GetDisplayType()
 void Vertex::SetDisplayType(int displayType)
 {
     this->displayType = displayType;
+}
+bool Vertex::GetHighlighted() const
+{
+    return highlighted;
+}
+void Vertex::SetHighlighted(bool value)
+{
+    highlighted = value;
 }

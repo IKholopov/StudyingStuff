@@ -8,20 +8,22 @@ class NetworkNodeChange
 {
     public:
         NetworkNodeChange(unsigned long long id,
-                          unsigned long long potential, bool present = 1):Id(id), Potential(potential),
-                          Present(present) {}
+                          unsigned long long potential, bool present = 1, bool highlighted = false):Id(id), Potential(potential),
+                          Present(present), Highlighted(highlighted) {}
         unsigned long long Id;
         unsigned long long OldPotential;
         unsigned long long Potential;
         bool OldPresent;
         bool Present;
+        bool OldHighlighted = false;
+        bool Highlighted;
 };
 class NetworkEdgeChange
 {
     public:
         NetworkEdgeChange(unsigned long long id, unsigned long long from, unsigned long long to, unsigned long long capacity,
-                          unsigned long long flow, unsigned long long present = 1):Id(id), Capacity(capacity),
-                          Flow(flow), Present(present), From(from), To(to) {}
+                          unsigned long long flow, unsigned long long present = 1, bool highlighted = false):Id(id), Capacity(capacity),
+                          Flow(flow), Present(present), From(from), To(to), Highlighted(highlighted) {}
         unsigned long long Id;
         unsigned long long Capacity;
         unsigned long long Flow;
@@ -31,6 +33,8 @@ class NetworkEdgeChange
         unsigned long long OldCapacity = 0;
         unsigned long long OldFlow = 0;
         unsigned long long OldPresent = 0;
+        bool OldHighlighted = false;
+        bool Highlighted;
 };
 
 class NetworkDelta

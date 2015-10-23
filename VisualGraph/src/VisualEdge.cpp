@@ -85,7 +85,10 @@ void VisualEdge::paint(QPainter* painter, const QStyleOptionGraphicsItem* option
 
     const double pi = 3.14159265359;
 
-    painter->setPen(QPen(color, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    if(!highlighted)
+        painter->setPen(QPen(color, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    else
+        painter->setPen(QPen(QColor(239, 108, 0), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     auto lineFrom = mapFromItem(from, 0, 0);
     auto lineTo = mapFromItem(to, 0, 0);
     auto line = QLineF(lineFrom, lineTo);
@@ -120,6 +123,14 @@ void VisualEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     isHovered = false;
     this->color = Qt::black;
     prepareGeometryChange();
+}
+bool VisualEdge::GetHighlighted() const
+{
+    return highlighted;
+}
+void VisualEdge::SetHighlighted(bool value)
+{
+    highlighted = value;
 }
 bool VisualEdge::GetActive() const
 {

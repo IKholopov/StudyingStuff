@@ -262,6 +262,9 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
                 min = VertexPotential(i);
                 minVertex = i;
             }
+        NetworkDelta minDelta(LAYERED);
+        minDelta.AddNodeChange(new NetworkNodeChange(minVertex, VertexPotential(minVertex), 1, true));
+        deltas->push_back(minDelta);
         assert(min != 0);
         auto p = VertexPotential(minVertex);
         flow[minVertex] = p;
@@ -273,7 +276,8 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
             auto edge = static_cast<NetworkEdge<FlowType>*>(e);
             auto deltaFlow = flow[from] < edge->GetCapacity() ? flow[from] : edge->GetCapacity();
             residual.AddFlow(from, to, edge->GetId(), deltaFlow, &residualDelta);
-            pushDelta.AddEdgeChange(new NetworkEdgeChange(edge->GetId(), edge->From, edge->To, edge->GetCapacity() - deltaFlow, edge->GetFlow() + deltaFlow));
+            pushDelta.AddEdgeChange(new NetworkEdgeChange(edge->GetId(), edge->From, edge->To, edge->GetCapacity() - deltaFlow, edge->GetFlow() + deltaFlow,
+                                                          1, true));
             flow[to] += deltaFlow;
             flow[from] -= deltaFlow;
             this->outSums[from] -= deltaFlow;
@@ -291,7 +295,8 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
         this->BFS(minVertex, [this, &flow, &residual, &residualDelta, &pushDelta](unsigned long long to, unsigned long long from, Edge* e){
             auto edge = static_cast<NetworkEdge<FlowType>*>(e);
             auto deltaFlow = flow[to] < edge->GetCapacity() ? flow[to] : edge->GetCapacity();
-            pushDelta.AddEdgeChange(new NetworkEdgeChange(edge->GetId(), edge->From, edge->To, edge->GetCapacity() - deltaFlow, edge->GetFlow() + deltaFlow));
+            pushDelta.AddEdgeChange(new NetworkEdgeChange(edge->GetId(), edge->From, edge->To, edge->GetCapacity() - deltaFlow, edge->GetFlow() + deltaFlow,
+                                                          1, true));
             residual.AddFlow(from, to, edge->GetId(), deltaFlow, &residualDelta);
             flow[to] -= deltaFlow;
             flow[from] += deltaFlow;
@@ -316,7 +321,8 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
     }
     NetworkDelta removeDelta(LAYERED, 1);
     removeDelta.SetMessage("Residual network: removing layered network");
-    for(auto e: *(this->GetAllEdges()))
+    auto allEdges = this->GetAllEdges();
+    for(auto e: *allEdges)
         if(activeEdges[e->GetId()])
         {
             auto edge = static_cast<NetworkEdge<FlowType>*>(e);
@@ -327,6 +333,7 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
         if(activeVertecies[i])
             removeDelta.AddNodeChange(new NetworkNodeChange(i, 0, 0));
     deltas->push_back(removeDelta);
+    delete allEdges;
 }
 template <class FlowType>
 const std::vector<unsigned long long>* LayerNetwork<FlowType>::GetDistances() const

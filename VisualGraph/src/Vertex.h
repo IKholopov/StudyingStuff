@@ -39,6 +39,8 @@ class Vertex: public QGraphicsItem
         void SetActive(bool value);
         int GetDisplayType();
         void SetDisplayType(int displayType);
+        bool GetHighlighted() const;
+        void SetHighlighted(bool value);
 
     signals:
 
@@ -54,6 +56,7 @@ class Vertex: public QGraphicsItem
         bool active = 1;
         QColor color;
         int displayType = 0;
+        bool highlighted = false;
 };
 
 #endif // VERTEX_H

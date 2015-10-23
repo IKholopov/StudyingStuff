@@ -11,7 +11,7 @@ class TIARunScene : public GraphScene
     Q_OBJECT
     public:
         TIARunScene(QTextEdit* messageBox, AlgorithmRunView* parent = 0);
-
+        ~TIARunScene();
         void mousePressedOnVertex(Vertex* v);
 
         void Initialize(const std::vector<std::vector<unsigned long long> >& graphData);
@@ -34,6 +34,8 @@ class TIARunScene : public GraphScene
         long long currentStep;
         TIADeltas currentGraph;
         QTextEdit* messageBox;
+        std::vector<VisualEdge*> highlightedEdges;
+        std::vector<Vertex*> highlightedNodes;
 };
 
 #endif // TIARUNSCENE_H

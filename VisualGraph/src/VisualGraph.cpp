@@ -21,7 +21,7 @@ VisualGraph::VisualGraph(GraphScene* scene, GraphArea* view,
             size = e.at(1) + 1;
     }
     for(unsigned long long i = 0; i < size; ++i)
-        this->AddNode(QPointF(30  + rand() % 400, 30 + rand() % 300)); //SHITCODE
+        this->AddNode(QPointF(30  + rand() % 400, 30 + rand() % 300));
     for(unsigned long long i = 0; i < graphData.size(); ++i)
         this->AddEdge(graphData.at(i).at(0),graphData.at(i).at(1), graphData.at(i).at(2));
 }
@@ -34,7 +34,7 @@ VisualGraph::VisualGraph(GraphScene* scene, GraphArea* view, std::string filenam
     idVertexCounter = 0;
     idEdgeCounter = 0;
     for(unsigned long long i = 0; i < numberOfVertices; ++i)
-        this->AddNode(QPointF(30 + rand() % 400, 30 + rand() % 300)); //SHITCODE
+        this->AddNode(QPointF(30 + rand() % 400, 30 + rand() % 300));
     for(unsigned long long i = 0; i < numberOfEdges; ++i)
     {
         stream >> from;
@@ -144,7 +144,7 @@ void VisualGraph::MovedGraph()
 {
     nodeMoved = true;
     if(!view->GetTimerId())
-        view->SetTimerId(view->startTimer(1000/50));
+        view->SetTimerId(view->startTimer(1000/100));
 }
 void VisualGraph::DisableGraph()
 {
