@@ -3,11 +3,13 @@
 
 #include "GraphArea.h"
 
+#include <QTextEdit>
+
 class AlgorithmRunView : public GraphArea
 {
     Q_OBJECT
     public:
-        AlgorithmRunView(QWidget* parent = 0);
+        AlgorithmRunView(QTextEdit* messageBox, QWidget* parent = 0);
 
         void drawBackground(QPainter* painter, const QRectF& rect);
         void SetTimerId(int id);
@@ -21,6 +23,8 @@ class AlgorithmRunView : public GraphArea
 
     private:
         int timerId;
+        QTextEdit* messageBox;
+
 };
 
 #endif // ALGORITHMRUNVIEW_H

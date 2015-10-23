@@ -3,8 +3,8 @@
 
 #include <qevent.h>
 
-TIARunScene::TIARunScene(AlgorithmRunView* parent):GraphScene(parent),
-    view(parent),original(NULL), deltas(NULL), layered(NULL), residual(NULL), currentStep(0)
+TIARunScene::TIARunScene(QTextEdit* messageBox, AlgorithmRunView* parent):GraphScene(parent),
+    view(parent),original(NULL), deltas(NULL), layered(NULL), residual(NULL), currentStep(0), messageBox(messageBox)
 {
 }
 void TIARunScene::mousePressedOnVertex(Vertex* v)
@@ -29,6 +29,15 @@ void TIARunScene::Initialize(const std::vector<std::vector<unsigned long long> >
     layered->DisableGraph();
 
     currentGraph = ORIGINAL;
+    messageBox->setText(QString());
+    original->GetNode(0)->SetColor(QColor(180, 20, 20));
+    original->GetNode(original->GetSize()- 1)->SetColor(QColor(20, 20, 180));
+    layered->GetNode(0)->SetColor(QColor(180, 20, 20));
+    layered->GetNode(layered->GetSize() - 1)->SetColor(QColor(20, 20, 180));
+    residual->GetNode(0)->SetColor(QColor(180, 20, 20));
+    residual->GetNode(residual->GetSize() - 1)->SetColor(QColor(20, 20, 180));
+    original->SetEdgeDisplayType(1);
+    layered->SetNodeDisplayType(1);
     currentStep = 0;
 }
 void TIARunScene::NextStep()
@@ -36,6 +45,7 @@ void TIARunScene::NextStep()
     if(currentStep == deltas->size())
         return;
     auto delta = deltas->at(currentStep++);
+    messageBox->setText(QString::fromStdString(delta.GetMessage()));
     VisualGraph* graph;
     switch(delta.GetGraphId()){
         case ORIGINAL:
@@ -56,12 +66,16 @@ void TIARunScene::NextStep()
             original->HideGraph();
             residual->HideGraph();
             if(delta.IsToDelete())
-                layered->DisableGraph();
-            layered->DisplayGraph();
+            {
+                residual->DisplayGraph();
+                layered->HideGraph();
+            }
+            else
+                layered->DisplayGraph();
             graph = layered;
             currentGraph = LAYERED;
             break;
-        deault:
+        default:
             break;
     }
     for(long long i = 0; i < delta.GetNodeChanges().size(); ++i)
@@ -77,9 +91,17 @@ void TIARunScene::PrevStep()
     VisualGraph* graph;
     TIADeltas graphToSwitch;
     if(currentStep == 0)
+    {
+        messageBox->setText(QString());
         graphToSwitch = ORIGINAL;
+    }
     else
+    {
         graphToSwitch = (TIADeltas)deltas->at(currentStep - 1).GetGraphId();
+        messageBox->setText(QString::fromStdString(deltas->at(currentStep - 1).GetMessage()));
+        if(deltas->at(currentStep - 1).IsToDelete())
+            graphToSwitch = RESIDUAL;
+    }
     switch(delta.GetGraphId()){
         case ORIGINAL:
             graph = original;

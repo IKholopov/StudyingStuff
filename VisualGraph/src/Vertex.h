@@ -32,10 +32,13 @@ class Vertex: public QGraphicsItem
         void UpdatePosition();
         bool advance();
         unsigned long long Neighbors();
+        void SetColor(QColor color);
         unsigned long long GetPotential() const;
         void SetPotential(unsigned long long value);
         bool GetActive() const;
         void SetActive(bool value);
+        int GetDisplayType();
+        void SetDisplayType(int displayType);
 
     signals:
 
@@ -49,6 +52,8 @@ class Vertex: public QGraphicsItem
         VisualGraph* graph;
         unsigned long long potential = 0;
         bool active = 1;
+        QColor color;
+        int displayType = 0;
 };
 
 #endif // VERTEX_H

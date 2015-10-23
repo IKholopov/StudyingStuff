@@ -71,6 +71,7 @@ LayerNetwork<FlowType>::LayerNetwork(unsigned long long source, unsigned long lo
                                      IMultiGraph& implementation, std::vector<NetworkDelta>* deltas):NetworkGraph<FlowType>(base.Size(), implementation)
 {
     NetworkDelta currentDelta(LAYERED);
+    currentDelta.SetMessage("Layered network: Creating layered network");
     this->source = source;
     this->sink = sink;
     distances = new std::vector<unsigned long long>(this->Size(), 0);
@@ -209,6 +210,7 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
 {
     std::vector<FlowType> flow(this->Size(), 0);
     NetworkDelta delta(LAYERED);
+    delta.SetMessage("Layered Networking: culculating potentials");
     for(unsigned long long v = 0; v < this->Size(); ++v)    //Create Vertex Potential;
     {
         if(v == this->source)
@@ -264,12 +266,14 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
         auto p = VertexPotential(minVertex);
         flow[minVertex] = p;
         NetworkDelta pushDelta(LAYERED);
+        pushDelta.SetMessage("Layered network: Pushing flow");
         NetworkDelta residualDelta(RESIDUAL);
+        residualDelta.SetMessage("Residual network: pushing flow in residual");
         this->BFS(minVertex, [this, &flow, &residual, &residualDelta, &pushDelta](unsigned long long from, unsigned long long to, Edge* e){
             auto edge = static_cast<NetworkEdge<FlowType>*>(e);
             auto deltaFlow = flow[from] < edge->GetCapacity() ? flow[from] : edge->GetCapacity();
             residual.AddFlow(from, to, edge->GetId(), deltaFlow, &residualDelta);
-            pushDelta.AddEdgeChange(new NetworkEdgeChange(edge->GetId(), edge->From, edge->To, edge->GetCapacity(), edge->GetFlow() + deltaFlow));
+            pushDelta.AddEdgeChange(new NetworkEdgeChange(edge->GetId(), edge->From, edge->To, edge->GetCapacity() - deltaFlow, edge->GetFlow() + deltaFlow));
             flow[to] += deltaFlow;
             flow[from] -= deltaFlow;
             this->outSums[from] -= deltaFlow;
@@ -287,7 +291,7 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
         this->BFS(minVertex, [this, &flow, &residual, &residualDelta, &pushDelta](unsigned long long to, unsigned long long from, Edge* e){
             auto edge = static_cast<NetworkEdge<FlowType>*>(e);
             auto deltaFlow = flow[to] < edge->GetCapacity() ? flow[to] : edge->GetCapacity();
-            pushDelta.AddEdgeChange(new NetworkEdgeChange(edge->GetId(), edge->From, edge->To, edge->GetCapacity(), edge->GetFlow() + deltaFlow));
+            pushDelta.AddEdgeChange(new NetworkEdgeChange(edge->GetId(), edge->From, edge->To, edge->GetCapacity() - deltaFlow, edge->GetFlow() + deltaFlow));
             residual.AddFlow(from, to, edge->GetId(), deltaFlow, &residualDelta);
             flow[to] -= deltaFlow;
             flow[from] += deltaFlow;
@@ -305,11 +309,13 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
         deltas->push_back(pushDelta);
         deltas->push_back(residualDelta);
         NetworkDelta newPotentialDelta(LAYERED);
+        newPotentialDelta.SetMessage("Layered network: updating potentials");
         for(unsigned long long v = 0; v < this->Size(); ++v)
             UpdatePotential(v, &newPotentialDelta);
         deltas->push_back(newPotentialDelta);
     }
-    NetworkDelta removeDelta(LAYERED);
+    NetworkDelta removeDelta(LAYERED, 1);
+    removeDelta.SetMessage("Residual network: removing layered network");
     for(auto e: *(this->GetAllEdges()))
         if(activeEdges[e->GetId()])
         {
@@ -320,6 +326,7 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
     for(long long i = 0; i < activeVertecies.size(); ++i)
         if(activeVertecies[i])
             removeDelta.AddNodeChange(new NetworkNodeChange(i, 0, 0));
+    deltas->push_back(removeDelta);
 }
 template <class FlowType>
 const std::vector<unsigned long long>* LayerNetwork<FlowType>::GetDistances() const

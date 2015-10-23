@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QGraphicsScene>
 
-Vertex::Vertex(unsigned long long id, VisualGraph* graph, QPointF position):id(id), graph(graph)
+Vertex::Vertex(unsigned long long id, VisualGraph* graph, QPointF position):id(id), graph(graph), color(QColor(152, 255, 255))
 {
     setFlag(ItemIsMovable);
         setFlag(ItemSendsGeometryChanges);
@@ -41,9 +41,20 @@ void Vertex::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QW
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
-    painter->setBrush(QBrush(QColor(152, 255, 255)));
+    painter->setBrush(QBrush(color));
     painter->drawEllipse(-10, -10, 20, 20);
-    const QString str = QString("%1").arg(this->id);
+    QString str;
+    switch(this->GetDisplayType())
+    {
+        case 0:
+            str = QString("%1").arg(this->id);
+            break;
+        case 1:
+            str = QString("%1").arg(this->potential);
+            break;
+        default:
+            break;
+    }
     QFont font("Times", 15);
     font.setStyleStrategy(QFont::ForceOutline);
     painter->setFont(font);
@@ -162,6 +173,10 @@ unsigned long long Vertex::Neighbors()
 {
     return this->edges.size();
 }
+void Vertex::SetColor(QColor color)
+{
+    this->color = color;
+}
 unsigned long long Vertex::GetPotential() const
 {
     return potential;
@@ -178,4 +193,11 @@ void Vertex::SetActive(bool value)
 {
     active = value;
 }
-
+int Vertex::GetDisplayType()
+{
+    return displayType;
+}
+void Vertex::SetDisplayType(int displayType)
+{
+    this->displayType = displayType;
+}

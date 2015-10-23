@@ -1,9 +1,11 @@
 #include "AlgorithmRunView.h"
+
+#include <qtextedit.h>
 #include "TIARunScene.h"
 
-AlgorithmRunView::AlgorithmRunView(QWidget* parent):GraphArea(parent), timerId(0)
+AlgorithmRunView::AlgorithmRunView(QTextEdit* messageBox, QWidget* parent):GraphArea(parent), timerId(0), messageBox(messageBox)
 {
-    QGraphicsScene* graphScene = new TIARunScene(this);
+    QGraphicsScene* graphScene = new TIARunScene(messageBox, this);
     graphScene->setSceneRect(QRectF(0, 0, 1250, 500));
     this->setMinimumSize(1250, 500);
     setCacheMode(CacheBackground);

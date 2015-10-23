@@ -96,6 +96,19 @@
     </property>
     <layout class="QVBoxLayout" name="GraphFieldLayout"/>
    </widget>
+   <widget class="QTextEdit" name="TextMessage">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>0</y>
+      <width>361</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

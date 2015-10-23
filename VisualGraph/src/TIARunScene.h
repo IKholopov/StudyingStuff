@@ -10,7 +10,7 @@ class TIARunScene : public GraphScene
 {
     Q_OBJECT
     public:
-        TIARunScene(AlgorithmRunView* parent = 0);
+        TIARunScene(QTextEdit* messageBox, AlgorithmRunView* parent = 0);
 
         void mousePressedOnVertex(Vertex* v);
 
@@ -33,6 +33,7 @@ class TIARunScene : public GraphScene
         VisualGraph* residual;
         long long currentStep;
         TIADeltas currentGraph;
+        QTextEdit* messageBox;
 };
 
 #endif // TIARUNSCENE_H

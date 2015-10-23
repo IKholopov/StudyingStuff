@@ -83,6 +83,7 @@ std::vector<NetworkDelta>* NetworkManager<FlowType>::ThreeIndiansAlgorithmDelta(
         delete layeredNetwork;
     }
     NetworkDelta originalDelta(0);
+    originalDelta.SetMessage("Original network: get flow from residual");
     graph.FlowFromResidual(*residualNetwork, &originalDelta);
     deltas->push_back(originalDelta);
     delete residualNetwork;

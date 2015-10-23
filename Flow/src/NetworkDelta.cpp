@@ -37,3 +37,11 @@ void NetworkDelta::SetOldGraphId(unsigned long long value)
 {
     oldGraphId = value;
 }
+std::string NetworkDelta::GetMessage() const
+{
+    return message;
+}
+void NetworkDelta::SetMessage(const std::string& value)
+{
+    message = value;
+}

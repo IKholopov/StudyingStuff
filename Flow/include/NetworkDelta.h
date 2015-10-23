@@ -45,6 +45,8 @@ class NetworkDelta
         bool IsToDelete();
         unsigned long long GetOldGraphId() const;
         void SetOldGraphId(unsigned long long value);
+        std::string GetMessage() const;
+        void SetMessage(const std::string& value);
 
     private:
         unsigned long long graphId;
@@ -52,6 +54,7 @@ class NetworkDelta
         std::vector<NetworkEdgeChange*> edgeChanges;
         std::vector<NetworkNodeChange*> nodeChanges;
         bool toDelete;
+        std::string message;
 };
 
 #endif

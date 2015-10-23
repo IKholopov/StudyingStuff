@@ -7,7 +7,7 @@ AlgorythmRun::AlgorythmRun(QWidget *parent) :
     ui(new Ui::AlgorythmRun)
 {
     ui->setupUi(this);
-    graphArea = new AlgorithmRunView(this->ui->GraphField);
+    graphArea = new AlgorithmRunView(this->ui->TextMessage, this->ui->GraphField);
     QObject::connect(this->ui->NextButton, &QToolButton::clicked,
         [=](){
             graphArea->NextStep();
