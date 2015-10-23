@@ -30,12 +30,12 @@ void TIARunScene::Initialize(const std::vector<std::vector<unsigned long long> >
 
     currentGraph = ORIGINAL;
     messageBox->setText(QString());
-    original->GetNode(0)->SetColor(QColor(180, 20, 20));
-    original->GetNode(original->GetSize()- 1)->SetColor(QColor(20, 20, 180));
-    layered->GetNode(0)->SetColor(QColor(180, 20, 20));
-    layered->GetNode(layered->GetSize() - 1)->SetColor(QColor(20, 20, 180));
-    residual->GetNode(0)->SetColor(QColor(180, 20, 20));
-    residual->GetNode(residual->GetSize() - 1)->SetColor(QColor(20, 20, 180));
+    original->GetNode(0)->SetColor(QColor(217, 234, 211));
+    original->GetNode(original->GetSize()- 1)->SetColor(QColor(244, 204, 204));
+    layered->GetNode(0)->SetColor(QColor(217, 234, 211));
+    layered->GetNode(layered->GetSize() - 1)->SetColor(QColor(244, 204, 204));
+    residual->GetNode(0)->SetColor(QColor(217, 234, 211));
+    residual->GetNode(residual->GetSize() - 1)->SetColor(QColor(244, 204, 204));
     original->SetEdgeDisplayType(1);
     layered->SetNodeDisplayType(1);
     currentStep = 0;
@@ -115,9 +115,9 @@ void TIARunScene::PrevStep()
         default:
             break;
     }
-    for(long long i = 0; i < delta.GetNodeChanges().size(); ++i)
+    for(long long i = delta.GetNodeChanges().size() - 1; i >= 0 ; --i)
         ProcessBackwardNodeChange(graph, delta.GetNodeChanges().at(i));
-    for(long long i = 0; i < delta.GetEdgeChanges().size(); ++i)
+    for(long long i = delta.GetEdgeChanges().size() - 1; i >= 0 ; --i)
         ProcessBackwardEdgeChange(graph, delta.GetEdgeChanges().at(i));
     switch(graphToSwitch){
         case ORIGINAL:

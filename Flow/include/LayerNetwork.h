@@ -210,7 +210,7 @@ void LayerNetwork<FlowType>::FindBlockingPath(ResidualNetwork<FlowType> &residua
 {
     std::vector<FlowType> flow(this->Size(), 0);
     NetworkDelta delta(LAYERED);
-    delta.SetMessage("Layered Networking: culculating potentials");
+    delta.SetMessage("Layered Networking: calculating potentials");
     for(unsigned long long v = 0; v < this->Size(); ++v)    //Create Vertex Potential;
     {
         if(v == this->source)
@@ -387,7 +387,7 @@ void LayerNetwork<FlowType>::UpdatePotential(unsigned long long v, NetworkDelta*
                 activeEdges[edge->GetId()] = 0;
                 outSums[edge->From] -= edge->GetCapacity();
                 --activeEdgesCounter;
-                UpdatePotential(edge->From);
+                UpdatePotential(edge->From, delta);
             }
         }
         auto out = this->GetOutgoing(v);
@@ -402,7 +402,7 @@ void LayerNetwork<FlowType>::UpdatePotential(unsigned long long v, NetworkDelta*
                 activeEdges[edge->GetId()] = 0;
                 inSums[edge->To] -= edge->GetCapacity();
                 --activeEdgesCounter;
-                UpdatePotential(edge->To);
+                UpdatePotential(edge->To, delta);
             }
         }
     }

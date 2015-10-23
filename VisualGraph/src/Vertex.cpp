@@ -113,7 +113,7 @@ void Vertex::Update()
         nextPosition = pos();
         return;
     }
-    const double c1 = 30;
+    const double c1 = 40;
     const double c2 = 20.0;
     const double c3 = 0.3;
     double vx = 0;

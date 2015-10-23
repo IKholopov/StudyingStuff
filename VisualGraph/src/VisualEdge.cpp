@@ -20,12 +20,10 @@ unsigned long long VisualEdge::GetId() const
 {
     return id;
 }
-
 Vertex* VisualEdge::GetTo() const
 {
     return to;
 }
-
 Vertex* VisualEdge::GetFrom() const
 {
     return from;
