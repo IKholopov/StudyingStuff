@@ -6,11 +6,11 @@
 class IMultiGraph: public IOriented
 {
     public:
-        virtual Edge* GetEdge(long long from, long long to, unsigned long long id) = 0;
-        virtual Edge* GetEdge(unsigned long long id) = 0;
-        virtual const std::vector<Edge*>* GetAllEdgesConst() const = 0;
-        virtual const std::vector<Edge*>* GetOutgoing(unsigned long long vertex) const = 0;
-        virtual const std::vector<Edge*>* GetIngoing(unsigned long long vertex) const = 0;
+        virtual Edge* getEdge(long long from, long long to, unsigned long long id) = 0;
+        virtual Edge* getEdge(unsigned long long id) = 0;
+        virtual const std::vector<Edge*>* getAllEdgesConst() const = 0;
+        virtual const std::vector<Edge*>* getOutgoing(unsigned long long vertex) const = 0;
+        virtual const std::vector<Edge*>* getIngoing(unsigned long long vertex) const = 0;
 };
 
 #endif

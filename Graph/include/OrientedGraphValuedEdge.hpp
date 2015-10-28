@@ -25,7 +25,7 @@ class OrientedGraphValuedEdge: public OrientedGraph
     virtual void WriteToFile(std::ostream &file);
     virtual void RandomizeGraph(double probability, EdgeValueTupe (*randFunc)());
     void GenerateAccurateGraph(long long percentage, EdgeValueTupe (*randFunc)());
-    bool AddEdge(long long from, long long to, EdgeValueTupe value);
+    bool addEdge(long long from, long long to, EdgeValueTupe value);
     bool CheckConnection();
     void DFS(unsigned long long  vertex, std::vector<bool>*visited);
     EdgeValueTupe GetEdgeValue(long long from, long long to);
@@ -50,14 +50,14 @@ void OrientedGraphValuedEdge<T>::ReadFromFile(std::istream &file)
         file >> from;
         file >> to;
         file >> vlaue;
-        this->AddEdge(from, to, vlaue);
+        this->addEdge(from, to, vlaue);
     }
 }
 template <class T>
 void OrientedGraphValuedEdge<T>::WriteToFile(std::ostream &file)
 {
-    std::vector<Edge*>* sorted = this->GetAllEdgesSorted();
-    file << this->Size() << std::endl;
+    std::vector<Edge*>* sorted = this->getAllEdgesSorted();
+    file << this->size() << std::endl;
     file << sorted->size() << std::endl;
     for(long long i = 0; i < sorted->size(); ++i)
         file << sorted->at(i)->From << " " << sorted->at(i)->To << " " <<
@@ -79,7 +79,7 @@ bool OrientedGraphValuedEdge<T>::CheckConnection()
 template <class T>
 void OrientedGraphValuedEdge<T>::DFS(unsigned long long vertex, std::vector<bool>* visited)
 {
-    std::vector<unsigned long long> vs = this->GetChilds(vertex);
+    std::vector<unsigned long long> vs = this->getChilds(vertex);
     for(long long i = 0; i < vs.size(); ++i)
         if(!visited->at(vs[i]))
         {
@@ -90,27 +90,27 @@ void OrientedGraphValuedEdge<T>::DFS(unsigned long long vertex, std::vector<bool
 template <class T>
 void OrientedGraphValuedEdge<T>::RandomizeGraph(double probability, T (*randFunc)())
 {
-    this->graph->InitializeNewGraph(this->Size());
-    for(long long i = 0; i < this->Size() - 1; ++i)
-        for(long long j = 0; j < this->Size(); ++j)
+    this->graph_->InitializeNewGraph(this->size());
+    for(long long i = 0; i < this->size() - 1; ++i)
+        for(long long j = 0; j < this->size(); ++j)
         {
             if(j == i)
                 continue;
             if(!(rand() % (long long)(1.0 / probability)))
             {
-                this->AddEdge(i, j, randFunc());
+                this->addEdge(i, j, randFunc());
             }
         }
 }
 template <class T>
-bool OrientedGraphValuedEdge<T>::AddEdge(long long from, long long to, T value)
+bool OrientedGraphValuedEdge<T>::addEdge(long long from, long long to, T value)
 {
     return this->OrientedGraph::AddEdge(new ValuedEdge<T>(from, to, value));
 }
 template <class T>
 T OrientedGraphValuedEdge<T>::GetEdgeValue(long long from, long long to)
 {
-    Edge* e = this->GetEdge(from, to);
+    Edge* e = this->getEdge(from, to);
     if(e == NULL)
         throw std::exception();
     return static_cast<ValuedEdge<T>*>(e)->GetValue();

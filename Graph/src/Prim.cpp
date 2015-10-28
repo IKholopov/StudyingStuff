@@ -11,7 +11,7 @@ UnorientedGraphValuedEdge<double>* Prim(UnorientedGraphValuedEdge<double>* origi
     MinPQ<double> q;
     std::vector<double> dist;
     std::vector<int> p;
-    for(int i = 0; i < original->Size(); ++i)
+    for(int i = 0; i < original->size(); ++i)
     {
         q.push(std::pair<double, int>(std::numeric_limits<double>::infinity(), i));
         dist.push_back(std::numeric_limits<double>::infinity());
@@ -20,26 +20,26 @@ UnorientedGraphValuedEdge<double>* Prim(UnorientedGraphValuedEdge<double>* origi
     dist[0] = 0;
     p[0] = -1;
     q.DecreaseKey(0, 0);
-    UnorientedGraphValuedEdge<double>* mst = new UnorientedGraphValuedEdge<double>(original->Size(), new AdjacencyMatrixUnoriented());
+    UnorientedGraphValuedEdge<double>* mst = new UnorientedGraphValuedEdge<double>(original->size(), new AdjacencyMatrixUnoriented());
     while(q.size() > 0)
     {
         std::pair<double, int> v = q.pop();
         for(int i = 0; i < q.size(); i++)
         {
             unsigned int u = q.GetAt(i).second;
-            if(original->CheckEdge(v.second, u) && dist[u] - ((ValuedEdge<double>*)original->GetEdge(v.second, u))->GetValue() > 0)
+            if(original->checkEdge(v.second, u) && dist[u] - ((ValuedEdge<double>*)original->getEdge(v.second, u))->GetValue() > 0)
             {
                 p[u] = v.second;
-                dist[u] = ((ValuedEdge<double>*)original->GetEdge(v.second, u))->GetValue();
+                dist[u] = ((ValuedEdge<double>*)original->getEdge(v.second, u))->GetValue();
                 q.DecreaseKey(i, dist[u]);
             }
         }
         if(p[v.second] != -1)
         {
-            mst->AddEdge(v.second, p[v.second], ((ValuedEdge<double>*)original->GetEdge(v.second, p[v.second]))->GetValue());
+            mst->addEdge(v.second, p[v.second], ((ValuedEdge<double>*)original->getEdge(v.second, p[v.second]))->GetValue());
         }
     }
-    mst->NormalizeEdges();
+    mst->normalizeEdges();
     return mst;
 }
 
@@ -54,10 +54,10 @@ void Prim()
         unsigned int u, v;
         double val;
         std::cin >> u >> v >> val;
-        graph.AddEdge(u, v, val);
+        graph.addEdge(u, v, val);
     }
     UnorientedGraphValuedEdge<double>* mst = Prim(&graph);
-    std::vector<Edge*>* edges = mst->GetAllEdgesSorted();
+    std::vector<Edge*>* edges = mst->getAllEdgesSorted();
     for(int i = 0; i < edges->size(); ++i)
         std::cout << edges->at(i)->From << " " << edges->at(i)->To << " " << ((ValuedEdge<double>*)edges->at(i))->GetValue() << std::endl;
     delete edges;

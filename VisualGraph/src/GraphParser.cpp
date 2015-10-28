@@ -24,9 +24,9 @@ std::vector<NetworkDelta>* GraphParser::getAlgorithmRun(const std::vector<std::v
     }
     NetworkGraph<long long> graph(size, new ParentChildListOriented());
     for(unsigned long long i = 0; i < graphData.size(); ++i) {
-        graph.AddEdge(new GraphLibrary::NetworkEdge<long long>(i, graphData.at(i).at(0),graphData.at(i).at(1), graphData.at(i).at(2), 0));
+        graph.addEdge(new GraphLibrary::NetworkEdge<long long>(i, graphData.at(i).at(0),graphData.at(i).at(1), graphData.at(i).at(2), 0));
     }
-    return NetworkManager<long long>::instance().ThreeIndiansAlgorithmDelta(graph, 0, size - 1);
+    return NetworkManager<long long>::instance().threeIndiansAlgorithmDelta(graph, 0, size - 1);
 }
 
 

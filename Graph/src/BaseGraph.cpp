@@ -1,76 +1,76 @@
 #include "BaseGraph.h"
 
-unsigned long long BaseGraph::Size() const
+unsigned long long BaseGraph::size() const
 {
-    return graph->Size();
+    return graph_->size();
 }
-unsigned long long BaseGraph::NumberOfEdges() const
+unsigned long long BaseGraph::numberOfEdges() const
 {
-    return graph->NumberOfEdges();
+    return graph_->numberOfEdges();
 }
-std::vector<unsigned long long> *BaseGraph::GetChilds(unsigned long long vertex) const
+std::vector<unsigned long long> *BaseGraph::getChilds(unsigned long long vertex) const
 {
-    return graph->GetChilds(vertex);
+    return graph_->getChilds(vertex);
 }
-std::vector<unsigned long long> *BaseGraph::GetParents(unsigned long long vertex) const
+std::vector<unsigned long long> *BaseGraph::getParents(unsigned long long vertex) const
 {
-    return graph->GetParents(vertex);
+    return graph_->getParents(vertex);
 }
-std::vector<Edge *> *BaseGraph::GetAllEdges() const
+std::vector<Edge *> *BaseGraph::getAllEdges() const
 {
-    return graph->GetAllEdges();
+    return graph_->getAllEdges();
 }
-std::vector<Edge *> *BaseGraph::GetAllEdgesSorted() //const
+std::vector<Edge *> *BaseGraph::getAllEdgesSorted() //const
 {
-    return graph->GetAllEdgesSorted();
+    return graph_->getAllEdgesSorted();
 }
-void BaseGraph::AddNodes(size_t amount)
+void BaseGraph::addNodes(size_t amount)
 {
-    graph->AddNodes(amount);
+    graph_->addNodes(amount);
 }
-bool BaseGraph::AddEdge(Edge *edge)
+bool BaseGraph::addEdge(Edge *edge)
 {
-    return graph->AddEdge(edge);
+    return graph_->addEdge(edge);
 }
-bool BaseGraph::CheckEdge(long long from, long long to)
+bool BaseGraph::checkEdge(long long from, long long to)
 {
-    return graph->CheckEdge(from, to);
+    return graph_->checkEdge(from, to);
 }
-Edge *BaseGraph::GetEdge(long long from, long long to)
+Edge *BaseGraph::getEdge(long long from, long long to)
 {
-    return graph->GetEdge(from, to);
+    return graph_->getEdge(from, to);
 }
-void BaseGraph::DeleteEdge(long long from, long long to)
+void BaseGraph::deleteEdge(long long from, long long to)
 {
-    this->graph->DeleteEdge(from, to);
+    this->graph_->deleteEdge(from, to);
 }
-void BaseGraph::DeleteNodeEdges(unsigned long long v)
+void BaseGraph::deleteNodeEdges(unsigned long long v)
 {
-    this->graph->DeleteNodeEdges(v);
+    this->graph_->deleteNodeEdges(v);
 }
-void BaseGraph::DeleteAllEdges()
+void BaseGraph::deleteAllEdges()
 {
-    return graph->DeleteAllEdges();
+    return graph_->deleteAllEdges();
 }
-void BaseGraph::InitializeNewGraph(unsigned long long size)
+void BaseGraph::initializeNewGraph(unsigned long long size)
 {
-    this->graph->InitializeNewGraph(size);
+    this->graph_->initializeNewGraph(size);
 }
 BaseGraph::BaseGraph(IGraph &graph)
 {
-    this->graph = &graph;
+    this->graph_ = &graph;
 }
 BaseGraph::BaseGraph(IGraph *graph)
 {
-    this->graph = graph;
+    this->graph_ = graph;
 }
 BaseGraph::BaseGraph(unsigned long long size, IGraph &graph)
 {
-    this->graph = &graph;
-    this->graph->InitializeNewGraph(size);
+    this->graph_ = &graph;
+    this->graph_->initializeNewGraph(size);
 }
 BaseGraph::BaseGraph(unsigned long long size, IGraph* graph)
 {
-    this->graph = graph;
-    this->graph->InitializeNewGraph(size);
+    this->graph_ = graph;
+    this->graph_->initializeNewGraph(size);
 }

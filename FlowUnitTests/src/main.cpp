@@ -11,11 +11,11 @@ long long randInt()
 
 int main()
 {
-    auto in = NetworkManager<long long>::instance().ReadGraph(std::cin, new ParentChildListOriented());
+    auto in = NetworkManager<long long>::instance().readGraph(std::cin, new ParentChildListOriented());
     auto edges = in.first;
     auto graph = in.second;
-    NetworkManager<long long>::instance().ThreeIndiansAlgorithm(*graph, 0, graph->Size() - 1);
-    NetworkManager<long long>::instance().WriteGraphFlow(std::cout, graph, edges);
+    NetworkManager<long long>::instance().threeIndiansAlgorithm(*graph, 0, graph->size() - 1);
+    NetworkManager<long long>::instance().writeGraphFlow(std::cout, graph, edges);
     delete graph;
     delete edges;
     return 0;

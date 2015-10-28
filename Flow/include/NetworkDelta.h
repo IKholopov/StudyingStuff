@@ -1,10 +1,11 @@
 #ifndef GRAPH_NETWORKDELTA
 #define GRAPH_NETWORKDELTA
 
-#include <vector>
 #include "NetworkEdge.h"
 
-class NetworkNodeChange
+#include <vector>
+
+struct NetworkNodeChange
 {
     public:
         NetworkNodeChange(unsigned long long id,
@@ -18,7 +19,7 @@ class NetworkNodeChange
         bool OldHighlighted = false;
         bool Highlighted;
 };
-class NetworkEdgeChange
+struct NetworkEdgeChange
 {
     public:
         NetworkEdgeChange(unsigned long long id, unsigned long long from, unsigned long long to, unsigned long long capacity,
@@ -40,25 +41,26 @@ class NetworkEdgeChange
 class NetworkDelta
 {
     public:
-        NetworkDelta(unsigned long long graphId, bool toDelete = 0);
-        unsigned long long GetGraphId();
-        void AddNodeChange(NetworkNodeChange* change);
-        void AddEdgeChange(NetworkEdgeChange* change);
-        const std::vector<NetworkNodeChange*>& GetNodeChanges() const;
-        const std::vector<NetworkEdgeChange*>& GetEdgeChanges() const;
-        bool IsToDelete();
-        unsigned long long GetOldGraphId() const;
-        void SetOldGraphId(unsigned long long value);
-        std::string GetMessage() const;
-        void SetMessage(const std::string& value);
+        NetworkDelta(unsigned long long graphId_, bool toDelete_ = 0);
+
+        unsigned long long getGraphId();
+        void addNodeChange(NetworkNodeChange* change);
+        void addEdgeChange(NetworkEdgeChange* change);
+        const std::vector<NetworkNodeChange*>& getNodeChanges() const;
+        const std::vector<NetworkEdgeChange*>& getEdgeChanges() const;
+        bool isToDelete();
+        unsigned long long getOldGraphId() const;
+        void setOldGraphId(unsigned long long value);
+        std::string getMessage() const;
+        void setMessage(const std::string& value);
 
     private:
-        unsigned long long graphId;
-        unsigned long long oldGraphId = 0;
-        std::vector<NetworkEdgeChange*> edgeChanges;
-        std::vector<NetworkNodeChange*> nodeChanges;
-        bool toDelete;
-        std::string message;
+        unsigned long long graphId_;
+        unsigned long long oldGraphId_ = 0;
+        std::vector<NetworkEdgeChange*> edgeChanges_;
+        std::vector<NetworkNodeChange*> nodeChanges_;
+        bool toDelete_;
+        std::string message_;
 };
 
 #endif

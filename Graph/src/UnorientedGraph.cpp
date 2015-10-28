@@ -1,20 +1,20 @@
 #include "UnorientedGraph.h"
 #include <algorithm>
 
-UnorientedGraph *UnorientedGraph::Clone() const
+UnorientedGraph *UnorientedGraph::clone() const
 {
-    return new UnorientedGraph(this->graph->Clone());
+    return new UnorientedGraph(this->graph_->clone());
 }
 UnorientedGraph::~UnorientedGraph()
 {
-    delete graph;
+    delete graph_;
 }
 
-void UnorientedGraph::ReadFromFile(std::ifstream &file)
+void UnorientedGraph::readFromFile(std::ifstream &file)
 {
     unsigned long long size, edgeSz;
     file >> size;
-    this->InitializeNewGraph(size);
+    this->initializeNewGraph(size);
     file >> edgeSz;
     for(long long i = 0; i < edgeSz; ++i)
     {
@@ -24,25 +24,25 @@ void UnorientedGraph::ReadFromFile(std::ifstream &file)
         //TODO: this->AddEdge(from, to);
     }
 }
-void UnorientedGraph::WriteToFile(std::string filename)
+void UnorientedGraph::writeToFile(std::string filename)
 {
     std::ofstream file(filename.c_str());
-    this->WriteToFile(file);
+    this->writeToFile(file);
     file.close();
 }
-void UnorientedGraph::WriteToFile(std::ofstream &file)
+void UnorientedGraph::writeToFile(std::ofstream &file)
 {
-    std::vector<Edge*>* edges = this->graph->GetAllEdges();
-    file << this->Size() << std::endl;
+    std::vector<Edge*>* edges = this->graph_->getAllEdges();
+    file << this->size() << std::endl;
     file << edges->size() << std::endl;
     for(long long i = 0; i < edges->size(); ++i)
         file << edges->at(i)->From << " " << edges->at(i)->To << std::endl;
 }
-void UnorientedGraph::RandomizeGraph(double probability)
+void UnorientedGraph::randomizeGraph(double probability)
 {
-    this->InitializeNewGraph(this->Size());
-    for(long long i = 0; i < this->Size() - 1; ++i)
-        for(long long j = i; j < this->Size(); ++j)
+    this->initializeNewGraph(this->size());
+    for(long long i = 0; i < this->size() - 1; ++i)
+        for(long long j = i; j < this->size(); ++j)
         {
             if(j == i)
                 continue;
@@ -52,9 +52,9 @@ void UnorientedGraph::RandomizeGraph(double probability)
             }
         }
 }
-void UnorientedGraph::NormalizeEdges()
+void UnorientedGraph::normalizeEdges()
 {
-    std::vector<Edge*>* edges = this->graph->GetAllEdges();
+    std::vector<Edge*>* edges = this->graph_->getAllEdges();
     for(long long i = 0; i < edges->size(); ++i)
         if(edges->at(i)->From > edges->at(i)->To)
         {

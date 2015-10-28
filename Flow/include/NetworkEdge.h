@@ -2,6 +2,7 @@
 #define FLOW_NETWORKEDGE_H
 
 #include "Edge.h"
+
 #include <assert.h>
 #include <istream>
 #include <ostream>
@@ -16,36 +17,36 @@ class NetworkEdge: public Edge
         NetworkEdge(unsigned long long id, unsigned long long from, unsigned long long to,
                     FlowType capacity, FlowType flow):Edge(from, to)
         {
-            this->id = id;
-            this->capacity = capacity;
-            this->flow = flow;
+            this->id_ = id;
+            this->capacity_ = capacity;
+            this->flow_ = flow;
         }
-        NetworkEdge* Clone()
+        NetworkEdge* clone()
         {
-            return new NetworkEdge(this->id, this->From, this->To, capacity, flow);
+            return new NetworkEdge(this->id_, this->From, this->To, capacity_, flow_);
         }
-        FlowType GetCapacity()
+        FlowType getCapacity()
         {
-            return capacity;
+            return capacity_;
         }
-        void SetCapacity(long long capacity)
+        void setCapacity(long long capacity)
         {
             assert(capacity >= 0);
-            this->capacity = capacity;
+            this->capacity_ = capacity;
         }
-        FlowType GetFlow()
+        FlowType getFlow()
         {
-            return flow;
+            return flow_;
         }
-        void SetFlow(long long flow)
+        void setFlow(long long flow)
         {
-            assert(flow <= capacity);
-            this->flow = flow;
+            assert(flow <= capacity_);
+            this->flow_ = flow;
         }
 
     private:
-        FlowType capacity;
-        FlowType flow;
+        FlowType capacity_;
+        FlowType flow_;
 };
 
 }

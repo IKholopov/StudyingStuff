@@ -50,7 +50,7 @@ void Vertex::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QW
     switch(this->getDisplayType())
     {
         case ID:
-            str = QString("%1").arg(this->id_);
+            str = QString("%1").arg(this->id_ + 1);
             break;
         case POTENTIAL:
             str = QString("%1").arg(this->potential_);
@@ -63,9 +63,9 @@ void Vertex::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QW
     painter->setFont(font);
     painter->save();
     double scale = 1.0;
-    if(this->id_ / 100)
+    if((this->id_ + 1) / 100)
         scale *=0.7;
-    if(this->id_ / 10)
+    if((this->id_ + 1) / 10)
         scale *=0.7;
     painter->scale(scale, scale);
     painter->drawText(-4, 8, str);

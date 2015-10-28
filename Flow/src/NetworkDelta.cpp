@@ -1,47 +1,47 @@
 #include "NetworkDelta.h"
 
-NetworkDelta::NetworkDelta(unsigned long long graphId, bool toDelete):graphId(graphId), toDelete(toDelete)
+NetworkDelta::NetworkDelta(unsigned long long graphId, bool toDelete):graphId_(graphId), toDelete_(toDelete)
 {
 
 }
 
-unsigned long long NetworkDelta::GetGraphId()
+unsigned long long NetworkDelta::getGraphId()
 {
-    return graphId;
+    return graphId_;
 }
-void NetworkDelta::AddNodeChange(NetworkNodeChange* change)
+void NetworkDelta::addNodeChange(NetworkNodeChange* change)
 {
-    nodeChanges.push_back(change);
+    nodeChanges_.push_back(change);
 }
-void NetworkDelta::AddEdgeChange(NetworkEdgeChange* change)
+void NetworkDelta::addEdgeChange(NetworkEdgeChange* change)
 {
-    edgeChanges.push_back(change);
+    edgeChanges_.push_back(change);
 }
-const std::vector<NetworkNodeChange*>& NetworkDelta::GetNodeChanges() const
+const std::vector<NetworkNodeChange*>& NetworkDelta::getNodeChanges() const
 {
-    return nodeChanges;
+    return nodeChanges_;
 }
-const std::vector<NetworkEdgeChange*>& NetworkDelta::GetEdgeChanges() const
+const std::vector<NetworkEdgeChange*>& NetworkDelta::getEdgeChanges() const
 {
-    return edgeChanges;
+    return edgeChanges_;
 }
-bool NetworkDelta::IsToDelete()
+bool NetworkDelta::isToDelete()
 {
-    return toDelete;
+    return toDelete_;
 }
-unsigned long long NetworkDelta::GetOldGraphId() const
+unsigned long long NetworkDelta::getOldGraphId() const
 {
-    return oldGraphId;
+    return oldGraphId_;
 }
-void NetworkDelta::SetOldGraphId(unsigned long long value)
+void NetworkDelta::setOldGraphId(unsigned long long value)
 {
-    oldGraphId = value;
+    oldGraphId_ = value;
 }
-std::string NetworkDelta::GetMessage() const
+std::string NetworkDelta::getMessage() const
 {
-    return message;
+    return message_;
 }
-void NetworkDelta::SetMessage(const std::string& value)
+void NetworkDelta::setMessage(const std::string& value)
 {
-    message = value;
+    message_ = value;
 }

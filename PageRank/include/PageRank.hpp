@@ -36,9 +36,9 @@ PageRank<T>::PageRank(unsigned int size, double d):OrientedGraph(size, new Adjac
     this->d = d;
     oldRank = new std::vector<double>();
     rank = new std::vector<double>();
-    for(int i = 0; i < Size(); ++i)
+    for(int i = 0; i < this->size(); ++i)
     {
-        rank->push_back(1.0 / Size());
+        rank->push_back(1.0 / this->size());
     }
 }
 template <class T>
@@ -52,8 +52,8 @@ bool PageRank<T>::AddPage(T page)
 {
         if(GetIndexOfPage(page) != -1)
             return false;
-        this->AddNodes(1);
-        Data[page] = this->Size() - 1;
+        this->addNodes(1);
+        Data[page] = this->size() - 1;
         return true;
 }
 template <class T>
@@ -61,9 +61,9 @@ void PageRank<T>::InitRank()
 {
     oldRank->clear();
     rank->clear();
-    for(int i = 0; i < Size(); ++i)
+    for(int i = 0; i < size(); ++i)
     {
-        rank->push_back(1.0 / Size());
+        rank->push_back(1.0 / size());
     }
 }
 template <class T>
@@ -82,19 +82,19 @@ void PageRank<T>::PageRankForSteps(int steps)
         oldRank = rank;
         rank = temp;
         rank->clear();
-        for(int j = 0; j < Size(); ++j)
+        for(int j = 0; j < size(); ++j)
         {
             double sum = 0;
-            auto parents = GetParents(j);
+            auto parents = getParents(j);
                 for(int k = 0; k < parents->size(); ++k)
             {
                 if(j == k)
                     continue;
-                auto childs = GetChilds(parents->at(k));
+                auto childs = getChilds(parents->at(k));
                 sum += oldRank->at(k) / childs->size();
                 delete childs;
             }
-            rank->push_back((1.0 - d) / Size() + d * sum);
+            rank->push_back((1.0 - d) / size() + d * sum);
             delete parents;
         }
     }
@@ -108,7 +108,7 @@ void PageRank<T>::PageRankToConverge()
     {
             PageRankForSteps(1);
             converge = true;
-            for(int i = 0; i < this->Size(); ++i)
+            for(int i = 0; i < this->size(); ++i)
                 if(std::abs(oldRank->at(i) - rank->at(i)) > error)
                 {
                     converge = false;

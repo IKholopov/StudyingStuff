@@ -11,7 +11,7 @@ UnorientedGraph* GraphManager::GetRandomUnorientedGraph(unsigned int size)
 UnorientedGraph* GraphManager::GetRandomUnorientedGraph(unsigned int size, double probability)
 {
     UnorientedGraph* g = new UnorientedGraph(*(new AdjacencyMatrixUnoriented(size)));
-    g->RandomizeGraph(probability);
+    g->randomizeGraph(probability);
     return g;
 }
 OrientedGraph* GraphManager::GetRandomGraph(unsigned int size)
@@ -54,6 +54,6 @@ OrientedGraph* GraphManager::ReadFromFileGraphRegular(std::ifstream& file)
 UnorientedGraphValuedEdge<int>* GraphManager::ReadFromFileGraphIntValuedEdge(std::ifstream& file)
 {
     UnorientedGraphValuedEdge<int>* g = new UnorientedGraphValuedEdge<int>(1, *(new AdjacencyMatrixUnoriented()));
-    g->ReadFromFile(file);
+    g->readFromFile(file);
     return g;
 }

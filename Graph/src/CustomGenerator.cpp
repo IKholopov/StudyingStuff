@@ -20,7 +20,7 @@ UnorientedGraphValuedEdge<double>* GenerateGraphFrom(std::istream& str)
 UnorientedGraphValuedEdge<double>* GenerateGraph(unsigned int size, int percentage)
 {
     UnorientedGraphValuedEdge<double>* g = new UnorientedGraphValuedEdge<double>(size, *(new AdjacencyMatrixUnoriented()));
-    g->GenerateAccurateUnorientedGraph(percentage, &randVal);
+    g->generateAccurateUnorientedGraph(percentage, &randVal);
     return g;
 }
 void GenerateToStream(std::ostream &outstr, std::istream &instr)
@@ -29,8 +29,8 @@ void GenerateToStream(std::ostream &outstr, std::istream &instr)
     instr >> n;
     instr >> t;
     UnorientedGraphValuedEdge<double>* g = GenerateGraph(n, t);
-    g->NormalizeEdges();
-    g->WriteToFile(outstr);
+    g->normalizeEdges();
+    g->writeToFile(outstr);
 }
 void GenerateToStream()
 {

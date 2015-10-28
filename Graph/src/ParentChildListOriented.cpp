@@ -7,104 +7,104 @@
 
 ParentChildListOriented::ParentChildListOriented()
 {
-    this->size = 0;
-    InitializeNewGraph(DEFAULT_NODES_AMOUNT);
+    this->size_ = 0;
+    initializeNewGraph(DEFAULT_NODES_AMOUNT);
 }
 ParentChildListOriented::ParentChildListOriented(unsigned long long size, std::vector<Edge *> &edges)
 {
-    this->size = size;
-    this->edges.resize(size);
-    InitializeNewGraph(size);
+    this->size_ = size;
+    this->edges_.resize(size);
+    initializeNewGraph(size);
     for(auto edge = edges.begin(); edge != edges.end(); ++edge)
     {
-        this->edges.push_back(*edge);
-        this->outgoingEdges[(*edge)->From].push_back(*edge);
-        this->ingoingEdges[(*edge)->To].push_back(*edge);
+        this->edges_.push_back(*edge);
+        this->outgoingEdges_[(*edge)->From].push_back(*edge);
+        this->ingoingEdges_[(*edge)->To].push_back(*edge);
     }
 }
 ParentChildListOriented::ParentChildListOriented(unsigned long long size)
 {
-    this->edges.resize(size);
-    InitializeNewGraph(size);
+    this->edges_.resize(size);
+    initializeNewGraph(size);
 }
 ParentChildListOriented::ParentChildListOriented(const ParentChildListOriented &graph)
 {
-    this->edges.resize(graph.size);
-    InitializeNewGraph(graph.size);
-    std::vector<Edge*>* edges = graph.GetAllEdges();
+    this->edges_.resize(graph.size_);
+    initializeNewGraph(graph.size_);
+    std::vector<Edge*>* edges = graph.getAllEdges();
     for(auto edge = edges->begin(); edge != edges->end(); ++edge)
     {
-        auto newEdge = (*edge)->Clone();
-        this->edges.push_back(newEdge);
-        this->outgoingEdges[(*edge)->From].push_back(newEdge);
-        this->ingoingEdges[(*edge)->To].push_back(newEdge);
+        auto newEdge = (*edge)->clone();
+        this->edges_.push_back(newEdge);
+        this->outgoingEdges_[(*edge)->From].push_back(newEdge);
+        this->ingoingEdges_[(*edge)->To].push_back(newEdge);
     }
     delete edges;
 }
 ParentChildListOriented &ParentChildListOriented::operator=(const ParentChildListOriented &graph)
 {
-    this->edges.resize(graph.size);
-    InitializeNewGraph(graph.size);
-    std::vector<Edge*>* edges = graph.GetAllEdges();
+    this->edges_.resize(graph.size_);
+    initializeNewGraph(graph.size_);
+    std::vector<Edge*>* edges = graph.getAllEdges();
     for(auto edge = edges->begin(); edge != edges->end(); ++edge)
     {
-        auto newEdge = (*edge)->Clone();
-        this->edges.push_back(newEdge);
-        this->outgoingEdges[(*edge)->From].push_back(newEdge);
-        this->ingoingEdges[(*edge)->To].push_back(newEdge);
+        auto newEdge = (*edge)->clone();
+        this->edges_.push_back(newEdge);
+        this->outgoingEdges_[(*edge)->From].push_back(newEdge);
+        this->ingoingEdges_[(*edge)->To].push_back(newEdge);
     }
     delete edges;
 }
-ParentChildListOriented* ParentChildListOriented::Clone() const
+ParentChildListOriented* ParentChildListOriented::clone() const
 {
     std::vector<Edge*> newEdges;
-    for(auto v = edges.begin(); v != edges.end(); ++v)
-        newEdges.push_back((*v)->Clone());
-    return new ParentChildListOriented(this->size, newEdges);
+    for(auto v = edges_.begin(); v != edges_.end(); ++v)
+        newEdges.push_back((*v)->clone());
+    return new ParentChildListOriented(this->size_, newEdges);
 }
 ParentChildListOriented::~ParentChildListOriented()
 {
-    this->DeleteAllEdges();
+    this->deleteAllEdges();
 }
-unsigned long long ParentChildListOriented::Size() const
+unsigned long long ParentChildListOriented::size() const
 {
-    return size;
+    return size_;
 }
-unsigned long long ParentChildListOriented::NumberOfEdges() const
+unsigned long long ParentChildListOriented::numberOfEdges() const
 {
-    return this->edges.size();
+    return this->edges_.size();
 }
-std::vector<unsigned long long> *ParentChildListOriented::GetChilds(unsigned long long vertex) const
+std::vector<unsigned long long> *ParentChildListOriented::getChilds(unsigned long long vertex) const
 {
     std::vector<unsigned long long>* childs = new std::vector<unsigned long long>();
-    for(auto e = edges.begin(); e != edges.end(); ++e)
+    for(auto e = edges_.begin(); e != edges_.end(); ++e)
         if((*e)->From == vertex)
             childs->push_back((*e)->To);
     return childs;
 }
-std::vector<unsigned long long> *ParentChildListOriented::GetParents(unsigned long long vertex) const
+std::vector<unsigned long long> *ParentChildListOriented::getParents(unsigned long long vertex) const
 {
     std::vector<unsigned long long>* parents = new std::vector<unsigned long long>();
-    for(auto e = edges.begin(); e != edges.end(); ++e)
+    for(auto e = edges_.begin(); e != edges_.end(); ++e)
         if((*e)->To == vertex)
             parents->push_back((*e)->From);
     return parents;
 }
-std::vector<Edge *> *ParentChildListOriented::GetAllEdges() const
+std::vector<Edge *> *ParentChildListOriented::getAllEdges() const
 {
     std::vector<Edge*>* edges = new std::vector<Edge*>();
-    for(auto u = this->edges.begin(); u != this->edges.end(); ++u)
+    for(auto u = this->edges_.begin(); u != this->edges_.end(); ++u)
                edges->push_back(*u);
     return edges;
 }
-const std::vector<Edge *> *ParentChildListOriented::GetAllEdgesConst() const
+const std::vector<Edge *> *ParentChildListOriented::getAllEdgesConst() const
 {
-    return &edges;
+    return &edges_;
 }
-std::vector<Edge *> *ParentChildListOriented::GetAllEdgesSorted()
+std::vector<Edge *> *ParentChildListOriented::getAllEdgesSorted()
 {
     std::vector<Edge*>* edges = new std::vector<Edge*>();
-    for(auto u = this->edges.begin(); u != this->edges.end(); ++u)
+    for(auto u = this->edges_.begin(); u != this->edges_.end(); ++u)
                edges->push_back(*u);
     std::sort(edges->begin(), edges->end(), [](Edge* a, Edge* b) {
         if(a->From == b->From)
@@ -113,152 +113,145 @@ std::vector<Edge *> *ParentChildListOriented::GetAllEdgesSorted()
     });
     return edges;
 }
-void ParentChildListOriented::AddNodes(size_t amount)
+void ParentChildListOriented::addNodes(size_t amount)
 {
-    this->size += amount;
+    this->size_ += amount;
 }
-bool ParentChildListOriented::AddEdge(long long from, long long to)
+bool ParentChildListOriented::addEdge(long long from, long long to)
 {
-    return AddEdge(new Edge(from, to));
+    return addEdge(new Edge(from, to));
 }
-bool ParentChildListOriented::CheckEdge(long long from, long long to)
+bool ParentChildListOriented::checkEdge(long long from, long long to)
 {
     if(from == to)
         return true;
-    for(auto u = this->outgoingEdges[from].begin(); u != this->outgoingEdges[from].end(); ++u)
+    for(auto u = this->outgoingEdges_[from].begin(); u != this->outgoingEdges_[from].end(); ++u)
         if((*u)->To == to)
             return true;
     return NULL;
 }
-Edge* ParentChildListOriented::GetEdge(long long from, long long to)
+Edge* ParentChildListOriented::getEdge(long long from, long long to)
 {
-    for(auto u = this->outgoingEdges[from].begin(); u != this->outgoingEdges[from].end(); ++u)
+    for(auto u = this->outgoingEdges_[from].begin(); u != this->outgoingEdges_[from].end(); ++u)
         if((*u)->To == to)
             return *u;
     return NULL;
 }
-Edge*ParentChildListOriented::GetEdge(long long from, long long to, unsigned long long id)
+Edge*ParentChildListOriented::getEdge(long long from, long long to, unsigned long long id)
 {
-    for(auto u = this->outgoingEdges[from].begin(); u != this->outgoingEdges[from].end(); ++u)
-        if((*u)->To == to && (*u)->GetId() == id)
+    for(auto u = this->outgoingEdges_[from].begin(); u != this->outgoingEdges_[from].end(); ++u)
+        if((*u)->To == to && (*u)->getId() == id)
             return *u;
     return NULL;
 }
-Edge*ParentChildListOriented::GetEdge(unsigned long long id)
+Edge*ParentChildListOriented::getEdge(unsigned long long id)
 {
-    for(auto u = this->edges.begin(); u != edges.end(); ++u)
-        if((*u)->GetId() == id)
+    for(auto u = this->edges_.begin(); u != edges_.end(); ++u)
+        if((*u)->getId() == id)
             return *u;
     return NULL;
 }
-Edge* ParentChildListOriented::RemoveEdge(long long from, long long to)
+Edge* ParentChildListOriented::removeEdge(long long from, long long to)
 {
     Edge* edge = NULL;
-    for(auto u = this->edges.begin(); u != this->edges.end(); ++u)
-        if((*u)->From == from && (*u)->To == to)
-        {
-            this->edges.erase(u);
+    for(auto u = this->edges_.begin(); u != this->edges_.end(); ++u)
+        if((*u)->From == from && (*u)->To == to) {
+            this->edges_.erase(u);
             edge = *u;
         }
-    for(auto u = this->outgoingEdges[from].begin(); u != this->outgoingEdges[from].end(); ++u)
+    for(auto u = this->outgoingEdges_[from].begin(); u != this->outgoingEdges_[from].end(); ++u)
         if((*u)->To == to)
-            this->outgoingEdges[from].erase(u);
-    for(auto u = this->ingoingEdges[to].begin(); u != this->ingoingEdges[to].end(); ++u)
+            this->outgoingEdges_[from].erase(u);
+    for(auto u = this->ingoingEdges_[to].begin(); u != this->ingoingEdges_[to].end(); ++u)
         if((*u)->From == from)
-            this->ingoingEdges[to].erase(u);
+            this->ingoingEdges_[to].erase(u);
     return edge;
 }
-void ParentChildListOriented::DeleteEdge(unsigned long long from, unsigned long long to)
+void ParentChildListOriented::deleteEdge(unsigned long long from, unsigned long long to)
 {
     Edge* edge = NULL;
-    for(auto u = this->edges.begin(); u != this->edges.end(); ++u)
-        if((*u)->From == from && (*u)->To == to)
-        {
+    for(auto u = this->edges_.begin(); u != this->edges_.end(); ++u)
+        if((*u)->From == from && (*u)->To == to) {
             edge = *u;
-            this->edges.erase(u);
+            this->edges_.erase(u);
             break;
         }
-    for(auto u = this->outgoingEdges[from].begin(); u != this->outgoingEdges[from].end(); ++u)
-        if((*u)->To == to)
-        {
-            this->outgoingEdges[from].erase(u);
+    for(auto u = this->outgoingEdges_[from].begin(); u != this->outgoingEdges_[from].end(); ++u)
+        if((*u)->To == to) {
+            this->outgoingEdges_[from].erase(u);
             break;
         }
-    for(auto u = this->ingoingEdges[to].begin(); u != this->ingoingEdges[to].end(); ++u)
-        if((*u)->From == from)
-        {
-            this->ingoingEdges[to].erase(u);
+    for(auto u = this->ingoingEdges_[to].begin(); u != this->ingoingEdges_[to].end(); ++u)
+        if((*u)->From == from) {
+            this->ingoingEdges_[to].erase(u);
             break;
         }
     assert(edge != NULL);
     delete edge;
 }
-void ParentChildListOriented::DeleteNodeEdges(unsigned long long v)
+void ParentChildListOriented::deleteNodeEdges(unsigned long long v)
 {
-    for(long long i = 0; i < edges.size(); ++i)
-        if(edges[i]->From == v || edges[i]->To == v)
-        {
-            delete(edges[i]);
-            edges.erase(edges.begin() + i);
+    for(long long i = 0; i < edges_.size(); ++i)
+        if(edges_[i]->From == v || edges_[i]->To == v) {
+            delete(edges_[i]);
+            edges_.erase(edges_.begin() + i);
             --i;
         }
-    for(int i  = 0; i < this->ingoingEdges.size(); ++i)
+    for(int i  = 0; i < this->ingoingEdges_.size(); ++i)
     {
-        for(int j = 0; j < this->ingoingEdges[i].size(); ++j)
+        for(int j = 0; j < this->ingoingEdges_[i].size(); ++j)
         {
-            Edge* e = ingoingEdges[i][j];
-            if(e->From == v || e->To == v )
-            {
-                ingoingEdges[i].erase(ingoingEdges[i].begin() + j);
+            Edge* e = ingoingEdges_[i][j];
+            if(e->From == v || e->To == v ) {
+                ingoingEdges_[i].erase(ingoingEdges_[i].begin() + j);
                 --j;
             }
         }
     }
-    for(int i  = 0; i < this->outgoingEdges.size(); ++i)
+    for(int i  = 0; i < this->outgoingEdges_.size(); ++i)
     {
-        for(int j = 0; j < this->outgoingEdges[i].size(); ++j)
+        for(int j = 0; j < this->outgoingEdges_[i].size(); ++j)
         {
-            Edge* e = outgoingEdges[i][j];
-            if(e->From == v || e->To == v )
-            {
-                outgoingEdges[i].erase(outgoingEdges[i].begin() + j);
+            Edge* e = outgoingEdges_[i][j];
+            if(e->From == v || e->To == v ) {
+                outgoingEdges_[i].erase(outgoingEdges_[i].begin() + j);
                 --j;
             }
         }
     }
-    this->ingoingEdges.at(v).clear();
-    this->outgoingEdges.at(v).clear();
+    this->ingoingEdges_.at(v).clear();
+    this->outgoingEdges_.at(v).clear();
 
 }
-void ParentChildListOriented::DeleteAllEdges()
+void ParentChildListOriented::deleteAllEdges()
 {
-    for(auto v = edges.begin(); v != edges.end(); ++v)
+    for(auto v = edges_.begin(); v != edges_.end(); ++v)
                delete *v;
-    edges.clear();
-    this->ingoingEdges.clear();
-    this->ingoingEdges.resize(this->size);
-    this->outgoingEdges.clear();
-    this->outgoingEdges.resize(this->size);
+    edges_.clear();
+    this->ingoingEdges_.clear();
+    this->ingoingEdges_.resize(this->size_);
+    this->outgoingEdges_.clear();
+    this->outgoingEdges_.resize(this->size_);
 }
-bool ParentChildListOriented::AddEdge(Edge *edge)
+bool ParentChildListOriented::addEdge(Edge *edge)
 {
-    edges.push_back(edge);
-    ingoingEdges[edge->To].push_back(edge);
-    outgoingEdges[edge->From].push_back(edge);
+    edges_.push_back(edge);
+    ingoingEdges_[edge->To].push_back(edge);
+    outgoingEdges_[edge->From].push_back(edge);
     return true;
 }
-void ParentChildListOriented::InitializeNewGraph(unsigned long long size)
+void ParentChildListOriented::initializeNewGraph(unsigned long long size)
 {
-    this->DeleteAllEdges();
-    this->ingoingEdges.resize(size);
-    this->outgoingEdges.resize(size);
-    this->size = size;
+    this->deleteAllEdges();
+    this->ingoingEdges_.resize(size);
+    this->outgoingEdges_.resize(size);
+    this->size_ = size;
 }
-const std::vector<Edge *> *ParentChildListOriented::GetOutgoing(unsigned long long vertex) const
+const std::vector<Edge *> *ParentChildListOriented::getOutgoing(unsigned long long vertex) const
 {
-    return &(outgoingEdges[vertex]);
+    return &(outgoingEdges_[vertex]);
 }
-const std::vector<Edge *> *ParentChildListOriented::GetIngoing(unsigned long long vertex) const
+const std::vector<Edge *> *ParentChildListOriented::getIngoing(unsigned long long vertex) const
 {
-    return &(ingoingEdges[vertex]);
+    return &(ingoingEdges_[vertex]);
 }

@@ -6,16 +6,16 @@
 
 UnorientedGraphValuedEdge<double>* Boruvka(UnorientedGraphValuedEdge<double> *original)
 {
-    UnorientedGraphValuedEdge<double>* mst = new UnorientedGraphValuedEdge<double>(original->Size(), new AdjacencyMatrixUnoriented());
-    MinDSU dsu(mst->Size());
+    UnorientedGraphValuedEdge<double>* mst = new UnorientedGraphValuedEdge<double>(original->size(), new AdjacencyMatrixUnoriented());
+    MinDSU dsu(mst->size());
     std::vector<ValuedEdge<double>*> minEdge;
     while(dsu.SetCount() > 1)
     {
         minEdge.clear();
-        minEdge.resize(original->Size());
+        minEdge.resize(original->size());
         for(int i = 0; i < minEdge.size(); ++i)
             minEdge[i] = NULL;
-        std::vector<Edge*>* edges =  original->GetAllEdges();
+        std::vector<Edge*>* edges =  original->getAllEdges();
         for(int i = 0; i < edges->size(); ++i)
         {
             if(!dsu.Find(edges->at(i)->From, edges->at(i)->To))
@@ -29,16 +29,16 @@ UnorientedGraphValuedEdge<double>* Boruvka(UnorientedGraphValuedEdge<double> *or
             }
         }
         delete edges;
-        for(int i = 0; i < original->Size(); ++i)
+        for(int i = 0; i < original->size(); ++i)
         {
             if(minEdge[i] != NULL)
             {
-                mst->AddEdge(minEdge[i]->From, minEdge[i]->To, minEdge[i]->GetValue());
+                mst->addEdge(minEdge[i]->From, minEdge[i]->To, minEdge[i]->GetValue());
                 dsu.Merge(minEdge[i]->From, minEdge[i]->To);
             }
         }
     }
-    mst->NormalizeEdges();
+    mst->normalizeEdges();
     return mst;
 }
 void Boruvka()
@@ -52,10 +52,10 @@ void Boruvka()
         unsigned int u, v;
         double val;
         std::cin >> u >> v >> val;
-        graph.AddEdge(u, v, val);
+        graph.addEdge(u, v, val);
     }
     UnorientedGraphValuedEdge<double>* mst = Boruvka(&graph);
-    std::vector<Edge*>* edges = mst->GetAllEdgesSorted();
+    std::vector<Edge*>* edges = mst->getAllEdgesSorted();
     for(int i = 0; i < edges->size(); ++i)
         std::cout << edges->at(i)->From << " " << edges->at(i)->To << " " << ((ValuedEdge<double>*)edges->at(i))->GetValue() << std::endl;
     delete edges;

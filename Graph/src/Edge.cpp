@@ -12,21 +12,21 @@ Edge::Edge(unsigned long long from, unsigned long long to)
     stream >> to;
     return new Edge*(from, to);
 }*/
-Edge *Edge::GetReversed()
+Edge *Edge::getReversed()
 {
     return new Edge(To, From);
 }
-Edge*Edge::Clone()
+Edge*Edge::clone()
 {
     return new Edge(*this);
 }
-unsigned long long Edge::GetId()
+unsigned long long Edge::getId()
 {
-    return id;
+    return id_;
 }
-void Edge::SetId(unsigned long long id)
+void Edge::setId(unsigned long long id)
 {
-    this->id = id;
+    this->id_ = id;
 }
 
 }

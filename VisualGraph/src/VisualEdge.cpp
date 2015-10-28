@@ -115,7 +115,7 @@ void VisualEdge::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     Q_UNUSED(event);
     isHovered_ = true;
-    this->color_ = Qt::red;
+    this->color_ = Qt::black;
     prepareGeometryChange();
 }
 void VisualEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)

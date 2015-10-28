@@ -14,9 +14,9 @@ TIARunScene::~TIARunScene()
 {
     if(deltas_ != NULL) {
         for(auto d: *deltas_) {
-            for(auto e: d.GetEdgeChanges())
+            for(auto e: d.getEdgeChanges())
                 delete e;
-            for(auto v: d.GetNodeChanges())
+            for(auto v: d.getNodeChanges())
                 delete v;
         }
         delete deltas_;
@@ -36,9 +36,9 @@ void TIARunScene::initialize(const std::vector<std::vector<unsigned long long> >
 {
     if(deltas_ != NULL) {
         for(auto d: *deltas_) {
-            for(auto e: d.GetEdgeChanges())
+            for(auto e: d.getEdgeChanges())
                 delete e;
-            for(auto v: d.GetNodeChanges())
+            for(auto v: d.getNodeChanges())
                 delete v;
         }
         delete deltas_;
@@ -80,9 +80,9 @@ void TIARunScene::nextStep()
     if(currentStep_ == deltas_->size())
         return;
     auto delta = deltas_->at(currentStep_++);
-    messageBox_->setText(QString::fromStdString(delta.GetMessage()));
+    messageBox_->setText(QString::fromStdString(delta.getMessage()));
     VisualGraph* graph;
-    switch(delta.GetGraphId()) {
+    switch(delta.getGraphId()) {
         case ORIGINAL:
             switcher_->disable();
             layered_->hideGraph();
@@ -103,7 +103,7 @@ void TIARunScene::nextStep()
             switcher_->enable(LAYERED);
             original_->hideGraph();
             residual_->hideGraph();
-            if(delta.IsToDelete()) {
+            if(delta.isToDelete()) {
                 residual_->displayGraph();
                 layered_->hideGraph();
             }
@@ -115,10 +115,10 @@ void TIARunScene::nextStep()
         default:
             break;
     }
-    for(unsigned long long i = 0; i < delta.GetNodeChanges().size(); ++i)
-        processNodeChange(graph, delta.GetNodeChanges().at(i));
-    for(unsigned long long i = 0; i < delta.GetEdgeChanges().size(); ++i)
-        processEdgeChange(graph, delta.GetEdgeChanges().at(i));
+    for(unsigned long long i = 0; i < delta.getNodeChanges().size(); ++i)
+        processNodeChange(graph, delta.getNodeChanges().at(i));
+    for(unsigned long long i = 0; i < delta.getEdgeChanges().size(); ++i)
+        processEdgeChange(graph, delta.getEdgeChanges().at(i));
 }
 void TIARunScene::prevStep()
 {
@@ -132,12 +132,12 @@ void TIARunScene::prevStep()
         graphToSwitch = ORIGINAL;
     }
     else {
-        graphToSwitch = (TIADeltas)deltas_->at(currentStep_ - 1).GetGraphId();
-        messageBox_->setText(QString::fromStdString(deltas_->at(currentStep_ - 1).GetMessage()));
-        if(deltas_->at(currentStep_ - 1).IsToDelete())
+        graphToSwitch = (TIADeltas)deltas_->at(currentStep_ - 1).getGraphId();
+        messageBox_->setText(QString::fromStdString(deltas_->at(currentStep_ - 1).getMessage()));
+        if(deltas_->at(currentStep_ - 1).isToDelete())
             graphToSwitch = RESIDUAL;
     }
-    switch(delta.GetGraphId()) {
+    switch(delta.getGraphId()) {
         case ORIGINAL:
             graph = original_;
             break;
@@ -150,10 +150,10 @@ void TIARunScene::prevStep()
         default:
             break;
     }
-    for(long long i = delta.GetNodeChanges().size() - 1; i >= 0 ; --i)
-        processBackwardNodeChange(graph, delta.GetNodeChanges().at(i));
-    for(long long i = delta.GetEdgeChanges().size() - 1; i >= 0 ; --i)
-        processBackwardEdgeChange(graph, delta.GetEdgeChanges().at(i));
+    for(long long i = delta.getNodeChanges().size() - 1; i >= 0 ; --i)
+        processBackwardNodeChange(graph, delta.getNodeChanges().at(i));
+    for(long long i = delta.getEdgeChanges().size() - 1; i >= 0 ; --i)
+        processBackwardEdgeChange(graph, delta.getEdgeChanges().at(i));
     switch(graphToSwitch) {
         case ORIGINAL:
             switcher_->disable();

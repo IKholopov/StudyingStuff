@@ -8,41 +8,41 @@ class ParentChildListOriented: public IMultiGraph
 {
     public:
         ParentChildListOriented();
-        ParentChildListOriented(unsigned long long size, std::vector<Edge*>& edges);
-        ParentChildListOriented(unsigned long long size);
+        ParentChildListOriented(unsigned long long size_, std::vector<Edge*>& edges_);
+        ParentChildListOriented(unsigned long long size_);
         ParentChildListOriented(const ParentChildListOriented& graph);
         ParentChildListOriented& operator=(const ParentChildListOriented& graph);
-        ParentChildListOriented* Clone() const;
+        ParentChildListOriented* clone() const;
 
         ~ParentChildListOriented();
 
-        unsigned long long Size() const;
-        unsigned long long NumberOfEdges() const;
-        std::vector<unsigned long long>* GetChilds(unsigned long long vertex) const;
-        std::vector<unsigned long long>* GetParents(unsigned long long vertex) const;
-        std::vector<Edge*>* GetAllEdges() const;
-        const std::vector<Edge*>* GetAllEdgesConst() const;
-        std::vector<Edge*>* GetAllEdgesSorted();
-        void AddNodes(size_t amount);                               //Append to and
-        bool AddEdge(long long from, long long to);
-        bool AddEdge(Edge* edge);
-        bool CheckEdge(long long from, long long to);
-        Edge* GetEdge(long long from, long long to);
-        Edge* GetEdge(long long from, long long to, unsigned long long id);
-        Edge* GetEdge(unsigned long long id);
-        Edge* RemoveEdge(long long from, long long to);
-        void DeleteEdge(unsigned long long from, unsigned long long to);
-        void DeleteNodeEdges(unsigned long long v);
-        void DeleteAllEdges();
-        void InitializeNewGraph(unsigned long long size);
-        const std::vector<Edge *> *GetOutgoing(unsigned long long vertex) const;
-        const std::vector<Edge *> *GetIngoing(unsigned long long vertex) const;
+        unsigned long long size() const;
+        unsigned long long numberOfEdges() const;
+        std::vector<unsigned long long>* getChilds(unsigned long long vertex) const;
+        std::vector<unsigned long long>* getParents(unsigned long long vertex) const;
+        std::vector<Edge*>* getAllEdges() const;
+        const std::vector<Edge*>* getAllEdgesConst() const;
+        std::vector<Edge*>* getAllEdgesSorted();
+        void addNodes(size_t amount);                               //Append to and
+        bool addEdge(long long from, long long to);
+        bool addEdge(Edge* edge);
+        bool checkEdge(long long from, long long to);
+        Edge* getEdge(long long from, long long to);
+        Edge* getEdge(long long from, long long to, unsigned long long id);
+        Edge* getEdge(unsigned long long id);
+        Edge* removeEdge(long long from, long long to);
+        void deleteEdge(unsigned long long from, unsigned long long to);
+        void deleteNodeEdges(unsigned long long v);
+        void deleteAllEdges();
+        void initializeNewGraph(unsigned long long size_);
+        const std::vector<Edge *> *getOutgoing(unsigned long long vertex) const;
+        const std::vector<Edge *> *getIngoing(unsigned long long vertex) const;
     protected:
-        unsigned long long idCounter;
-        unsigned long long size;
-        std::vector<Edge*> edges;
-        std::vector<std::vector<Edge*>> ingoingEdges;
-        std::vector<std::vector<Edge*>> outgoingEdges;
+        unsigned long long idCounter_;
+        unsigned long long size_;
+        std::vector<Edge*> edges_;
+        std::vector<std::vector<Edge*>> ingoingEdges_;
+        std::vector<std::vector<Edge*>> outgoingEdges_;
 };
 
 #endif

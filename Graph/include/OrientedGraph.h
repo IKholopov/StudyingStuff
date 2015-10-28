@@ -14,7 +14,7 @@ class OrientedGraph: public BaseGraph
         OrientedGraph(unsigned long long size, IGraph& graph):BaseGraph(size, graph) {};
         OrientedGraph(IGraph* graph):BaseGraph(graph) {};
         OrientedGraph(unsigned long long size, IGraph* graph):BaseGraph(size, graph) {};
-        BaseGraph* Clone() const;
+        BaseGraph* clone() const;
 
         virtual ~OrientedGraph();
 

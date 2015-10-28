@@ -1,11 +1,13 @@
 #ifndef FLOW_NETWORKGRAPH_H
 #define FLOW_NETWORKGRAPH_H
 
-#include <utility>
 #include "IMultiGraph.h"
 #include "OrientedGraph.h"
 #include "NetworkEdge.h"
 #include "NetworkDelta.h"
+
+#include <utility>
+#include <queue>
 
 template <class FlowType>
 class NetworkGraph: public OrientedGraph
@@ -17,19 +19,19 @@ class NetworkGraph: public OrientedGraph
         NetworkGraph(unsigned long long size, IMultiGraph* graph):OrientedGraph(size, graph) {this->idCounter = 0;}
         ~NetworkGraph() {}
 
-        bool CheckEdge(long long from, long long to, unsigned long long id);
-        Edge* GetEdge(long long from, long long to, unsigned long long id);
-        const std::vector<Edge*>* GetAllEdgesConst() const;
-        const std::vector<Edge*>* GetOutgoing(unsigned long long vertex) const;
-        const std::vector<Edge*>* GetIngoing(unsigned long long vertex) const;
-        unsigned long long GetIdCounter() const;
-        bool AddEdge(Edge* edge);
-        void FlowFromResidual(NetworkGraph<FlowType> &residual);
-        void FlowFromResidual(NetworkGraph<FlowType> &residual, NetworkDelta* delta);
+        bool checkEdge(long long from, long long to, unsigned long long id);
+        Edge* getEdge(long long from, long long to, unsigned long long id);
+        const std::vector<Edge*>* getAllEdgesConst() const;
+        const std::vector<Edge*>* getOutgoing(unsigned long long vertex) const;
+        const std::vector<Edge*>* getIngoing(unsigned long long vertex) const;
+        unsigned long long getIdCounter() const;
+        bool addEdge(Edge* edge);
+        void flowFromResidual(NetworkGraph<FlowType> &residual);
+        void flowFromResidual(NetworkGraph<FlowType> &residual, NetworkDelta* delta);
         virtual void BFS(unsigned long long source, std::function<bool(unsigned long long, unsigned long long, Edge* edge)> operation,
                          std::function<bool(Edge* edge)> edgeCondition, bool straight = true);
     protected:
-        void  IncreaseIdCounter();
+        void  increaseIdCounter();
     private:
         unsigned long long idCounter;
 };
@@ -37,84 +39,83 @@ class NetworkGraph: public OrientedGraph
 
 
 template <class FlowType>
-bool NetworkGraph<FlowType>::CheckEdge(long long from, long long to, unsigned long long id)
+bool NetworkGraph<FlowType>::checkEdge(long long from, long long to, unsigned long long id)
 {
-    auto edges = this->GetOutgoing(from);
+    auto edges = this->getOutgoing(from);
     for(auto e = edges->begin(); e != edges->end(); ++e)
     {
-       if((*e)->To == to && (*e)->GetId() == id )
+       if((*e)->To == to && (*e)->getId() == id )
            return true;
     }
     return false;
 }
 template <class FlowType>
-Edge* NetworkGraph<FlowType>::GetEdge(long long from, long long to, unsigned long long id)
+Edge* NetworkGraph<FlowType>::getEdge(long long from, long long to, unsigned long long id)
 {
-    auto edges = this->GetOutgoing(from);
+    auto edges = this->getOutgoing(from);
     for(auto e = edges->begin(); e != edges->end(); ++e)
-        if((*e)->To == to && (*e)->GetId() == id )
+        if((*e)->To == to && (*e)->getId() == id )
             return *e;
     return NULL;
 }
 template <class FlowType>
-const std::vector<Edge*>* NetworkGraph<FlowType>::GetAllEdgesConst() const
+const std::vector<Edge*>* NetworkGraph<FlowType>::getAllEdgesConst() const
 {
-    return static_cast<IMultiGraph*>(this->graph)->GetAllEdgesConst();
+    return static_cast<IMultiGraph*>(this->graph_)->getAllEdgesConst();
 }
 template <class FlowType>
-const std::vector<Edge *> *NetworkGraph<FlowType>::GetOutgoing(unsigned long long vertex) const
+const std::vector<Edge *> *NetworkGraph<FlowType>::getOutgoing(unsigned long long vertex) const
 {
-    return static_cast<IMultiGraph*>(this->graph)->GetOutgoing(vertex);
+    return static_cast<IMultiGraph*>(this->graph_)->getOutgoing(vertex);
 }
 template <class FlowType>
-const std::vector<Edge *> *NetworkGraph<FlowType>::GetIngoing(unsigned long long vertex) const
+const std::vector<Edge *> *NetworkGraph<FlowType>::getIngoing(unsigned long long vertex) const
 {
-    return static_cast<IMultiGraph*>(this->graph)->GetIngoing(vertex);
+    return static_cast<IMultiGraph*>(this->graph_)->getIngoing(vertex);
 }
 template <class FlowType>
-unsigned long long NetworkGraph<FlowType>::GetIdCounter() const
+unsigned long long NetworkGraph<FlowType>::getIdCounter() const
 {
     return idCounter;
 }
 template <class FlowType>
-bool NetworkGraph<FlowType>::AddEdge(Edge* edge)
+bool NetworkGraph<FlowType>::addEdge(Edge* edge)
 {
-    edge->SetId(this->GetIdCounter());
-    IncreaseIdCounter();
-    this->OrientedGraph::AddEdge(edge);
+    edge->setId(this->getIdCounter());
+    increaseIdCounter();
+    this->OrientedGraph::addEdge(edge);
     return true;
 }
 template <class FlowType>
-void NetworkGraph<FlowType>::FlowFromResidual(NetworkGraph<FlowType> &residual)
+void NetworkGraph<FlowType>::flowFromResidual(NetworkGraph<FlowType> &residual)
 {
-    auto edges = this->GetAllEdges();
+    auto edges = this->getAllEdges();
     for(auto e = edges->begin(); e != edges->end(); ++e)
     {
         NetworkEdge<FlowType>* edge = static_cast<NetworkEdge<FlowType>*>(*e);
-        auto resEdge = static_cast<NetworkEdge<FlowType>*>(residual.GetEdge(edge->From, edge->To, edge->GetId()));
-        if(edge->GetCapacity() - resEdge->GetCapacity() >= 0)
-            edge->SetFlow(edge->GetCapacity() - resEdge->GetCapacity());
+        auto resEdge = static_cast<NetworkEdge<FlowType>*>(residual.getEdge(edge->From, edge->To, edge->getId()));
+        if(edge->getCapacity() - resEdge->getCapacity() >= 0)
+            edge->setFlow(edge->getCapacity() - resEdge->getCapacity());
     }
     delete edges;
 }
 template <class FlowType>
-void NetworkGraph<FlowType>::FlowFromResidual(NetworkGraph<FlowType> &residual, NetworkDelta* delta)
+void NetworkGraph<FlowType>::flowFromResidual(NetworkGraph<FlowType> &residual, NetworkDelta* delta)
 {
-    auto edges = this->GetAllEdges();
+    auto edges = this->getAllEdges();
     for(auto e = edges->begin(); e != edges->end(); ++e)
     {
         NetworkEdge<FlowType>* edge = static_cast<NetworkEdge<FlowType>*>(*e);
-        auto resEdge = static_cast<NetworkEdge<FlowType>*>(residual.GetEdge(edge->From, edge->To, edge->GetId()));
-        if(edge->GetCapacity() - resEdge->GetCapacity() >= 0)
-        {
-            edge->SetFlow(edge->GetCapacity() - resEdge->GetCapacity());
-            delta->AddEdgeChange(new NetworkEdgeChange(edge->GetId(), edge->From, edge->To, edge->GetCapacity(), edge->GetFlow()));
+        auto resEdge = static_cast<NetworkEdge<FlowType>*>(residual.getEdge(edge->From, edge->To, edge->getId()));
+        if(edge->getCapacity() - resEdge->getCapacity() >= 0) {
+            edge->setFlow(edge->getCapacity() - resEdge->getCapacity());
+            delta->addEdgeChange(new NetworkEdgeChange(edge->getId(), edge->From, edge->To, edge->getCapacity(), edge->getFlow()));
         }
     }
     delete edges;
 }
 template <class FlowType>
-void NetworkGraph<FlowType>::IncreaseIdCounter()
+void NetworkGraph<FlowType>::increaseIdCounter()
 {
     ++idCounter;
 }
@@ -123,7 +124,7 @@ void NetworkGraph<FlowType>::BFS(unsigned long long source, std::function<bool(u
                                  std::function<bool(Edge* edge)> edgeCondition, bool straight)
 {
     enum Color{White, Grey, Black};
-    std::vector<Color> vertexes (this->Size(), Color::White);
+    std::vector<Color> vertexes (this->size(), Color::White);
     std::queue<unsigned long long> q;
     q.push(source);
     while(!q.empty())
@@ -133,14 +134,13 @@ void NetworkGraph<FlowType>::BFS(unsigned long long source, std::function<bool(u
         if(vertexes[u] != Color::White)
             continue;
         vertexes[u] = Color::Grey;
-        auto childs = straight ? this->GetOutgoing(u): this->GetIngoing(u);
+        auto childs = straight ? this->getOutgoing(u): this->getIngoing(u);
         for(auto v = childs->begin(); v != childs->end(); ++v)
         {
             if(!edgeCondition(*v))
                 continue;
             auto vert = straight ? (*v)->To : (*v)->From;
-            if(!operation(u, vert, *v))
-            {
+            if(!operation(u, vert, *v)) {
                 q.push(vert);
                 break;
             }

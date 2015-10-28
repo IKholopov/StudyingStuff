@@ -10,15 +10,14 @@ class Edge
     public:
         Edge(unsigned long long from, unsigned long long to);
 
-        //TODOstatic  Edge* ReadEdge(std::istream& stream);
-        virtual Edge* GetReversed();
-        virtual Edge* Clone();
-        unsigned long long GetId();
+        virtual Edge* getReversed();
+        virtual Edge* clone();
+        unsigned long long getId();
         unsigned long long From;
         unsigned long long To;
-        void SetId(unsigned long long id);
+        void setId(unsigned long long id_);
     protected:
-        unsigned long long id;
+        unsigned long long id_;
 };
 
 }

@@ -7,26 +7,26 @@
 
 UnorientedGraphValuedEdge<double>* Kruskal(UnorientedGraphValuedEdge<double>* original)
 {
-    UnorientedGraphValuedEdge<double>* T = new UnorientedGraphValuedEdge<double>(original->Size(), *(new AdjacencyMatrixUnoriented));
-    std::vector<Edge*>* edges = original->GetAllEdges();
+    UnorientedGraphValuedEdge<double>* T = new UnorientedGraphValuedEdge<double>(original->size(), *(new AdjacencyMatrixUnoriented));
+    std::vector<Edge*>* edges = original->getAllEdges();
     std::sort(edges->begin(), edges->end(),
               [](Edge* a, Edge* b)
               {
                   return ((ValuedEdge<double>*)a)->GetValue() - ((ValuedEdge<double>*)b)->GetValue() < 0;
               }
     );
-    MinDSU dsu (original->Size());
+    MinDSU dsu (original->size());
     for(int i = 0; i < edges->size(); ++i)
     {
         if(!dsu.Find(edges->at(i)->From, edges->at(i)->To))
         {
             dsu.Merge(edges->at(i)->From, edges->at(i)->To);
-            T->AddEdge(edges->at(i)->From, edges->at(i)->To, ((ValuedEdge<double>*)edges->at(i))->GetValue());
+            T->addEdge(edges->at(i)->From, edges->at(i)->To, ((ValuedEdge<double>*)edges->at(i))->GetValue());
         }
         if(dsu.SetCount() == 1)
             break;
     }
-    T->NormalizeEdges();
+    T->normalizeEdges();
     delete edges;
     return T;
 }
@@ -41,10 +41,10 @@ void Kruskal()
         unsigned int u, v;
         double val;
         std::cin >> u >> v >> val;
-        graph.AddEdge(u, v, val);
+        graph.addEdge(u, v, val);
     }
     UnorientedGraphValuedEdge<double>* mst = Kruskal(&graph);
-    std::vector<Edge*>* edges = mst->GetAllEdgesSorted();
+    std::vector<Edge*>* edges = mst->getAllEdgesSorted();
     for(int i = 0; i < edges->size(); ++i)
         std::cout << edges->at(i)->From << " " << edges->at(i)->To << " " << ((ValuedEdge<double>*)edges->at(i))->GetValue() << std::endl;
     delete edges;

@@ -38,7 +38,7 @@ VisualGraph::VisualGraph(GraphScene* scene, GraphArea* view, std::string filenam
         stream >> from;
         stream >> to;
         stream >> capacity;
-        this->addEdge(from, to, capacity);
+        this->addEdge(from - 1, to - 1, capacity);
     }
 }
 VisualGraph::~VisualGraph()
@@ -210,9 +210,9 @@ void VisualGraph::save() const
     stream << edges_.size();
     stream << std::endl;
     for(auto e: edges_) {
-        stream << e->getFrom()->getId();
+        stream << e->getFrom()->getId() + 1;
         stream << " ";
-        stream << e->getTo()->getId();
+        stream << e->getTo()->getId() + 1;
         stream << " ";
         stream << e->getCapacity();
         stream << "\n";

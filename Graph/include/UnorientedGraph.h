@@ -12,14 +12,14 @@ class UnorientedGraph: public BaseGraph
         UnorientedGraph(unsigned long long size, IGraph& graph):BaseGraph(size, graph) {};
         UnorientedGraph(IGraph* graph):BaseGraph(graph) {};
         UnorientedGraph(unsigned long long size, IGraph* graph):BaseGraph(size, graph) {};
-        UnorientedGraph* Clone() const;
+        UnorientedGraph* clone() const;
         virtual ~UnorientedGraph();
 
-        virtual void ReadFromFile(std::ifstream& file);
-        void WriteToFile(std::string filename);
-        virtual void WriteToFile(std::ofstream& file);
-        virtual void RandomizeGraph(double probability);
-        void NormalizeEdges();
+        virtual void readFromFile(std::ifstream& file);
+        void writeToFile(std::string filename);
+        virtual void writeToFile(std::ofstream& file);
+        virtual void randomizeGraph(double probability);
+        void normalizeEdges();
 };
 
 #endif

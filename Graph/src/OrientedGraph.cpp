@@ -5,19 +5,19 @@
 #include <queue>
 #include "GraphFileFormat.h"
 
-BaseGraph* OrientedGraph::Clone() const
+BaseGraph* OrientedGraph::clone() const
 {
-        return new OrientedGraph(this->graph->Clone());
+        return new OrientedGraph(this->graph_->clone());
 }
 OrientedGraph::~OrientedGraph()
 {
-    delete graph;
+    delete graph_;
 }
 void OrientedGraph::ReadFromFile(std::ifstream& file)
 {
     unsigned long long size, edgeSz;
     file >> size;
-    this->graph->InitializeNewGraph(size);
+    this->graph_->initializeNewGraph(size);
     file >> edgeSz;
     for(long long i = 0; i < edgeSz; ++i)
     {
@@ -29,8 +29,8 @@ void OrientedGraph::ReadFromFile(std::ifstream& file)
 }
 void OrientedGraph::WriteToFile(std::ofstream &file)
 {
-    std::vector<Edge*>* edges = this->graph->GetAllEdges();
-    file << this->Size() << std::endl;
+    std::vector<Edge*>* edges = this->graph_->getAllEdges();
+    file << this->size() << std::endl;
     file << edges->size() << std::endl;
     for(long long i = 0; i < edges->size(); ++i)
         file << edges->at(i)->From << " " << edges->at(i)->To << std::endl;
@@ -43,9 +43,9 @@ void OrientedGraph::WriteToFile(std::string filename)
 }
 void OrientedGraph::RandomizeGraph(double probability)
 {
-    this->InitializeNewGraph(this->Size());
-    for(long long i = 0; i < this->Size(); ++i)
-        for(long long j = 0; j < this->Size(); ++j)
+    this->initializeNewGraph(this->size());
+    for(long long i = 0; i < this->size(); ++i)
+        for(long long j = 0; j < this->size(); ++j)
         {
             if(j == i)
                 continue;
@@ -59,7 +59,7 @@ void OrientedGraph::BFS(unsigned long long source, std::function<bool(unsigned l
                         std::function<bool(Edge* edge)> edgeCondition)
 {
     enum Color{White, Grey, Black};
-    std::vector<Color> vertexes (this->Size(), Color::White);
+    std::vector<Color> vertexes (this->size(), Color::White);
     std::queue<unsigned long long> q;
     q.push(source);
     while(!q.empty())
@@ -69,12 +69,12 @@ void OrientedGraph::BFS(unsigned long long source, std::function<bool(unsigned l
         if(vertexes[u] == Color::Black)
             continue;
         vertexes[u] = Color::Grey;
-        auto childs = this->GetChilds(u);
+        auto childs = this->getChilds(u);
         for(auto v = childs->begin(); v != childs->end(); ++v)
         {
-            if(!edgeCondition(this->GetEdge(u, *v)))
+            if(!edgeCondition(this->getEdge(u, *v)))
                 continue;
-            if(!operation(u, *v, this->GetEdge(u, *v)))
+            if(!operation(u, *v, this->getEdge(u, *v)))
             {
                 q.push(*v);
                 break;
