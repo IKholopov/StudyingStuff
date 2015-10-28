@@ -1,8 +1,8 @@
 #ifndef GRAPHSCENE
 #define GRAPHSCENE
 
-#include <QGraphicsScene>
 #include "IGraphScene.h"
+#include <QGraphicsScene>
 
 class GraphScene: public IGraphScene, public QGraphicsScene
 {

@@ -8,8 +8,8 @@ class GraphArea: public QGraphicsView
     public:
         GraphArea(QWidget* parent):QGraphicsView(parent) {};
 
-        virtual void SetTimerId(int id) = 0;
-        virtual int GetTimerId() = 0;
+        virtual void setTimerId(int id) = 0;
+        virtual int getTimerId() = 0;
 };
 
 #endif // GRAPHAREA

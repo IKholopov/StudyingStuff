@@ -1,28 +1,44 @@
 #include "algorythmrun.h"
 #include "ui_algorythmrun.h"
-//#include "src/GraphParser.h"
 
 AlgorythmRun::AlgorythmRun(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::AlgorythmRun)
+    ui_(new Ui::AlgorythmRun)
 {
-    ui->setupUi(this);
-    graphArea = new AlgorithmRunView(this->ui->TextMessage, this->ui->GraphField);
-    QObject::connect(this->ui->NextButton, &QToolButton::clicked,
+    ui_->setupUi(this);
+    this->switcher_ = new LayeredResidualSwitcher(ui_->layeredButton, ui_->residualButton, ui_->PotentialButton, ui_->idButton);
+    graphArea_ = new AlgorithmRunView(this->ui_->TextMessage, switcher_, this->ui_->GraphField);
+    QObject::connect(this->ui_->NextButton, &QToolButton::clicked,
         [=](){
-            graphArea->NextStep();
+            graphArea_->nextStep();
         });
-    QObject::connect(this->ui->PrevButton, &QToolButton::clicked,
+    QObject::connect(this->ui_->PrevButton, &QToolButton::clicked,
         [=](){
-            graphArea->PrevStep();
+            graphArea_->prevStep();
+        });
+    QObject::connect(this->ui_->idButton, &QRadioButton::clicked,
+        [=](){
+            switcher_->checkLayeredOption(ID);
+        });
+    QObject::connect(this->ui_->PotentialButton, &QRadioButton::clicked,
+        [=](){
+            switcher_->checkLayeredOption(POTENTIAL);
+        });
+    QObject::connect(this->ui_->layeredButton, &QRadioButton::clicked,
+        [=](){
+            switcher_->check(LAYERED);
+        });
+    QObject::connect(this->ui_->residualButton, &QRadioButton::clicked,
+        [=](){
+            switcher_->check(RESIDUAL);
         });
 }
 AlgorythmRun::~AlgorythmRun()
 {
-    delete ui;
+    delete ui_;
 }
 
-void AlgorythmRun::Initialize(std::vector<std::vector<unsigned long long> > graphData)
+void AlgorythmRun::initialize(std::vector<std::vector<unsigned long long> > graphData)
 {
-    graphArea->Initialize(graphData);
+    graphArea_->initialize(graphData);
 }

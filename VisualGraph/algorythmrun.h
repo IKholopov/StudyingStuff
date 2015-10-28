@@ -1,8 +1,8 @@
 #ifndef ALGORYTHMRUN_H
 #define ALGORYTHMRUN_H
 
-#include <QMainWindow>
 #include "src/AlgorithmRunView.h"
+#include <QMainWindow>
 
 namespace Ui {
 class AlgorythmRun;
@@ -16,10 +16,11 @@ class AlgorythmRun : public QMainWindow
         explicit AlgorythmRun(QWidget *parent = 0);
         ~AlgorythmRun();
 
-        void Initialize(std::vector<std::vector<unsigned long long>> graphData);
+        void initialize(std::vector<std::vector<unsigned long long>> graphData);
     private:
-        AlgorithmRunView* graphArea;
-        Ui::AlgorythmRun *ui;
+        AlgorithmRunView* graphArea_;
+        LayeredResidualSwitcher* switcher_;
+        Ui::AlgorythmRun *ui_;
 };
 
 #endif // ALGORYTHMRUN_H

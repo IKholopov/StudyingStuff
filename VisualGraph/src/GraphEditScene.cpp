@@ -6,22 +6,21 @@
 GraphEditScene::GraphEditScene(EditGraphToolBar toolbar, GraphEditArea* parent):GraphScene((QObject*)parent)
 {
 
-    this->graph = new VisualGraph(this, (GraphArea*)parent);
-    this->toolbar = toolbar;
-    toolbar.SetTool(EditGraphTools::None);
-    view = parent;
+    this->graph_ = new VisualGraph(this, (GraphArea*)parent);
+    this->toolbar_ = toolbar;
+    toolbar.setTool(EditGraphTools::None);
+    view_ = parent;
 }
 GraphEditScene::~GraphEditScene()
 {
-    delete graph;
+    delete graph_;
 }
 
 void GraphEditScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-    switch(toolbar.GetActiveTool())
-    {
+    switch(toolbar_.getActiveTool()) {
         case EditGraphTools::AddNode:
-            this->AddNode(event->scenePos());
+            this->addNode(event->scenePos());
             break;
         default:
             this->QGraphicsScene::mousePressEvent(event);
@@ -29,43 +28,43 @@ void GraphEditScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
     }
 }
 
-void GraphEditScene::AddNode(QPointF position)
+void GraphEditScene::addNode(QPointF position)
 {
-    graph->AddNode(position);
+    graph_->addNode(position);
 }
-void GraphEditScene::AddEdge(unsigned long long from, unsigned long long to, unsigned long long capacity)
+void GraphEditScene::addEdge(unsigned long long from, unsigned long long to, unsigned long long capacity)
 {
-    graph->AddEdge(from, to, capacity);
+    graph_->addEdge(from, to, capacity);
 }
-void GraphEditScene::LoadGraph(std::string filename)
+void GraphEditScene::loadGraph(std::string filename)
 {
-    graph->RemoveGraph();
-    delete graph;
-    graph = new VisualGraph(this, view, filename);
+    graph_->removeGraph();
+    delete graph_;
+    graph_ = new VisualGraph(this, view_, filename);
 }
-void GraphEditScene::NewGraph()
+void GraphEditScene::newGraph()
 {
-    graph->RemoveGraph();
-    delete graph;
-    graph = new VisualGraph(this, view);
+    graph_->removeGraph();
+    delete graph_;
+    graph_ = new VisualGraph(this, view_);
 }
-EditGraphTools GraphEditScene::GetActiveTool()
+EditGraphTools GraphEditScene::getActiveTool()
 {
-    return toolbar.GetActiveTool();
+    return toolbar_.getActiveTool();
 }
-VisualGraph* GraphEditScene::GetGraph() const
+VisualGraph* GraphEditScene::getGraph() const
 {
-    return graph;
+    return graph_;
 }
 
 void GraphEditScene::mousePressedOnVertex(Vertex* v)
 {
-    if(this->GetActiveTool() == EditGraphTools::AddEdge)
-        this->view->ProcessAddEdge(this, v);
+    if(this->getActiveTool() == EditGraphTools::AddEdge)
+        this->view_->processAddEdge(this, v);
 }
-void GraphEditScene::SetActiveTool(EditGraphTools tool)
+void GraphEditScene::setActiveTool(EditGraphTools tool)
 {
-    this->toolbar.SetTool(toolbar.GetActiveTool() != tool ? tool : EditGraphTools::None);
+    this->toolbar_.setTool(toolbar_.getActiveTool() != tool ? tool : EditGraphTools::None);
 }
 
 

@@ -1,22 +1,22 @@
 #ifndef EDGEINFO_H
 #define EDGEINFO_H
 
-#include <QGraphicsItem>
 #include "VisualEdge.h"
+#include <QGraphicsItem>
 
 class VisualEdge;
 
 class EdgeInfo : public QGraphicsItem
 {
     public:
-        EdgeInfo(VisualEdge* edge);
+        EdgeInfo(VisualEdge* edge_);
 
-        void Update();
+        void update();
     protected:
         QRectF boundingRect() const Q_DECL_OVERRIDE;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
     private:
-        VisualEdge* edge;
+        VisualEdge* edge_;
 };
 
 #endif // EDGEINFO_H

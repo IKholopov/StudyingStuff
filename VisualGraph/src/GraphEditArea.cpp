@@ -2,11 +2,12 @@
 
 #include <QMouseEvent>
 #include <QInputDialog>
+#include <QFileDialog>
 
 #include "GraphEditScene.h"
 
 
-GraphEditArea::GraphEditArea(QWidget* parent):GraphArea(parent),timerId(0)
+GraphEditArea::GraphEditArea(QWidget* parent):GraphArea(parent),timerId_(0)
 {
     QGraphicsScene* graphScene = new GraphEditScene(EditGraphToolBar(),this);
     graphScene->setSceneRect(QRectF(0, 0, 1250, 500));
@@ -27,93 +28,93 @@ void GraphEditArea::drawBackground(QPainter* painter, const QRectF& rect)
     painter->fillRect(rect.intersected(this->sceneRect()), QColor(200, 200, 200));
 }
 
-void GraphEditArea::SetActiveTool(EditGraphTools tool)
+void GraphEditArea::setActiveTool(EditGraphTools tool)
 {
-    static_cast<GraphEditScene*>(this->scene())->SetActiveTool(tool);
+    static_cast<GraphEditScene*>(this->scene())->setActiveTool(tool);
 }
-void GraphEditArea::SetTimerId(int id)
+void GraphEditArea::setTimerId(int id)
 {
-    this->timerId = id;
+    this->timerId_ = id;
 }
-int GraphEditArea::GetTimerId()
+int GraphEditArea::getTimerId()
 {
-    return timerId;
+    return timerId_;
 }
-void GraphEditArea::SaveGraph()
+void GraphEditArea::saveGraph()
 {
-    static_cast<GraphEditScene*>(this->scene())->GetGraph()->Save();
+    static_cast<GraphEditScene*>(this->scene())->getGraph()->save();
 }
-void GraphEditArea::LoadGraph()
+void GraphEditArea::loadGraph()
 {
-    killTimer(timerId);
-    static_cast<GraphEditScene*>(this->scene())->LoadGraph("graph.gr");
-    startTimer(timerId);
+    killTimer(timerId_);
+    QString filename = QFileDialog::getOpenFileName(this, "Open Graph", "~/", "All Files (*);;Graph Files (*.gr)");
+    if(filename.isEmpty())
+        return;
+    static_cast<GraphEditScene*>(this->scene())->loadGraph(filename.toStdString());
+    startTimer(timerId_);
 }
-void GraphEditArea::NewGraph()
+void GraphEditArea::newGraph()
 {
-    killTimer(timerId);
-    static_cast<GraphEditScene*>(this->scene())->NewGraph();
-    startTimer(timerId);
+    killTimer(timerId_);
+    static_cast<GraphEditScene*>(this->scene())->newGraph();
+    startTimer(timerId_);
 }
 
-std::vector<std::vector<unsigned long long>> GraphEditArea::CloneGraph()
+std::vector<std::vector<unsigned long long>> GraphEditArea::cloneGraph()
 {
-    return static_cast<GraphEditScene*>(this->scene())->GetGraph()->Clone();
+    return static_cast<GraphEditScene*>(this->scene())->getGraph()->clone();
 }
-void GraphEditArea::InitializeAddEdge()
+void GraphEditArea::initializeAddEdge()
 {
-    this->addEdgeTool.Initialize();
+    this->addEdgeTool_.initialize();
 }
-void GraphEditArea::ProcessAddEdge(GraphEditScene* scene, Vertex* v)
+void GraphEditArea::processAddEdge(GraphEditScene* scene, Vertex* v)
 {
-    this->addEdgeTool.Process(scene, v);
+    this->addEdgeTool_.process(scene, v);
 }
 
 void GraphEditArea::timerEvent(QTimerEvent* event)
 {
     Q_UNUSED(event);
-    VisualGraph* graph = static_cast<GraphEditScene*>(this->scene())->GetGraph();
-    graph->Update();
-    if(!graph->IsMoved())
-    {
-        killTimer(timerId);
-        timerId = 0;
+    VisualGraph* graph = static_cast<GraphEditScene*>(this->scene())->getGraph();
+    graph->update();
+    if(!graph->isMoved()) {
+        killTimer(timerId_);
+        timerId_ = 0;
     }
 }
 
-
-Vertex* AddEdgeTool::GetFrom() const
+Vertex* AddEdgeTool::getFrom() const
 {
     return from;
 }
-void AddEdgeTool::SetFrom(Vertex* value)
+void AddEdgeTool::setFrom(Vertex* value)
 {
     from = value;
 }
-Vertex* AddEdgeTool::GetTo() const
+Vertex* AddEdgeTool::getTo() const
 {
     return to;
 }
-void AddEdgeTool::SetTo(Vertex* value)
+void AddEdgeTool::setTo(Vertex* value)
 {
     to = value;
 }
 
-void AddEdgeTool::Initialize()
+void AddEdgeTool::initialize()
 {
     from = NULL;
     to = NULL;
 }
-void AddEdgeTool::Process(GraphEditScene* scene, Vertex* v)
+void AddEdgeTool::process(GraphEditScene* scene, Vertex* v)
 {
-    if(from == NULL)
-    {
+    if(from == NULL) {
         from = v;
         return;
     }
     to = v;
     unsigned long long capacity = QInputDialog::getInt(NULL, "Capacity", "Capacity");
-    scene->AddEdge(from->GetId(), to->GetId(), capacity);
+    scene->addEdge(from->getId(), to->getId(), capacity);
     from = NULL;
     to = NULL;
 }

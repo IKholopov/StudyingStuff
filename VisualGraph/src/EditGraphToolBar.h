@@ -9,13 +9,13 @@ class EditGraphToolBar
 {
     public:
         EditGraphToolBar();
-        EditGraphTools GetActiveTool();
-        void SetTool(EditGraphTools tool);
+        EditGraphTools getActiveTool();
+        void setTool(EditGraphTools tool);
     signals:
 
     public slots:
     private:
-        EditGraphTools activeTool;
+        EditGraphTools activeTool_;
 };
 
 #endif // TOOLBAR_H

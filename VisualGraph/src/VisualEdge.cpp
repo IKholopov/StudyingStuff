@@ -1,82 +1,82 @@
 #include "VisualEdge.h"
 
 VisualEdge::VisualEdge(QGraphicsScene* scene, unsigned long long id, Vertex* from, Vertex* to, unsigned long long capacity,
-                       int displayType):id(id), from(from), to(to),
-    capacity(capacity), displayType(displayType)
+                       int displayType):id_(id), from_(from), to_(to),
+    capacity_(capacity), displayType_(displayType)
 {
     scene->addItem(this);
-    info = new EdgeInfo(this);
-    scene->addItem(info);
+    info_ = new EdgeInfo(this);
+    scene->addItem(info_);
     setFlag(ItemSendsGeometryChanges);
     setAcceptHoverEvents(1);
     setZValue(0);
 }
 VisualEdge::~VisualEdge()
 {
-    delete info;
+    delete info_;
 }
 
-unsigned long long VisualEdge::GetId() const
+unsigned long long VisualEdge::getId() const
 {
-    return id;
+    return id_;
 }
-Vertex* VisualEdge::GetTo() const
+Vertex* VisualEdge::getTo() const
 {
-    return to;
+    return to_;
 }
-Vertex* VisualEdge::GetFrom() const
+Vertex* VisualEdge::getFrom() const
 {
-    return from;
+    return from_;
 }
-EdgeInfo* VisualEdge::GetInfo() const
+EdgeInfo* VisualEdge::getInfo() const
 {
-    return info;
+    return info_;
 }
-unsigned long long VisualEdge::GetCapacity() const
+unsigned long long VisualEdge::getCapacity() const
 {
-    return capacity;
+    return capacity_;
 }
-void VisualEdge::SetCapacity(unsigned long long value)
+void VisualEdge::setCapacity(unsigned long long value)
 {
-    capacity = value;
+    capacity_ = value;
 }
-int VisualEdge::GetDisplayType()
+int VisualEdge::getDisplayType()
 {
-    return displayType;
+    return displayType_;
 }
-void VisualEdge::SetDisplayType(int displayType)
+void VisualEdge::setDisplayType(int displayType)
 {
-    this->displayType = displayType;
+    this->displayType_ = displayType;
 }
-void VisualEdge::HideEdge()
+void VisualEdge::hideEdge()
 {
     this->hide();
-    this->SetActive(false);
-    info->hide();
+    this->setActive(false);
+    info_->hide();
     prepareGeometryChange();
 }
-void VisualEdge::ShowEdge()
+void VisualEdge::showEdge()
 {
     this->show();
-    this->SetActive(true);
-    info->show();
+    this->setActive(true);
+    info_->show();
     prepareGeometryChange();
 }
-void VisualEdge::Update()
+void VisualEdge::update()
 {
-    info->Update();
+    info_->update();
     prepareGeometryChange();
 }
-bool VisualEdge::IsHovered()
+bool VisualEdge::isHovered()
 {
-    return isHovered;
+    return isHovered_;
 }
 
 QRectF VisualEdge::boundingRect() const
 {
     qreal adjust = 1;
-    return QRectF(from->scenePos(), QSizeF(to->scenePos().x() - from->scenePos().x(),
-                                           to->scenePos().y() - from->scenePos().y())).normalized().adjusted(-adjust, -adjust,adjust,adjust);
+    return QRectF(from_->scenePos(), QSizeF(to_->scenePos().x() - from_->scenePos().x(),
+                                           to_->scenePos().y() - from_->scenePos().y())).normalized().adjusted(-adjust, -adjust,adjust,adjust);
 }
 void VisualEdge::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
@@ -85,12 +85,13 @@ void VisualEdge::paint(QPainter* painter, const QStyleOptionGraphicsItem* option
 
     const double pi = 3.14159265359;
 
-    if(!highlighted)
-        painter->setPen(QPen(color, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    Qt::PenStyle style = this->capacity_ == 0 ? Qt::DotLine : Qt::SolidLine;
+    if(!highlighted_)
+        painter->setPen(QPen(color_, 1, style, Qt::RoundCap, Qt::RoundJoin));
     else
-        painter->setPen(QPen(QColor(239, 108, 0), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    auto lineFrom = mapFromItem(from, 0, 0);
-    auto lineTo = mapFromItem(to, 0, 0);
+        painter->setPen(QPen(QColor(239, 108, 0), 1, style, Qt::RoundCap, Qt::RoundJoin));
+    auto lineFrom = mapFromItem(from_, 0, 0);
+    auto lineTo = mapFromItem(to_, 0, 0);
     auto line = QLineF(lineFrom, lineTo);
     auto point2 = line.p2() - QPointF((line.dx() * 10) / line.length(), (line.dy() * 10) / line.length());
     double angle = acos(line.dx() / line.length());
@@ -113,38 +114,38 @@ void VisualEdge::paint(QPainter* painter, const QStyleOptionGraphicsItem* option
 void VisualEdge::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     Q_UNUSED(event);
-    isHovered = true;
-    this->color = Qt::red;
+    isHovered_ = true;
+    this->color_ = Qt::red;
     prepareGeometryChange();
 }
 void VisualEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
     Q_UNUSED(event);
-    isHovered = false;
-    this->color = Qt::black;
+    isHovered_ = false;
+    this->color_ = Qt::black;
     prepareGeometryChange();
 }
-bool VisualEdge::GetHighlighted() const
+bool VisualEdge::getHighlighted() const
 {
-    return highlighted;
+    return highlighted_;
 }
-void VisualEdge::SetHighlighted(bool value)
+void VisualEdge::setHighlighted(bool value)
 {
-    highlighted = value;
+    highlighted_ = value;
 }
-bool VisualEdge::GetActive() const
+bool VisualEdge::getActive() const
 {
-    return active;
+    return active_;
 }
-void VisualEdge::SetActive(bool value)
+void VisualEdge::setActive(bool value)
 {
-    active = value;
+    active_ = value;
 }
-unsigned long long VisualEdge::GetFlow() const
+unsigned long long VisualEdge::getFlow() const
 {
-    return flow;
+    return flow_;
 }
-void VisualEdge::SetFlow(unsigned long long value)
+void VisualEdge::setFlow(unsigned long long value)
 {
-    flow = value;
+    flow_ = value;
 }

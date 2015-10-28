@@ -1,15 +1,15 @@
 #include "EditGraphToolBar.h"
 
-EditGraphToolBar::EditGraphToolBar(): activeTool(None)
+EditGraphToolBar::EditGraphToolBar(): activeTool_(None)
 {
 }
 
-EditGraphTools EditGraphToolBar::GetActiveTool()
+EditGraphTools EditGraphToolBar::getActiveTool()
 {
-    return activeTool;
+    return activeTool_;
 }
-void EditGraphToolBar::SetTool(EditGraphTools tool)
+void EditGraphToolBar::setTool(EditGraphTools tool)
 {
-    this->activeTool = tool;
+    this->activeTool_ = tool;
 }
 

@@ -1,257 +1,246 @@
 #include "VisualGraph.h"
-
+#include <QFileDialog>
 #include <fstream>
 
-VisualGraph::VisualGraph(GraphScene* scene, GraphArea* view):scene(scene), view(view)
+VisualGraph::VisualGraph(GraphScene* scene, GraphArea* view):scene_(scene), view_(view)
 {
-    idVertexCounter = 0;
-    idEdgeCounter = 0;
+    idVertexCounter_ = 0;
+    idEdgeCounter_ = 0;
 }
 VisualGraph::VisualGraph(GraphScene* scene, GraphArea* view,
-                         const std::vector<std::vector<unsigned long long> >& graphData):scene(scene), view(view)
+                         const std::vector<std::vector<unsigned long long> >& graphData):scene_(scene), view_(view)
 {
     unsigned long long size = 1;
-    idVertexCounter = 0;
-    idEdgeCounter = 0;
-    for(auto e: graphData)
-    {
+    idVertexCounter_ = 0;
+    idEdgeCounter_ = 0;
+    for(auto e: graphData) {
         if(e.at(0) > size - 1)
             size = e.at(0) + 1;
         if(e.at(1) > size - 1)
             size = e.at(1) + 1;
     }
     for(unsigned long long i = 0; i < size; ++i)
-        this->AddNode(QPointF(30  + rand() % 400, 30 + rand() % 300));
+        this->addNode(QPointF(30  + rand() % 400, 30 + rand() % 300));
     for(unsigned long long i = 0; i < graphData.size(); ++i)
-        this->AddEdge(graphData.at(i).at(0),graphData.at(i).at(1), graphData.at(i).at(2));
+        this->addEdge(graphData.at(i).at(0),graphData.at(i).at(1), graphData.at(i).at(2));
 }
-VisualGraph::VisualGraph(GraphScene* scene, GraphArea* view, std::string filename):scene(scene), view(view)
+VisualGraph::VisualGraph(GraphScene* scene, GraphArea* view, std::string filename):scene_(scene), view_(view)
 {
     std::ifstream stream(filename);
     unsigned long long numberOfVertices, numberOfEdges, from, to, capacity;
     stream >> numberOfVertices;
     stream >> numberOfEdges;
-    idVertexCounter = 0;
-    idEdgeCounter = 0;
+    idVertexCounter_ = 0;
+    idEdgeCounter_ = 0;
     for(unsigned long long i = 0; i < numberOfVertices; ++i)
-        this->AddNode(QPointF(30 + rand() % 400, 30 + rand() % 300));
-    for(unsigned long long i = 0; i < numberOfEdges; ++i)
-    {
+        this->addNode(QPointF(30 + rand() % 400, 30 + rand() % 300));
+    for(unsigned long long i = 0; i < numberOfEdges; ++i) {
         stream >> from;
         stream >> to;
         stream >> capacity;
-        this->AddEdge(from, to, capacity);
+        this->addEdge(from, to, capacity);
     }
 }
 VisualGraph::~VisualGraph()
 {
-    for(auto v: verticies)
+    for(auto v: verticies_)
         delete v;
-    for(auto e: edges)
+    for(auto e: edges_)
         delete e;
 }
-std::vector<std::vector<unsigned long long>> VisualGraph::Clone()
+std::vector<std::vector<unsigned long long>> VisualGraph::clone()
 {
     std::vector<std::vector<unsigned long long>> list;
-    list.resize(edges.size());
-    for(unsigned long long i = 0; i < edges.size(); ++i)
-    {
-        list[i].push_back(edges[i]->GetFrom()->GetId());
-        list[i].push_back(edges[i]->GetTo()->GetId());
-        list[i].push_back(edges[i]->GetCapacity());
+    list.resize(edges_.size());
+    for(unsigned long long i = 0; i < edges_.size(); ++i)  {
+        list[i].push_back(edges_[i]->getFrom()->getId());
+        list[i].push_back(edges_[i]->getTo()->getId());
+        list[i].push_back(edges_[i]->getCapacity());
     }
     return list;
 }
-void VisualGraph::AddNode(QPointF position)
+void VisualGraph::addNode(QPointF position)
 {
-    Vertex* v = new Vertex(idVertexCounter++, this, position);
-    scene->addItem(v);
+    Vertex* v = new Vertex(idVertexCounter_++, this, position);
+    scene_->addItem(v);
     int offsetLimit = 30;
-    v->setPos(QPointF(qMin(qMax(position.x(), scene->sceneRect().left() + offsetLimit), scene->sceneRect().right() - offsetLimit),
-                      qMin(qMax(position.y(), scene->sceneRect().top() + offsetLimit), scene->sceneRect().bottom() - offsetLimit)));
-    verticies.push_back(v);
+    v->setPos(QPointF(qMin(qMax(position.x(), scene_->sceneRect().left() + offsetLimit), scene_->sceneRect().right() - offsetLimit),
+                      qMin(qMax(position.y(), scene_->sceneRect().top() + offsetLimit), scene_->sceneRect().bottom() - offsetLimit)));
+    verticies_.push_back(v);
 }
-void VisualGraph::AddEdge(unsigned long long from, unsigned long long to, unsigned long long capacity)
+void VisualGraph::addEdge(unsigned long long from, unsigned long long to, unsigned long long capacity)
 {
     Vertex* source = NULL;
     Vertex* dest = NULL;
-    for(auto v: verticies)
-        if(v->GetId() == from)
-        {
+    for(auto v: verticies_)
+        if(v->getId() == from) {
             source = v;
             break;
         }
-    for(auto v: verticies)
-        if(v->GetId() == to)
-        {
+    for(auto v: verticies_)
+        if(v->getId() == to) {
             dest = v;
             break;
         }
-    VisualEdge* edge = new VisualEdge(scene, idEdgeCounter++,  source, dest, capacity);
-    source->AddEdge(edge);
-    dest->AddEdge(edge);
-    edges.push_back(edge);
+    VisualEdge* edge = new VisualEdge(scene_, idEdgeCounter_++,  source, dest, capacity);
+    source->addEdge(edge);
+    dest->addEdge(edge);
+    edges_.push_back(edge);
 }
-VisualEdge* VisualGraph::GetEdge(unsigned long long id)
+VisualEdge* VisualGraph::getEdge(unsigned long long id)
 {
-    for(auto e: edges)
-        if(e->GetId() == id)
+    for(auto e: edges_)
+        if(e->getId() == id)
             return e;
     return NULL;
 }
-Vertex* VisualGraph::GetNode(unsigned long long id)
+Vertex* VisualGraph::getNode(unsigned long long id)
 {
-    for(auto v: verticies)
-        if(v->GetId() == id)
+    for(auto v: verticies_)
+        if(v->getId() == id)
             return v;
     return NULL;
 }
-unsigned long long VisualGraph::GetSize()
+unsigned long long VisualGraph::getSize()
 {
-    return verticies.size();
+    return verticies_.size();
 }
-void VisualGraph::HideEdge(unsigned long long id)
+void VisualGraph::hideEdge(unsigned long long id)
 {
-    GetEdge(id)->HideEdge();
+    getEdge(id)->hideEdge();
 }
-void VisualGraph::DisplayEdge(unsigned long long id)
+void VisualGraph::displayEdge(unsigned long long id)
 {
-    GetEdge(id)->ShowEdge();
+    getEdge(id)->showEdge();
 }
-void VisualGraph::HideNode(unsigned long long id)
+void VisualGraph::hideNode(unsigned long long id)
 {
-    GetNode(id)->HideNode();
+    getNode(id)->hideNode();
 }
-void VisualGraph::DisplayNode(unsigned long long id)
+void VisualGraph::displayNode(unsigned long long id)
 {
-    GetNode(id)->ShowNode();
+    getNode(id)->showNode();
 }
-void VisualGraph::Update()
+void VisualGraph::update()
 {
-    for(auto v: verticies)
-        v->Update();
-    for(auto e: edges)
-        e->Update();
+    for(auto v: verticies_)
+        v->update();
+    for(auto e: edges_)
+        e->update();
     bool moved = false;
-    for(auto v: verticies)
-    {
-        v->UpdatePosition();
+    for(auto v: verticies_) {
+        v->updatePosition();
         moved |= v->advance();
     }
-    nodeMoved = moved;
+    nodeMoved_ = moved;
 }
-void VisualGraph::MovedGraph()
+void VisualGraph::movedGraph()
 {
-    nodeMoved = true;
-    if(!view->GetTimerId())
-        view->SetTimerId(view->startTimer(1000/100));
+    nodeMoved_ = true;
+    if(!view_->getTimerId())
+        view_->setTimerId(view_->startTimer(1000/100));
 }
-void VisualGraph::DisableGraph()
+void VisualGraph::disableGraph()
 {
-    for(auto v: verticies)
-    {
-        v->HideNode();//scene->addItem(v);
+    for(auto v: verticies_) {
+        v->hideNode();//scene->addItem(v);
     }
-    for(auto e: edges)
-    {
-        e->HideEdge();
+    for(auto e: edges_) {
+        e->hideEdge();
     }
 }
-void VisualGraph::DisplayGraph()
+void VisualGraph::displayGraph()
 {
-    this->active = true;
-    for(auto v: verticies)
-    {
-        if(v->GetActive())
-            v->ShowNode();//scene->addItem(v);
+    this->active_ = true;
+    for(auto v: verticies_) {
+        if(v->getActive())
+            v->showNode();//scene->addItem(v);
     }
-    for(auto e: edges)
-    {
-        if(e->GetActive())
-            e->ShowEdge();
+    for(auto e: edges_) {
+        if(e->getActive())
+            e->showEdge();
     }
 }
-void VisualGraph::HideGraph()
+void VisualGraph::hideGraph()
 {
-    this->active = false;
-    for(auto e: edges)
-    {
-        e->GetInfo()->hide();
+    this->active_ = false;
+    for(auto e: edges_) {
+        e->getInfo()->hide();
         e->hide();
     }
-    for(auto v: verticies)
-    {
+    for(auto v: verticies_) {
         v->hide();
     }
 }
-void VisualGraph::SetEdgeDisplayType(int dt)
+void VisualGraph::setEdgeDisplayType(int dt)
 {
-    for(auto e: edges)
-        e->SetDisplayType(dt);
+    for(auto e: edges_)
+        e->setDisplayType(dt);
 }
-void VisualGraph::SetNodeDisplayType(int dt)
+void VisualGraph::setNodeDisplayType(LayeredOptions dt)
 {
-    for(auto v: verticies)
-        v->SetDisplayType(dt);
+    for(auto v: verticies_)
+        v->setDisplayType(dt);
 }
-void VisualGraph::RemoveGraph()
+void VisualGraph::removeGraph()
 {
-    for(auto e: edges)
-    {
-        scene->removeItem(e->GetInfo());
-        scene->removeItem(e);
+    for(auto e: edges_) {
+        scene_->removeItem(e->getInfo());
+        scene_->removeItem(e);
         delete e;
     }
-    for(auto v: verticies)
-    {
-        scene->removeItem(v);
+    for(auto v: verticies_) {
+        scene_->removeItem(v);
         delete v;
     }
-    verticies.clear();
-    edges.clear();
-    this->idEdgeCounter = 0;
-    this->idVertexCounter = 0;
+    verticies_.clear();
+    edges_.clear();
+    this->idEdgeCounter_ = 0;
+    this->idVertexCounter_ = 0;
 }
-void VisualGraph::Save() const
+void VisualGraph::save() const
 {
-    std::ofstream stream("graph.gr");
-    stream << verticies.size();
+    QString filename = QFileDialog::getSaveFileName(this->view_, "Save Graph As",
+                                                    "~/", "All Files (*);;Graph Files (*.gr)");
+    if(filename.isEmpty())
+        return;
+    std::ofstream stream(filename.toStdString());
+    stream << verticies_.size();
     stream << " ";
-    stream << edges.size();
+    stream << edges_.size();
     stream << std::endl;
-    for(auto e: edges)
-    {
-        stream << e->GetFrom()->GetId();
+    for(auto e: edges_) {
+        stream << e->getFrom()->getId();
         stream << " ";
-        stream << e->GetTo()->GetId();
+        stream << e->getTo()->getId();
         stream << " ";
-        stream << e->GetCapacity();
+        stream << e->getCapacity();
         stream << "\n";
     }
     stream.close();
 
 }
-bool VisualGraph::IsActive() const
+bool VisualGraph::isActive() const
 {
-    return active;
+    return active_;
 }
-bool VisualGraph::IsMoved() const
+bool VisualGraph::isMoved() const
 {
-    return nodeMoved;
+    return nodeMoved_;
 }
-unsigned long long VisualGraph::Size() const
+unsigned long long VisualGraph::size() const
 {
-    return verticies.size();
+    return verticies_.size();
 }
-const std::vector<Vertex*>*VisualGraph::Verticies() const
+const std::vector<Vertex*>*VisualGraph::verticies() const
 {
-    return &(this->verticies);
+    return &(this->verticies_);
 }
-GraphScene* VisualGraph::Scene()
+GraphScene* VisualGraph::scene()
 {
-    return scene;
+    return scene_;
 }
-GraphArea* VisualGraph::View()
+GraphArea* VisualGraph::view()
 {
-    return view;
+    return view_;
 }

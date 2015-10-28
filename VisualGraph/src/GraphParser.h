@@ -8,7 +8,7 @@ class GraphParser
 {
     public:
         static GraphParser& parser();
-        std::vector<NetworkDelta>* GetAlgorithmRun(const std::vector<std::vector<unsigned long long> >& graphData);
+        std::vector<NetworkDelta>* getAlgorithmRun(const std::vector<std::vector<unsigned long long> >& graphData);
     private:
         GraphParser();
 };

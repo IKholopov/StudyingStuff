@@ -9,6 +9,7 @@ class GraphScene;
 #include "Vertex.h"
 #include "GraphArea.h"
 #include "VisualEdge.h"
+#include "LayeredOptions.h"
 
 class VisualGraph
 {
@@ -17,46 +18,46 @@ class VisualGraph
         VisualGraph(GraphScene* scene, GraphArea* view, const std::vector<std::vector<unsigned long long> >& graphData);
         VisualGraph(GraphScene* scene, GraphArea* view, std::string filename);
         ~VisualGraph();
-        std::vector<std::vector<unsigned long long> > Clone();
+        std::vector<std::vector<unsigned long long> > clone();
 
-        void AddNode(QPointF position);
-        void AddEdge(unsigned long long from, unsigned long long to, unsigned long long capacity);
-        VisualEdge* GetEdge(unsigned long long id);
-        Vertex* GetNode(unsigned long long id);
-        unsigned long long GetSize();
-        void HideEdge(unsigned long long id);
-        void DisplayEdge(unsigned long long id);
-        void HideNode(unsigned long long id);
-        void DisplayNode(unsigned long long id);
-        void Update();
-        void MovedGraph();
-        void DisableGraph();
-        void DisplayGraph();
-        void HideGraph();
-        void SetEdgeDisplayType(int dt);
-        void SetNodeDisplayType(int dt);
-        void RemoveGraph();
-        void Save() const;
-        bool IsActive() const;
-        bool IsMoved() const;
+        void addNode(QPointF position);
+        void addEdge(unsigned long long from, unsigned long long to, unsigned long long capacity);
+        VisualEdge* getEdge(unsigned long long id);
+        Vertex* getNode(unsigned long long id);
+        unsigned long long getSize();
+        void hideEdge(unsigned long long id);
+        void displayEdge(unsigned long long id);
+        void hideNode(unsigned long long id);
+        void displayNode(unsigned long long id);
+        void update();
+        void movedGraph();
+        void disableGraph();
+        void displayGraph();
+        void hideGraph();
+        void setEdgeDisplayType(int dt);
+        void setNodeDisplayType(LayeredOptions dt);
+        void removeGraph();
+        void save() const;
+        bool isActive() const;
+        bool isMoved() const;
 
-        unsigned long long Size() const;
-        const std::vector<Vertex*>* Verticies() const;
-        GraphScene* Scene();
-        GraphArea* View();
+        unsigned long long size() const;
+        const std::vector<Vertex*>* verticies() const;
+        GraphScene* scene();
+        GraphArea* view();
     signals:
 
     public slots:
 
     private:
-        unsigned long long idVertexCounter;
-        unsigned long long idEdgeCounter;
-        GraphScene* scene;
-        GraphArea* view;
-        std::vector<Vertex*> verticies;
-        std::vector<VisualEdge*> edges;
-        bool nodeMoved;
-        bool active = 1;
+        unsigned long long idVertexCounter_;
+        unsigned long long idEdgeCounter_;
+        GraphScene* scene_;
+        GraphArea* view_;
+        std::vector<Vertex*> verticies_;
+        std::vector<VisualEdge*> edges_;
+        bool nodeMoved_;
+        bool active_ = 1;
 };
 
 #endif // VISUALGRAPH_H

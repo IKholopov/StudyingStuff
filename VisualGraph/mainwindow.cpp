@@ -7,42 +7,42 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui_(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    graphArea = new GraphEditArea(ui->GraphField);
-    QObject::connect(ui->AddEdgeButton, &QToolButton::pressed,
+    ui_->setupUi(this);
+    graphArea_ = new GraphEditArea(ui_->GraphField);
+    QObject::connect(ui_->AddEdgeButton, &QToolButton::pressed,
         [=](){
-            this->graphArea->SetActiveTool(EditGraphTools::AddEdge);
-            ui->AddNodeButton->setChecked(0);
+            this->graphArea_->setActiveTool(EditGraphTools::AddEdge);
+            ui_->AddNodeButton->setChecked(0);
         });
-    QObject::connect(ui->AddNodeButton, &QToolButton::pressed,
+    QObject::connect(ui_->AddNodeButton, &QToolButton::pressed,
         [=](){
-            this->graphArea->SetActiveTool(EditGraphTools::AddNode);
-            this->graphArea->InitializeAddEdge();
-            ui->AddEdgeButton->setChecked(0);
+            this->graphArea_->setActiveTool(EditGraphTools::AddNode);
+            this->graphArea_->initializeAddEdge();
+            ui_->AddEdgeButton->setChecked(0);
         });
-    QObject::connect(ui->SaveButton, &QToolButton::clicked,
+    QObject::connect(ui_->SaveButton, &QToolButton::clicked,
         [=](){
-            graphArea->SaveGraph();
+            graphArea_->saveGraph();
         });
-    QObject::connect(ui->OpenButton, &QToolButton::clicked,
+    QObject::connect(ui_->OpenButton, &QToolButton::clicked,
         [=](){
-            graphArea->LoadGraph();
+            graphArea_->loadGraph();
         });
-    QObject::connect(ui->NewButton, &QToolButton::clicked,
+    QObject::connect(ui_->NewButton, &QToolButton::clicked,
         [=](){
-            graphArea->NewGraph();
+            graphArea_->newGraph();
         });
-    QObject::connect(ui->StartAlgorythmButton, &QToolButton::clicked,
+    QObject::connect(ui_->StartAlgorythmButton, &QToolButton::clicked,
         [=](){
             static AlgorythmRun w;
-            w.Initialize(this->graphArea->CloneGraph());
+            w.initialize(this->graphArea_->cloneGraph());
             w.show();
         });
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete ui_;
 }

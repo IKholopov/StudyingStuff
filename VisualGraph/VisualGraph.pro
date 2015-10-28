@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     src/GraphParser.cpp \
     src/VisualEdge.cpp \
     src/AlgorithmRunView.cpp \
-    src/TIARunScene.cpp
+    src/TIARunScene.cpp \
+    src/LayeredResidualSwitcher.cpp
 
 HEADERS  += mainwindow.h \
     src/GraphEditArea.h \
@@ -42,7 +43,9 @@ HEADERS  += mainwindow.h \
     src/GraphParser.h \
     src/VisualEdge.h \
     src/AlgorithmRunView.h \
-    src/TIARunScene.h
+    src/TIARunScene.h \
+    src/LayeredResidualSwitcher.h \
+    src/LayeredOptions.h
 
 FORMS    += mainwindow.ui \
     algorythmrun.ui

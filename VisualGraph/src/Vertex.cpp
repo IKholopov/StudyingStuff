@@ -4,25 +4,25 @@
 #include <QPainter>
 #include <QGraphicsScene>
 
-Vertex::Vertex(unsigned long long id, VisualGraph* graph, QPointF position):id(id), graph(graph), color(QColor(152, 255, 255))
+Vertex::Vertex(unsigned long long id, VisualGraph* graph, QPointF position):id_(id), graph_(graph), color_(QColor(152, 255, 255))
 {
     setFlag(ItemIsMovable);
         setFlag(ItemSendsGeometryChanges);
         setAcceptHoverEvents(1);
-    nextPosition = position;
+    nextPosition_ = position;
     setZValue(1);
 }
 
-void Vertex::AddEdge(VisualEdge* edge)
+void Vertex::addEdge(VisualEdge* edge)
 {
-    edges.push_back(edge);
+    edges_.push_back(edge);
 }
-void Vertex::RemoveEdge(unsigned long long edgeId)
+void Vertex::removeEdge(unsigned long long edgeId)
 {
-    for(auto e = edges.begin(); e != edges.end(); ++e)
-        if((*e)->GetId() == edgeId)
+    for(auto e = edges_.begin(); e != edges_.end(); ++e)
+        if((*e)->getId() == edgeId)
         {
-            edges.erase(e);
+            edges_.erase(e);
             break;
         }
 }
@@ -41,19 +41,19 @@ void Vertex::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QW
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
-    if(!highlighted)
-        painter->setBrush(QBrush(color));
+    if(!highlighted_)
+        painter->setBrush(QBrush(color_));
     else
         painter->setBrush(QBrush(QColor(239, 108, 0)));
     painter->drawEllipse(-10, -10, 20, 20);
     QString str;
-    switch(this->GetDisplayType())
+    switch(this->getDisplayType())
     {
-        case 0:
-            str = QString("%1").arg(this->id);
+        case ID:
+            str = QString("%1").arg(this->id_);
             break;
-        case 1:
-            str = QString("%1").arg(this->potential);
+        case POTENTIAL:
+            str = QString("%1").arg(this->potential_);
             break;
         default:
             break;
@@ -63,9 +63,9 @@ void Vertex::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QW
     painter->setFont(font);
     painter->save();
     double scale = 1.0;
-    if(this->id / 100)
+    if(this->id_ / 100)
         scale *=0.7;
-    if(this->id / 10)
+    if(this->id_ / 10)
         scale *=0.7;
     painter->scale(scale, scale);
     painter->drawText(-4, 8, str);
@@ -73,7 +73,7 @@ void Vertex::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QW
 }
 void Vertex::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-    this->graph->Scene()->mousePressedOnVertex(this);
+    this->graph_->scene()->mousePressedOnVertex(this);
     this->update();
     this->QGraphicsItem::mousePressEvent(event);
 }
@@ -87,33 +87,33 @@ QVariant Vertex::itemChange(QGraphicsItem::GraphicsItemChange change, const QVar
 {
     if(change == GraphicsItemChange::ItemPositionHasChanged)
     {
-        for(auto e: edges)
-            e->Update();
-        graph->MovedGraph();
+        for(auto e: edges_)
+            e->update();
+        graph_->movedGraph();
     }
     return QGraphicsItem::itemChange(change, value);
 }
-unsigned long long Vertex::GetId()
+unsigned long long Vertex::getId()
 {
-    return this->id;
+    return this->id_;
 }
-void Vertex::HideNode()
+void Vertex::hideNode()
 {
     this->hide();
-    this->SetActive(false);
+    this->setActive(false);
     prepareGeometryChange();
 }
-void Vertex::ShowNode()
+void Vertex::showNode()
 {
     this->show();
-    this->SetActive(true);
+    this->setActive(true);
     prepareGeometryChange();
 }
-void Vertex::Update()
+void Vertex::update()
 {
-    if(scene()->mouseGrabberItem() == this || this->edges.size() == 0)
+    if(scene()->mouseGrabberItem() == this || this->edges_.size() == 0)
     {
-        nextPosition = pos();
+        nextPosition_ = pos();
         return;
     }
     const double c1 = 40;
@@ -121,11 +121,11 @@ void Vertex::Update()
     const double c3 = 0.3;
     double vx = 0;
     double vy = 0;
-    double mass = c2 * (this->edges.size() + 1);
-    for(auto vert: *(this->graph->Verticies()))
+    double mass = c2 * (this->edges_.size() + 1);
+    for(auto vert: *(this->graph_->verticies()))
     {
         assert(vert != NULL);
-        if(vert->Neighbors() == 0)
+        if(vert->neighbors() == 0)
             continue;
         QPointF r = mapToItem(vert, 0, 0);
         if(r.x() * r.x() + r.y() * r.y() > 0)
@@ -134,81 +134,81 @@ void Vertex::Update()
             vy += r.y() * c1 / (r.x() * r.x() + r.y() * r.y());
         }
     }
-    for(auto e: edges)
+    for(auto e: edges_)
     {
         Vertex* vert = NULL;
-        if(e->GetFrom() == this)
-            vert = e->GetTo();
-        else if(e->GetTo() == this)
-            vert = e->GetFrom();
+        if(e->getFrom() == this)
+            vert = e->getTo();
+        else if(e->getTo() == this)
+            vert = e->getFrom();
         assert(vert != NULL);
         QPointF r = mapToItem(vert, 0, 0);
         vx -= r.x()/mass;
         vy -= r.y()/mass;
     }
-    vx -= c3 * velocity.x();
-    vy -= c3 * velocity.y();
-    if(qAbs(vx) < 0.1 && qAbs(vy) < 0.1)
-        this->velocity = QPointF(0, 0);
+    vx -= c3 * velocity_.x();
+    vy -= c3 * velocity_.y();
+    if(qAbs(vx) < 0.15 && qAbs(vy) < 0.15)
+        this->velocity_ = QPointF(0, 0);
     else
-        this->velocity += QPointF(vx, vy);
+        this->velocity_ += QPointF(vx, vy);
 }
-void Vertex::UpdatePosition()
+void Vertex::updatePosition()
 {
     int offsetLimit = 30;
-    this->nextPosition += velocity;
-    this->nextPosition.setX(qMin(qMax(this->nextPosition.x(), scene()->sceneRect().left() + offsetLimit), scene()->sceneRect().right() - offsetLimit));
-    if(nextPosition.x() == scene()->sceneRect().left() + offsetLimit || nextPosition.x() == scene()->sceneRect().right() - offsetLimit )
-        velocity.setX(-velocity.x());
-    this->nextPosition.setY(qMin(qMax(this->nextPosition.y(), scene()->sceneRect().top() + offsetLimit), scene()->sceneRect().bottom() - offsetLimit));
-    if(nextPosition.y() == scene()->sceneRect().top() + offsetLimit || nextPosition.y() == scene()->sceneRect().bottom() - offsetLimit )
-        velocity.setY(-velocity.y());
+    this->nextPosition_ += velocity_;
+    this->nextPosition_.setX(qMin(qMax(this->nextPosition_.x(), scene()->sceneRect().left() + offsetLimit), scene()->sceneRect().right() - offsetLimit));
+    if(nextPosition_.x() == scene()->sceneRect().left() + offsetLimit || nextPosition_.x() == scene()->sceneRect().right() - offsetLimit )
+        velocity_.setX(-velocity_.x());
+    this->nextPosition_.setY(qMin(qMax(this->nextPosition_.y(), scene()->sceneRect().top() + offsetLimit), scene()->sceneRect().bottom() - offsetLimit));
+    if(nextPosition_.y() == scene()->sceneRect().top() + offsetLimit || nextPosition_.y() == scene()->sceneRect().bottom() - offsetLimit )
+        velocity_.setY(-velocity_.y());
 }
 
 bool Vertex::advance()
 {
-    if(this->pos() == nextPosition)
+    if(this->pos() == nextPosition_)
         return false;
-    setPos(nextPosition);
+    setPos(nextPosition_);
     return true;
 }
-unsigned long long Vertex::Neighbors()
+unsigned long long Vertex::neighbors()
 {
-    return this->edges.size();
+    return this->edges_.size();
 }
-void Vertex::SetColor(QColor color)
+void Vertex::setColor(QColor color)
 {
-    this->color = color;
+    this->color_ = color;
 }
-unsigned long long Vertex::GetPotential() const
+unsigned long long Vertex::getPotential() const
 {
-    return potential;
+    return potential_;
 }
-void Vertex::SetPotential(unsigned long long value)
+void Vertex::setPotential(unsigned long long value)
 {
-    potential = value;
+    potential_ = value;
 }
-bool Vertex::GetActive() const
+bool Vertex::getActive() const
 {
-    return active;
+    return active_;
 }
-void Vertex::SetActive(bool value)
+void Vertex::setActive(bool value)
 {
-    active = value;
+    active_ = value;
 }
-int Vertex::GetDisplayType()
+LayeredOptions Vertex::getDisplayType()
 {
-    return displayType;
+    return displayType_;
 }
-void Vertex::SetDisplayType(int displayType)
+void Vertex::setDisplayType(LayeredOptions displayType)
 {
-    this->displayType = displayType;
+    this->displayType_ = displayType;
 }
-bool Vertex::GetHighlighted() const
+bool Vertex::getHighlighted() const
 {
-    return highlighted;
+    return highlighted_;
 }
-void Vertex::SetHighlighted(bool value)
+void Vertex::setHighlighted(bool value)
 {
-    highlighted = value;
+    highlighted_ = value;
 }

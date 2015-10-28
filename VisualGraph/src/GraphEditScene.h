@@ -1,11 +1,11 @@
 #ifndef GRAPHEDITSCENE_H
 #define GRAPHEDITSCENE_H
 
-#include <QGraphicsSceneMouseEvent>
 #include "GraphScene.h"
 #include "EditGraphToolBar.h"
 #include "VisualGraph.h"
 #include "GraphEditArea.h"
+#include <QGraphicsSceneMouseEvent>
 
 class VisualGraph;
 class GraphEditArea;
@@ -15,15 +15,15 @@ class GraphEditScene : public GraphScene
     Q_OBJECT
 
     public:
-        GraphEditScene(EditGraphToolBar toolbar, GraphEditArea* parent = 0);
+        GraphEditScene(EditGraphToolBar toolbar_, GraphEditArea* parent = 0);
         ~GraphEditScene();
 
-        void AddNode(QPointF position);
-        void AddEdge(unsigned long long from, unsigned long long to, unsigned long long capacity);
-        void LoadGraph(std::string filename);
-        void NewGraph();
-        EditGraphTools GetActiveTool();
-        VisualGraph* GetGraph() const;
+        void addNode(QPointF position);
+        void addEdge(unsigned long long from, unsigned long long to, unsigned long long capacity);
+        void loadGraph(std::string filename);
+        void newGraph();
+        EditGraphTools getActiveTool();
+        VisualGraph* getGraph() const;
 
         void mousePressedOnVertex(Vertex* v);
 
@@ -33,11 +33,11 @@ class GraphEditScene : public GraphScene
     signals:
 
     public slots:
-        void SetActiveTool(EditGraphTools tool);
+        void setActiveTool(EditGraphTools tool);
     private:
-        VisualGraph* graph;
-        EditGraphToolBar toolbar;
-        GraphEditArea* view;
+        VisualGraph* graph_;
+        EditGraphToolBar toolbar_;
+        GraphEditArea* view_;
 };
 
 #endif // GRAPHEDITSCENE_H

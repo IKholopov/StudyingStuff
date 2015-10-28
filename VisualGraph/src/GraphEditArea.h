@@ -12,13 +12,13 @@ class Vertex;
 class AddEdgeTool
 {
     public:
-        Vertex* GetFrom() const;
-        void SetFrom(Vertex* value);
-        Vertex* GetTo() const;
-        void SetTo(Vertex* value);
+        Vertex* getFrom() const;
+        void setFrom(Vertex* value);
+        Vertex* getTo() const;
+        void setTo(Vertex* value);
 
-        void Initialize();
-        void Process(GraphEditScene* scene, Vertex* v);
+        void initialize();
+        void process(GraphEditScene* scene, Vertex* v);
 
     private:
         Vertex* from = NULL;
@@ -34,24 +34,24 @@ class GraphEditArea : public GraphArea
 
         void drawBackground(QPainter* painter, const QRectF& rect);
 
-        void SetActiveTool(EditGraphTools tool);
-        void SetTimerId(int id);
-        int GetTimerId();
-        void SaveGraph();
-        void LoadGraph();
-        void NewGraph();
+        void setActiveTool(EditGraphTools tool);
+        void setTimerId(int id);
+        int getTimerId();
+        void saveGraph();
+        void loadGraph();
+        void newGraph();
 
-        std::vector<std::vector<unsigned long long> > CloneGraph();
-        void InitializeAddEdge();
-        void ProcessAddEdge(GraphEditScene* scene, Vertex* v);
+        std::vector<std::vector<unsigned long long> > cloneGraph();
+        void initializeAddEdge();
+        void processAddEdge(GraphEditScene* scene, Vertex* v);
     protected:
         void timerEvent(QTimerEvent* event) Q_DECL_OVERRIDE;
 
     signals:
     public slots:
     private:
-        int timerId;
-        AddEdgeTool addEdgeTool;
+        int timerId_;
+        AddEdgeTool addEdgeTool_;
 };
 
 
