@@ -74,7 +74,7 @@ unsigned long long ParentChildListOriented::numberOfEdges() const
 {
     return this->edges_.size();
 }
-std::vector<unsigned long long> *ParentChildListOriented::getChilds(unsigned long long vertex) const
+std::vector<unsigned long long>* ParentChildListOriented::getChilds(unsigned long long vertex) const
 {
     std::vector<unsigned long long>* childs = new std::vector<unsigned long long>();
     for(auto e = edges_.begin(); e != edges_.end(); ++e)
@@ -82,7 +82,7 @@ std::vector<unsigned long long> *ParentChildListOriented::getChilds(unsigned lon
             childs->push_back((*e)->To);
     return childs;
 }
-std::vector<unsigned long long> *ParentChildListOriented::getParents(unsigned long long vertex) const
+std::vector<unsigned long long>* ParentChildListOriented::getParents(unsigned long long vertex) const
 {
     std::vector<unsigned long long>* parents = new std::vector<unsigned long long>();
     for(auto e = edges_.begin(); e != edges_.end(); ++e)

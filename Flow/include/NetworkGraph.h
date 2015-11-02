@@ -36,8 +36,6 @@ class NetworkGraph: public OrientedGraph
         unsigned long long idCounter;
 };
 
-
-
 template <class FlowType>
 bool NetworkGraph<FlowType>::checkEdge(long long from, long long to, unsigned long long id)
 {
@@ -140,11 +138,10 @@ void NetworkGraph<FlowType>::BFS(unsigned long long source, std::function<bool(u
             if(!edgeCondition(*v))
                 continue;
             auto vert = straight ? (*v)->To : (*v)->From;
+            q.push(vert);
             if(!operation(u, vert, *v)) {
-                q.push(vert);
                 break;
             }
-            q.push(vert);
         }
         vertexes[u] = Color::Black;
     }

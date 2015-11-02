@@ -143,7 +143,7 @@ void VisualGraph::movedGraph()
 void VisualGraph::disableGraph()
 {
     for(auto v: verticies_) {
-        v->hideNode();//scene->addItem(v);
+        v->hideNode();
     }
     for(auto e: edges_) {
         e->hideEdge();

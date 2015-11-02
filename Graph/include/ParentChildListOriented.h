@@ -35,8 +35,8 @@ class ParentChildListOriented: public IMultiGraph
         void deleteNodeEdges(unsigned long long v);
         void deleteAllEdges();
         void initializeNewGraph(unsigned long long size_);
-        const std::vector<Edge *> *getOutgoing(unsigned long long vertex) const;
-        const std::vector<Edge *> *getIngoing(unsigned long long vertex) const;
+        const std::vector<Edge*>* getOutgoing(unsigned long long vertex) const;
+        const std::vector<Edge*>* getIngoing(unsigned long long vertex) const;
     protected:
         unsigned long long idCounter_;
         unsigned long long size_;

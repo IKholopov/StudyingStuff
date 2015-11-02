@@ -14,7 +14,7 @@ class ResidualNetwork: public NetworkGraph<FlowType>
 
         void addFlow(unsigned long long from, unsigned long long to, unsigned long long id , FlowType flow);
         void addFlow(unsigned long long from, unsigned long long to, unsigned long long id , FlowType flow, NetworkDelta* delta);
-        std::pair<NetworkGraph<FlowType>*, std::vector<long long>* > getLayeredNetwork(unsigned long long source, IMultiGraph &implementation);
+
     private:
         NetworkGraph<FlowType>* base_;
 };

@@ -116,9 +116,9 @@ void Vertex::update()
         nextPosition_ = pos();
         return;
     }
-    const double c1 = 40;
+    const double c1 = 100 * 10 / (double)(this->graph_->size());
     const double c2 = 20.0;
-    const double c3 = 0.3;
+    const double c3 = 1;
     double vx = 0;
     double vy = 0;
     double mass = c2 * (this->edges_.size() + 1);
@@ -136,6 +136,8 @@ void Vertex::update()
     }
     for(auto e: edges_)
     {
+        if(e->getCapacity() == 0)
+            continue;
         Vertex* vert = NULL;
         if(e->getFrom() == this)
             vert = e->getTo();
@@ -148,7 +150,7 @@ void Vertex::update()
     }
     vx -= c3 * velocity_.x();
     vy -= c3 * velocity_.y();
-    if(qAbs(vx) < 0.15 && qAbs(vy) < 0.15)
+    if(qAbs(vx) < 0.13 && qAbs(vy) < 0.13)
         this->velocity_ = QPointF(0, 0);
     else
         this->velocity_ += QPointF(vx, vy);

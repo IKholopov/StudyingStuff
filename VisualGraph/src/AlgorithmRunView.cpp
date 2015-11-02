@@ -29,6 +29,8 @@ int AlgorithmRunView::getTimerId()
 }
 void AlgorithmRunView::initialize(const std::vector<std::vector<unsigned long long> >& graphData)
 {
+    killTimer(timerId_);
+    timerId_ = 0;
     static_cast<TIARunScene*>(this->scene())->initialize(graphData);
 }
 void AlgorithmRunView::nextStep()

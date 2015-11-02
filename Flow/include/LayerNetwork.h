@@ -12,11 +12,11 @@ template <class FlowType>
 class LayerNetwork : public NetworkGraph<FlowType>
 {
     public:
-        ~LayerNetwork();
-
         LayerNetwork(unsigned long long source_, unsigned long long sink_, ResidualNetwork<FlowType>& base, IMultiGraph& implementation);
         LayerNetwork(unsigned long long source_, unsigned long long sink_, ResidualNetwork<FlowType>& base, IMultiGraph& implementation,
                      std::vector<NetworkDelta>* deltas);
+        ~LayerNetwork();
+
         void findBlockingPath(ResidualNetwork<FlowType>& residual);
         void findBlockingPath(ResidualNetwork<FlowType>& residual, std::vector<NetworkDelta>* deltas);
         const std::vector<unsigned long long>* getDistances() const;
@@ -30,6 +30,7 @@ class LayerNetwork : public NetworkGraph<FlowType>
         std::vector<unsigned long long>* distances_;
         unsigned long long source_;
         unsigned long long sink_;
+
         bool copyEdge(Edge* edge);
         void updatePotential(unsigned long long v);
         void updatePotential(unsigned long long v, NetworkDelta* delta);
