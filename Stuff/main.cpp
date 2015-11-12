@@ -1,10 +1,12 @@
+#include "AhoMaskAutomata.h"
+#include "ConfigFactory.h"
 #include <iostream>
-#include "Strings.h"
 
 
 int main()
 {
-    Strings::lib().PrefixTemplate(std::cin, std::cout);
+    auto a = AhoMaskAutomata(AhoConfigFactory::Config(), std::cin);
+    a.FindTemplate(std::cin, std::cout);
     return 0;
 }
 
