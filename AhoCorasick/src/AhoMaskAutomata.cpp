@@ -7,8 +7,10 @@ AhoMaskAutomata::AhoMaskAutomata(IAhoAutomataConfig& config, std::istream& input
         std::string s = "";
         long long subPatternStartPosition = 0;
         char c;
-        while(input.get(c) && c != '\n' && c != ' ')
+        while(input.get(c) && c != '\n')
         {
+            if(!(config_.AssertCorrectSymbol(c) || c == '?'))
+                continue;
             if(c == '?') {
                 if(s.compare("") != 0) {
                     this->AddString(s);
@@ -33,11 +35,13 @@ void AhoMaskAutomata::FindTemplate(std::istream& input, std::ostream& output)
     std::ios::sync_with_stdio(false);
     char c;
     long long position = 0;
-    auto state = this->nodes_.at(ROOT_ID).get();
+    auto state = this->nodes_.at(ROOT_ID);
     std::vector<long long> subPatternCounter;
     long long patternCounter = 0;
-    while(input.get(c) && c != '\n')
+    while(input.get(c))
     {
+        if(!config_.AssertCorrectSymbol(c))
+            continue;
         subPatternCounter.push_back(0);
         ++position;
         state = this->GetTransition(state, c);
@@ -48,7 +52,7 @@ void AhoMaskAutomata::FindTemplate(std::istream& input, std::ostream& output)
                 {
                     auto index = position - (long long)strings_.at(*s).length()
                             - (long long)subPatternStartPosition_.at(*s);
-                    if(index > 0)
+                    if(index >= 0)
                         ++subPatternCounter[index];
                 }
         }

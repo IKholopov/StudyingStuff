@@ -8,6 +8,7 @@ class IAhoAutomataConfig
     public:
         virtual unsigned long long GetLetterId(char c) = 0;
         virtual unsigned long long GetAlphabetSize() = 0;
+        virtual bool AssertCorrectSymbol(char c) = 0;
 };
 
 #endif

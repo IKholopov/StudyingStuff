@@ -11,6 +11,7 @@ class EnglishAhoAutomataConfig: public IAhoAutomataConfig
         EnglishAhoAutomataConfig();
         unsigned long long GetLetterId(char c);
         unsigned long long GetAlphabetSize();
+        bool AssertCorrectSymbol(char c);
     private:
         unsigned long long alphabetSize_;
         std::unordered_map<char, unsigned long long> lettersCodes_;

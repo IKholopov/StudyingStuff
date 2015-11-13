@@ -7,6 +7,18 @@
 #define BOOST_TEST_MODULE Aho_test
 #include <boost/test/unit_test.hpp>
 
+int AhoTest(std::string pattern, std::string input, std::string result)
+{
+    std::stringstream patternstream, string, out;
+    patternstream << pattern;
+    string << input;
+    auto a = AhoMaskAutomata(AhoConfigFactory::Config(), patternstream);
+    a.FindTemplate(string, out);
+    std::string res;
+    res = out.str();
+    std::cout << res <<std::endl;
+    return res.compare(result);
+}
 
 BOOST_AUTO_TEST_CASE(Trie_test)
 {
@@ -18,10 +30,10 @@ BOOST_AUTO_TEST_CASE(Trie_test)
 }
 BOOST_AUTO_TEST_CASE(Aho_test)
 {
-    std::stringstream pattern, string;
-    pattern << "ab??aba";
-    string << "ababacaba";
-    auto a = AhoMaskAutomata(AhoConfigFactory::Config(), pattern);
-    //a.FindTemplates(std::cin, std::cout);
-    a.FindTemplate(string, std::cout);
+    BOOST_CHECK(AhoTest("", "", "") == 0);
+    BOOST_CHECK(AhoTest("a?a?a?a?a?a   ", "ababababababababababababababab  ", "0 2 4 6 8 10 12 14 16 18 ") == 0);
+    BOOST_CHECK(AhoTest("ab??aba?", "ababacabad", "2 ") == 0);
+    BOOST_CHECK(AhoTest("ab??aba", "ababacabad", "2 ") == 0);
+    BOOST_CHECK(AhoTest("ab??aba??", "ababacabad", "") == 0);
+    BOOST_CHECK(AhoTest("?ab???ab????ab", "abccabccabccabvvvabbbbbabv", "11 ") == 0);
 }
