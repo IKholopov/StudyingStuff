@@ -9,7 +9,7 @@ class AhoMaskAutomata: public AhoAutomata
         AhoMaskAutomata(IAhoAutomataConfig& config, std::istream& input);
         void FindTemplate(std::istream& input, std::ostream& output);
     private:
-        std::vector<long long> subPatternStartPosition_;
+        long long patternCounter_;
         long long patternSize_;
 };
 

@@ -24,8 +24,8 @@ class AhoAutomata
         AutomataNode* GetFastSuffixLink(AutomataNode* node);
         std::vector<std::string> strings_;
         IAhoAutomataConfig& config_;
-    private:
         void AddString(std::string s, unsigned long long stringId);
+    private:
         AutomataNode* GetNode(long long id);
         AutomataNode* GetSuffixLink(AutomataNode* node);
         AutomataNode* GetSuffixLink(long long nodeId);

@@ -6,6 +6,8 @@ AhoMaskAutomata::AhoMaskAutomata(IAhoAutomataConfig& config, std::istream& input
         std::ios::sync_with_stdio(false);
         std::string s = "";
         long long subPatternStartPosition = 0;
+        long long positionCounter = 0;
+        patternCounter_ = 0;
         char c;
         while(input.get(c) && c != '\n')
         {
@@ -13,21 +15,25 @@ AhoMaskAutomata::AhoMaskAutomata(IAhoAutomataConfig& config, std::istream& input
                 continue;
             if(c == '?') {
                 if(s.compare("") != 0) {
-                    this->AddString(s);
+                    this->AddString(s, s.length() + subPatternStartPosition);
+                    ++patternCounter_;
                     s = "";
                 }
             }
             else
             {
-                if(s.compare("") == 0)
-                    subPatternStartPosition_.push_back(subPatternStartPosition);
+                if(s.compare("") == 0) {
+                    subPatternStartPosition = positionCounter;
+                }
                 s += c;
             }
-            ++subPatternStartPosition;
+            ++positionCounter;
         }
-        if(s.compare("") != 0)
-            this->AddString(s);
-        patternSize_ = subPatternStartPosition;
+        if(s.compare("") != 0) {
+            this->AddString(s, s.length() + subPatternStartPosition);
+            ++patternCounter_;
+        }
+        patternSize_ = positionCounter;
         std::ios::sync_with_stdio(true);
 }
 void AhoMaskAutomata::FindTemplate(std::istream& input, std::ostream& output)
@@ -37,7 +43,6 @@ void AhoMaskAutomata::FindTemplate(std::istream& input, std::ostream& output)
     long long position = 0;
     auto state = this->nodes_.at(ROOT_ID);
     std::vector<long long> subPatternCounter;
-    long long patternCounter = 0;
     while(input.get(c))
     {
         if(!config_.AssertCorrectSymbol(c))
@@ -47,20 +52,20 @@ void AhoMaskAutomata::FindTemplate(std::istream& input, std::ostream& output)
         state = this->GetTransition(state, c);
         for(auto st = state; st->GetId() != ROOT_ID; st = GetFastSuffixLink(st))
         {
-            if(st->IsString())
-                for(auto s = st->GetStrings().begin(); s != st->GetStrings().end(); ++s)
+            if(st->IsString()) {
+                auto str = st->GetStrings();
+                for(long long i = 0; i < str.size(); ++i)
                 {
-                    auto index = position - (long long)strings_.at(*s).length()
-                            - (long long)subPatternStartPosition_.at(*s);
+                    auto index = position - str[i];
                     if(index >= 0)
                         ++subPatternCounter[index];
                 }
+            }
         }
     }
     for(long long i = 0; patternSize_ - 1 +  i < subPatternCounter.size(); ++i)
-        if(subPatternCounter[i] >= subPatternStartPosition_.size()) {
+        if(subPatternCounter[i] >= patternCounter_) {
             output << i << " ";
-            ++patternCounter;
         }
     std::ios::sync_with_stdio(true);
 }

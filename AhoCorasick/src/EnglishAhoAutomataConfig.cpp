@@ -10,9 +10,8 @@ EnglishAhoAutomataConfig::EnglishAhoAutomataConfig()
 
 unsigned long long EnglishAhoAutomataConfig::GetLetterId(char c)
 {
-    /*if(c < 'a' || c > 'z')
-        return 0;*/
-    return lettersCodes_.at(c);
+    if(c >= 'a' && c <= 'z')
+        return c - 'a';
 }
 unsigned long long EnglishAhoAutomataConfig::GetAlphabetSize()
 {

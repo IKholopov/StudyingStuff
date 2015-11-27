@@ -30,10 +30,10 @@ BOOST_AUTO_TEST_CASE(Trie_test)
 }
 BOOST_AUTO_TEST_CASE(Aho_test)
 {
+    BOOST_CHECK(AhoTest("ab??aba??", "ababacabad", "") == 0);
     BOOST_CHECK(AhoTest("", "", "") == 0);
     BOOST_CHECK(AhoTest("a?a?a?a?a?a   ", "ababababababababababababababab  ", "0 2 4 6 8 10 12 14 16 18 ") == 0);
     BOOST_CHECK(AhoTest("ab??aba?", "ababacabad", "2 ") == 0);
     BOOST_CHECK(AhoTest("ab??aba", "ababacabad", "2 ") == 0);
-    BOOST_CHECK(AhoTest("ab??aba??", "ababacabad", "") == 0);
     BOOST_CHECK(AhoTest("?ab???ab????ab", "abccabccabccabvvvabbbbbabv", "11 ") == 0);
 }
