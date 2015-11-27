@@ -4,7 +4,6 @@
 
 SuffixTree::SuffixTree(IAlphabetConfig& config, std::string string):config_(config), string_(string), inf(string.size() + 1)
 {
-    string_ += "$";
     this->notAString = new ExplicitState(states_.size(), config_);
     states_.push_back(notAString);
     this->emptyString = new ExplicitState(states_.size(), config_);
@@ -15,16 +14,58 @@ SuffixTree::SuffixTree(IAlphabetConfig& config, std::string string):config_(conf
     ExplicitState::Pass tail = ExplicitState::Pass(0, -1, emptyString);
     for(long long i = 0; i < string_.size(); ++i)
     {
-        std::cout << i << std::endl;
+        //std::cout << i << std::endl;
         tail = this->Update(tail.State, tail.Left, i);
         tail = this->Canonize(tail.State, tail.Left, i);
-        this->PrintTree(std::cout, i);
+        //this->PrintTree(std::cout, i);
     }
 }
 SuffixTree::~SuffixTree()
 {
     for(auto st = states_.begin(); st != states_.end(); ++st)
         delete *st;
+}
+std::string SuffixTree::LCSWith(std::string t)
+{
+    long long maxLeft, maxLength;
+    long long left, length;
+    maxLeft = 0;
+    left = 0;
+    length = 0;
+    maxLength = 0;
+    auto state = this->emptyString;
+    for(long long i = 0; i < t.size(); ++i)
+    {
+        auto pass = state->GetTransition(t[i]);
+        if(pass.State == nullptr)
+        {
+            left = i + 1;
+            length = 0;
+            if(state != emptyString)
+                state = state->GetSuffixLink();
+            continue;
+        }
+        long long j = 0;
+        while(t[i + j] == string_[pass.Left + j] && j < pass.Right - pass.Left + 1)
+            ++j;
+        length += j;
+        if(j > 0)
+            i += j - 1;
+        if(maxLength < length) {
+            maxLeft = left;
+            maxLength = length;
+        }
+        if(j == pass.Right - pass.Left + 1)
+        {
+            state = pass.State;
+            continue;
+        }
+        left = i + 1;
+        length = 0;
+        if(state != emptyString)
+            state = state->GetSuffixLink();
+    }
+    return t.substr(maxLeft, maxLength);
 }
 
 ExplicitState::Pass SuffixTree::Update(ExplicitState* state, long long left, long long right)
@@ -54,13 +95,15 @@ ExplicitState::Pass SuffixTree::Canonize(ExplicitState* state, long long left, l
     if(right < left)
         return ExplicitState::Pass(left, 0, state);
     ExplicitState::Pass leftPass = state->GetTransition(this->Sequence(left));
-    while(leftPass.Right - leftPass.Left <= right - left) {
-        left = left + leftPass.Right - leftPass.Left + 1;
-        state = leftPass.State;
+    if(leftPass.Right <= right)
+        while(leftPass.Right - leftPass.Left <= right - left) {
+            left = left + leftPass.Right - leftPass.Left + 1;
+            state = leftPass.State;
         if(left <= right)
             leftPass = state->GetTransition(this->Sequence(left));
     }
-    return ExplicitState::Pass(left, 0, state);
+
+    return ExplicitState::Pass(left , 0, state);
 }
 bool SuffixTree::TestEndPointAndSplit(ExplicitState::Pass pass, char c, ExplicitState*& state)
 {
@@ -73,9 +116,9 @@ bool SuffixTree::TestEndPointAndSplit(ExplicitState::Pass pass, char c, Explicit
         }
         ExplicitState* newState = new ExplicitState(states_.size(), config_);
         states_.push_back(newState);
-        long long branchingPoint = next.Left + pass.Right - pass.Left;
+        long long branchingPoint = next.Left + pass.Right - pass.Left + 1;
         pass.State->AddTransition(this->Sequence(next.Left),
-                                ExplicitState::Pass(next.Left, branchingPoint, newState));
+                                ExplicitState::Pass(next.Left, branchingPoint - 1, newState));
         newState->AddTransition(this->Sequence(branchingPoint), ExplicitState::Pass(branchingPoint, next.Right, next.State));
         state = newState;
         return false;
@@ -118,7 +161,7 @@ void SuffixTree::PrintTree(std::ostream& out, long long max)
                 if(next.Left >= 0) {
                     for(int i = 0; i < depth; ++i)
                         out << '\t';
-                    for(int i = next.Left; i < next.Right && i < max + 1; ++i)
+                    for(int i = next.Left; i <= next.Right && i < max + 1; ++i)
                     {
                         out << string_[i];
                     }
@@ -161,7 +204,7 @@ void SuffixTree::PrintTree(std::ostream& out)
                 if(next.Left >= 0) {
                     for(int i = 0; i < depth; ++i)
                         out << '\t';
-                    for(int i = next.Left; i < next.Right && i < string_.size(); ++i)
+                    for(int i = next.Left; i <= next.Right && i < string_.size(); ++i)
                     {
                         out << string_[i];
                     }

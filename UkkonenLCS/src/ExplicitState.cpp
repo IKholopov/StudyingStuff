@@ -28,6 +28,6 @@ void ExplicitState::AddTransition(char c, ExplicitState::Pass pass)
 void ExplicitState::AddSuffixLink(ExplicitState* link)
 {
     assert(link != nullptr);
-    assert(suffixLink_ == nullptr);
+    //assert(suffixLink_ == nullptr);
     this->suffixLink_ = link;
 }

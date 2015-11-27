@@ -13,6 +13,7 @@ class SuffixTree
         SuffixTree(IAlphabetConfig& config, std::string string);
         ~SuffixTree();
 
+        std::string LCSWith(std::string t);
         void PrintTree(std::ostream& out);
     private:
         ExplicitState::Pass Update(ExplicitState* state, long long left, long long right);
