@@ -9,7 +9,7 @@ class ExplicitState
     public:
         struct Pass
         {
-                Pass(long long left = 0, long long right = 0, ExplicitState* state = nullptr):
+                Pass(long long left = 0, long long right = 0, ExplicitState* state = nullptr ):
                     Left(left), Right(right), State(state) {}
                 long long Left;
                 long long Right;

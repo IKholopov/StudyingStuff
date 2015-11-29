@@ -3,7 +3,7 @@
 
 ExplicitState::ExplicitState(long long id, IAlphabetConfig& config):id_(id), config_(config), suffixLink_(nullptr)
 {
-    transitions_.resize(config.GetAlphabetSize(), Pass(0, 0, nullptr));
+    transitions_.resize(config.GetAlphabetSize(), Pass(0, 04, nullptr));
 }
 
 long long ExplicitState::GetId()
@@ -22,12 +22,10 @@ ExplicitState*ExplicitState::GetSuffixLink()
 void ExplicitState::AddTransition(char c, ExplicitState::Pass pass)
 {
     auto letterId = config_.GetLetterId(c);
-    //assert(transitions_.at(letterId).State == nullptr);
     transitions_[letterId] = pass;
 }
 void ExplicitState::AddSuffixLink(ExplicitState* link)
 {
     assert(link != nullptr);
-    //assert(suffixLink_ == nullptr);
     this->suffixLink_ = link;
 }
