@@ -1,16 +1,15 @@
-#include "SuffixTree.h"
+#include "SuffixAutomata.h"
 #include "EnglishAlphabetConfig.h"
 #include <iostream>
 
 
 int main()
 {
-    std::string s1, s2;
+    std::string s1;
     std::cin >> s1;
-    std::cin >> s2;
     EnglishAlphabetConfig conf;
-    SuffixTree tree(conf, s1);
-    std::cout << tree.LCSWith(s2) << std::endl;
+    SuffixAutomata automata(conf, s1);
+    std::cout << automata.FindDifferentSubstrings() << std::endl;
     return 0;
 }
 

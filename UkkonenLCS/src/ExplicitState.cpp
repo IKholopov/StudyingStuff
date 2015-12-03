@@ -3,7 +3,7 @@
 
 ExplicitState::ExplicitState(long long id, IAlphabetConfig& config):id_(id), config_(config), suffixLink_(nullptr)
 {
-    transitions_.resize(config.GetAlphabetSize(), Pass(0, 04, nullptr));
+    transitions_.resize(config.GetAlphabetSize(), Pass(0, 0, nullptr));
 }
 
 long long ExplicitState::GetId()

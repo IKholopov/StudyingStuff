@@ -8,9 +8,9 @@ aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_NAME}_SRCS)
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS include/*.h*)
 set(${PROJECT_NAME}_SRCS ${${PROJECT_NAME}_SRCS} ${${PROJECT_NAME}_HEADERS})
 include_directories("${PROJECT_BINARY_DIR}")
-include_directories(${CMAKE_SOURCE_DIR}/UkkonenLCS/include)
+include_directories(${CMAKE_SOURCE_DIR}/SuffixAutomata/include)
 include_directories(${CMAKE_SOURCE_DIR}/AlphabetConfig/include)
 add_executable(Stuff ${${PROJECT_NAME}_SRCS})
 
-target_link_libraries(Stuff UkkonenLCS AlphabetConfig ${Boost_LIBRARIES})
+target_link_libraries(Stuff SuffixAutomata AlphabetConfig ${Boost_LIBRARIES})
 

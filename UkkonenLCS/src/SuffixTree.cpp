@@ -178,7 +178,6 @@ void SuffixTree::PrintTree(std::ostream& out, long long max)
             }
         }
     }
-
 }
 
 void SuffixTree::PrintTree(std::ostream& out)

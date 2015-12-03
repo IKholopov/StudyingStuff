@@ -9,6 +9,8 @@
 BOOST_AUTO_TEST_CASE(suffixTree)
 {
     EnglishAlphabetConfig conf;
+    SuffixTree tree0(conf, "cacao$");
+    tree0.PrintTree(std::cout);
     SuffixTree tree(conf, "lookatmyhorsemyhorseisamazing$");
     tree.PrintTree(std::cout);
     BOOST_CHECK(tree.LCSWith("amazingsemyhorse").compare("semyhorse") == 0);
